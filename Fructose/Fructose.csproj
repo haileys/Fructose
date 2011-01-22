@@ -54,7 +54,7 @@
     <Compile Include="Compiler\Generators\Method.cs" />
     <Compile Include="Compiler\Generators\MethodCall.cs" />
     <Compile Include="Compiler\Generators\SimpleAssignment.cs" />
-    <Compile Include="Compiler\Generators\StringConstructor.cs" />
+    <Compile Include="Compiler\Generators\StringSymbolConstructor.cs" />
     <Compile Include="Compiler\Generators\Variables.cs" />
     <Compile Include="Compiler\NodeParent.cs" />
     <Compile Include="Mangling.cs" />
