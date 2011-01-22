@@ -1,0 +1,8 @@
+*.suo
+*.pdb
+*/bin/*
+*/obj/*
+*.user
+*.config
+/.gitignore~
+input.rb
