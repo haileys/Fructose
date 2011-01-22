@@ -39,6 +39,48 @@ class F_Object
 	{
 		echo $o->F_to_s()->__STRING . "\n";
 	}
+	
+	public function F_class()
+	{
+		return get_class($this);
+	}
+}
+
+class F_Exception extends F_Object
+{
+	public function __operator_eq($operand)
+	{
+		if(get_class($operand) != 'F_Exception' && !is_subclass_of($operand, 'F_Exception'))
+			return new F_FalseClass;
+			
+		if($this->F_class() !== $operand->F_class())
+			return new F_FalseClass;
+			
+		return $this->message()->__operator_eq($operand->message());
+	}
+	public function F_backtrace()
+	{
+		return F_String::__from_string('');
+	}
+	public function F_message()
+	{
+		return $this->F_to_s();
+	}
+}
+
+class F_Fixnum extends F_Object
+{
+	public static __from_integer($int)
+	{
+		$obj = new F_Fixnum;
+		$obj->__INTEGER = $int;
+		return $obj;
+	}
+	
+	public function __operator_mod($operand)
+	{
+		
+	}
 }
 
 class F_TrueClass extends F_Object
