@@ -1,5 +1,4 @@
-Fructose
-========
+# Fructose
 
 Fructose is a compiler designed to compile a subset of Ruby to the PHP programming language.
 
