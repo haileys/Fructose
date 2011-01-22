@@ -38,9 +38,10 @@ namespace Fructose.Test
 
             var parser = new Parser(string.Join("\n", input));
             parser.Parse();
+            File.Delete("tmp.php");
             File.WriteAllText("tmp.php", parser.CompileToPHP());
             var p = new Process();
-            p.StartInfo = new ProcessStartInfo("php", "tmp.php") { UseShellExecute = false, RedirectStandardOutput = true };
+            p.StartInfo = new ProcessStartInfo("php", "tmp.php") { UseShellExecute = false, RedirectStandardOutput = true, RedirectStandardError = true };
             p.Start();
             p.WaitForExit();
 
@@ -50,7 +51,7 @@ namespace Fructose.Test
             foreach (var e in expects.Where(e => !string.IsNullOrEmpty(e)))
             {
                 if (l == output.Length || e != output[l])
-                    throw new TestFailException(string.Join("\n", output));
+                    throw new TestFailException(string.Join("\n", output) + "\n" + p.StandardError.ReadToEnd());
                 l++;
             }
         }

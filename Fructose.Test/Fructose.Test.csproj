@@ -49,6 +49,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Tests\EscapeToPHP.rb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Tests\HelloWorld.rb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

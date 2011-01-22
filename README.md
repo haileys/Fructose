@@ -1,6 +1,6 @@
 # Fructose
 
-Fructose is a compiler designed to compile a subset of Ruby to the PHP programming language.
+**Fructose is a language that compiles to PHP.** Fructose's syntax is borrowed from that of Ruby's, with changes and standard library differences to make this project feasible under PHP.
 
 It is composed of two parts - Fructose itself, which is written in C#, and libfructose - a support library written in PHP and included by every file Fructose outputs. libfructose is designed to provide a subset of the Ruby standard library to Fructose programs.
 
