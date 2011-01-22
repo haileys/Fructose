@@ -411,7 +411,7 @@ class F_String extends F_Object
 	}
 	public function F_downcase()
 	{
-		return F_String::__from_string(strtolower(this->__STRING));
+		return F_String::__from_string(strtolower($this->__STRING));
 	}
 	public function F_downcase_EXCL_()
 	{
