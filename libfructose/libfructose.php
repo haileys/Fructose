@@ -282,7 +282,7 @@ class F_String extends F_Object
 	{
 		return $this;
 	}
-	public function __operator_plus($operand)
+	public function __operator_add($operand)
 	{
 		return F_String::__from_string($this->__STRING . $operand->F_to_s()->__STRING);
 	}
@@ -300,7 +300,7 @@ class F_String extends F_Object
 		{
 			// @TODO
 		}
-		return F_String::__from_string(sprintf($this->__STRING, $operand->F_to_s()));
+		return F_String::__from_string(sprintf($this->__STRING, $operand->F_to_s()->__STRING));
 	}
 	public function __operator_mul($operand)
 	{
