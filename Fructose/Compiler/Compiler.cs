@@ -52,7 +52,7 @@ namespace Fructose.Compiler
 
         public string Compile()
         {
-            sb.AppendLine("<?php include('libfructose.php');\n$_stack = array();\n\n");
+            sb.AppendLine("<?php \n//compwhizii rules!!!\n\ninclude('libfructose.php');\n$_stack = array();\n\n");
 
             foreach (var stmt in tree.Statements)
                 CompileNode(stmt);
