@@ -98,12 +98,12 @@ class F_Number extends F_Object
 	{
 		return F_TrueClass::__from_bool($this->__NUMBER <= $operand->__NUMBER);
 	}
-	public function __operator_lte($operand)
+	public function __operator_spaceship($operand)
 	{
 		if($this->__NUMBER < $operand->__NUMBER)
 			return F_Number::__from_number(-1);
 		if($this->__NUMBER > $operand->__NUMBER)
-			return F_Number::__from_number(-1);
+			return F_Number::__from_number(1);
 		return F_Number::__from_number(0);
 	}
 	public function __operator_eq($operand)
@@ -136,7 +136,7 @@ class F_Number extends F_Object
 	{
 		return F_Number::__from_number($this->__NUMBER ^ $operand->__NUMBER);
 	}
-	public function F_abs($operand)
+	public function F_abs()
 	{
 		return F_Number::__from_number(abs($this->__NUMBER));
 	}
@@ -160,7 +160,7 @@ class F_Number extends F_Object
 	{
 		return F_TrueClass::__from_bool($this->__NUMBER == 0);
 	}
-	public function __operator_or($operand)
+	public function __operator_bitwiseor($operand)
 	{
 		return F_Number::__from_number($this->__NUMBER | $operand->__NUMBER);
 	}
@@ -202,7 +202,7 @@ class F_TrueClass extends F_Object
 	}
 	public function F_to_s()
 	{
-		return String::__from_string("true");
+		return F_String::__from_string("true");
 	}
 }
 
@@ -230,7 +230,7 @@ class F_FalseClass extends F_Object
 	}
 	public function F_to_s()
 	{
-		return String::__from_string("false");
+		return F_String::__from_string("false");
 	}
 }
 

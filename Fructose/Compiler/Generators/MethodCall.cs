@@ -21,7 +21,10 @@ namespace Fructose.Compiler.Generators
 
             if (((MethodCall)node).Target == null)
             {
-                compiler.AppendLine("$_stack[] = $this;");
+                if (parent.OfType<ClassDefinition>().Count() > 0)
+                    compiler.AppendLine("$_stack[] = $this;");
+                else
+                    compiler.AppendLine("$_stack[] = new F_Object;");
             }
             else
             {

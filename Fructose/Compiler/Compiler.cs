@@ -67,7 +67,7 @@ namespace Fructose.Compiler
         public void CompileNode(Node node, NodeParent parents)
         {
             if (!generators.ContainsKey(node.NodeType))
-                throw new NotImplementedException("NodeType " + node.NodeType + " not supported yet");
+                throw new NotImplementedException("NodeType " + node.NodeType + " not supported yet: " + node.Location.ToString());
 
             generators[node.NodeType].Compile(this, node, parents);
         }

@@ -47,10 +47,13 @@ namespace Fructose.Test
 
             string[] output = p.StandardOutput.ReadToEnd().Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
                 
+            if (expects.Where(e => !string.IsNullOrEmpty(e)).Count() != output.Length)
+                throw new TestFailException(string.Join("\n", output) + "\n" + p.StandardError.ReadToEnd());
+
             int l = 0;
             foreach (var e in expects.Where(e => !string.IsNullOrEmpty(e)))
             {
-                if (l == output.Length || e != output[l])
+                if (e != output[l])
                     throw new TestFailException(string.Join("\n", output) + "\n" + p.StandardError.ReadToEnd());
                 l++;
             }
