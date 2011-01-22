@@ -278,17 +278,201 @@ class F_String extends F_Object
 		$sobj->__STRING = $str;
 		return $sobj;
 	}
-
 	public function F_to_s()
 	{
 		return $this;
 	}
-
 	public function __operator_plus($operand)
 	{
 		return F_String::__from_string($this->__STRING . $operand->F_to_s()->__STRING);
 	}
-
+	public function __operator_mod($operand)
+	{
+		if(get_class($operand) == 'F_Array' || is_subclass_of($operand, 'F_Array'))
+		{
+			$operands = array();
+			foreach($operand->__ARRAY as $v)
+				$operands[] = $v->F_to_s();
+				
+			return F_String::__from_string(vsprintf($this->__STRING, $operands));
+		}
+		else if(get_class($operand) == 'F_Hash' || is_subclass_of($operand, 'F_Hash'))
+		{
+			// @TODO
+		}
+		return F_String::__from_string(sprintf($this->__STRING, $operand->F_to_s()));
+	}
+	public function __operator_mul($operand)
+	{
+		return F_String::__from_string(str_repeat($this->__STRING, (int)$operand->__NUMBER < 0 ? 0 : (int)$operand->__NUMBER));
+	}
+	public function __operator_spaceship($operand)
+	{
+		return F_Number::__from_number(strcmp($this->__STRING, $operand->__STRING));
+	}
+	public function __operator_eq($operand)
+	{
+		if(get_class($operand) !== 'F_String' && !is_subclass_of($operand, 'F_String'))
+			return new F_FalseClass;
+			
+		return F_TrueClass::__from_bool($this->__STRING === $operand->__STRING);
+	}
+	public function __operator_stricteq($operand)
+	{
+		return $this->__operator_eq($operand);
+	}
+	public function __operator_match($operand)
+	{
+		if(get_class($operand) === 'F_Regexp' || is_subclass_of($operand, 'F_Regexp'))
+		{
+			$matches = array();
+			if(!preg_match($operand->__REGEX, $this->__STRING))
+				return new F_NilClass;
+			
+			return F_Number::__from_number(strpos($this->__STRING, $matches[0]));
+		}
+		
+		return $operand->__operator_match($this);
+	}
+	public function __operator_arrayget($operand, $operand2 = NULL)
+	{
+		if(get_class($operand) === 'F_Number' || is_subclass_of($operand, 'F_Number'))
+		{
+			$offset = (int)$operand->__NUMBER;
+			$length = strlen($this->__STRING);
+			if($offset > $length)
+				$offset += $length;
+			if($offset < 0 || $offset >= $length)
+				return new F_NilClass;
+				
+			if($operand2 === NULL)
+			{					
+				return F_String::__from_string($this->__STRING[$offset]);
+			}
+			else if(get_class($operand2) === 'F_Number' || is_subclass_of($operand2, 'F_Number'))
+			{
+				if($operand2->__NUMBER < 0)
+					return new F_NilClass;
+				
+				return F_String::__from_string($this->__STRING, $offset, $operand2->__NUMBER);
+			}
+			else
+				return new F_NilClass;
+		}
+		else if(get_class($operand) === 'F_Regexp' || is_subclass_of($operand, 'F_Regexp'))
+		{
+			$matches = array();
+			if(!preg_match($operand->__REGEX, $this->__STRING))
+				return new F_NilClass;
+			$index = $operand2 !== NULL ? (int)$operand2->__NUMBER : 0;
+			if(count($matches) > $index)
+				return new F_NilClass;
+			
+			return F_String::__from_string($matches[$index]);
+		}
+		else if(get_class($operand) === 'F_String' || is_subclass_of($operand, 'F_String'))
+		{
+			if(strpos($this->__STRING, $operand->__STRING) !== FALSE)
+				return $operand;
+				
+			return new F_NilClass;
+		}
+		
+		return new F_NilClass;
+	}
+	public function __operator_arrayset($operand, $val)
+	{
+		$this->__string[(int)$operand->__NUMBER] = $val->__STRING;
+	}
+	public function F_capitalize()
+	{
+		return F_String::__from_string(ucfirst(strtolower($this->__STRING)));
+	}
+	public function F_capitalize_EXCL_()
+	{
+		$new = ucfirst(strtolower($this->__STRING));
+		if($this->__STRING === $new)
+			return new F_NilClass;
+		
+		$this->__STRING = $new;
+		return $this;
+	}
+	public function F_casecmp($operand)
+	{
+		return new F_Number(strcmp(strtolower($this->__STRING), strtolower($operand->F_to_s()->__STRING)));
+	}
+	public function F_clear()
+	{
+		$this->__STRING = "";
+	}
+	public function F_crypt($operand)
+	{
+		return F_String::__from_string(crypt($this->__STRING, $operand->F_to_s()->__STRING));
+	}
+	public function F_downcase()
+	{
+		return F_String::__from_string(strtolower(this->__STRING));
+	}
+	public function F_downcase_EXCL_()
+	{
+		$new = strtolower($this->__STRING);
+		if($this->__STRING === $new)
+			return new F_NilClass;
+		
+		$this->__STRING = $new;
+		return $this;
+	}
+	public function F_empty_QUES_()
+	{
+		return F_TrueClass::__from_bool($this->__STRING === '');
+	}
+	public function F_eql_QUES_($operand)
+	{
+		return F_TrueClass::__from_bool($this->__STRING === $operand->F_to_s()->__STRING);
+	}
+	public function F_hash()
+	{
+		return F_String::__from_string(sha1($this->__STRING));
+	}
+	public function F_include_QUES_($operand)
+	{
+		return F_TrueClass::__from_bool(strpos($this->__STRING, $operand->F_to_s()->__STRING) !== FALSE);
+	}
+	public function F_length()
+	{
+		return F_Number::__from_number(strlen($this->__STRING));
+	}
+	public function F_split($pattern)
+	{
+		$parts = explode($pattern->F_to_s()->__STRING, $this->__STRING);
+		$arr = array();
+		foreach($parts as $part)
+		{
+			$arr[] = F_String::__from_string($part);
+		}
+		return F_Array::__from_array($arr);
+	}
+	public function F_to_n()
+	{
+		return F_Number::__from_number($this->__STRING);
+	}
+	public function F_to_s()
+	{
+		return $this;
+	}
+	public function F_upcase()
+	{
+		return F_String::__from_string(strtoupper(this->__STRING));
+	}
+	public function F_upcase_EXCL_()
+	{
+		$new = strtoupper($this->__STRING);
+		if($this->__STRING === $new)
+			return new F_NilClass;
+		
+		$this->__STRING = $new;
+		return $this;
+	}
 	public function __operator_lshift($operand)
 	{
 		$this->__STRING .= $operand->F_to_s()->__STRING;
