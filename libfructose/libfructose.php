@@ -456,13 +456,9 @@ class F_String extends F_Object
 	{
 		return F_Number::__from_number($this->__STRING);
 	}
-	public function F_to_s()
-	{
-		return $this;
-	}
 	public function F_upcase()
 	{
-		return F_String::__from_string(strtoupper(this->__STRING));
+		return F_String::__from_string(strtoupper($this->__STRING));
 	}
 	public function F_upcase_EXCL_()
 	{
