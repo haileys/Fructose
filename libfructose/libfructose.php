@@ -270,6 +270,68 @@ class F_NilClass extends F_Object
 	}
 }
 
+class F_Symbol extends F_Object
+{
+	public static function __from_string($sym)
+	{
+		$obj = new F_Symbol;
+		$obj->__SYMBOL = $sym;
+		return $obj;
+	}
+	public function __operator_spaceship($operand)
+	{
+		return F_Number::__from_number(strcmp($this->__SYMBOL, $operand->__SYMBOL));
+	}
+	public function __operator_eq($operand)
+	{
+		if(get_class($operand) !== 'F_Symbol' && !is_subclass_of($operand, 'F_Symbol'))
+			return new F_FalseClass;
+			
+		return F_TrueClass::__from_bool($this->__SYMBOL === $operand->__SYMBOL);
+	}
+	public function __operator_stricteq($operand)
+	{
+		return $this->__operator_eq($operand);
+	}
+	public function F_to_s()
+	{
+		return F_String::__from_string($this->__SYMBOL);
+	}
+	public function __operator_match($operand)
+	{
+		return $this->F_to_s()->__operator_match($operand);
+	}
+	public function F_capitalize($operand)
+	{
+		return $this->F_to_s()->F_capitalize()->F_to_sym();
+	}
+	public function F_downcase($operand)
+	{
+		return $this->F_to_s()->F_downcase()->F_to_sym();
+	}
+	public function F_upcase($operand)
+	{
+		return $this->F_to_s()->F_upcase()->F_to_sym();
+	}
+	public function F_empty_QUES_()
+	{
+		return F_TrueClass::__from_bool($this->__SYMBOL === '');
+	}
+	public function F_to_sym()
+	{
+		return $this;
+	}
+	public function F_length()
+	{
+		return $this->F_to_s()->F_length();
+	}
+	public function __operator_arrayget($index)
+	{
+		return $this->F_to_s()->__operator_arrayget($index);
+	}
+	
+}
+
 class F_String extends F_Object
 {
 	public static function __from_string($str)
@@ -281,6 +343,10 @@ class F_String extends F_Object
 	public function F_to_s()
 	{
 		return $this;
+	}
+	public function F_to_sym()
+	{
+		return F_Symbol::__from_string($this->__STRING);
 	}
 	public function __operator_add($operand)
 	{
