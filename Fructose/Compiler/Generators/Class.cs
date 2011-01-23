@@ -32,7 +32,10 @@ namespace Fructose.Compiler.Generators
             compiler.Indent();
             compiler.AppendLine("$obj = new {0};", cname);
             compiler.AppendLine("$args = func_get_args();");
+            compiler.AppendLine("if(method_exists($obj,'F_initialize'))");
+            compiler.Indent();
             compiler.AppendLine("call_user_func_array(array($obj,'F_initialize'), $args);");
+            compiler.Dedent();
             compiler.AppendLine("return $obj;");
             compiler.Dedent();
             compiler.AppendLine("}");

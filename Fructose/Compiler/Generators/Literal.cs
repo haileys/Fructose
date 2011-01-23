@@ -28,7 +28,7 @@ namespace Fructose.Compiler.Generators
                 switch (((Literal)node).Value.ToString())
                 {
                     case "self":
-                        compiler.AppendLine("$_stack[] = $this;", ((Literal)node).Value.ToString());
+                        compiler.AppendLine("$_stack[] = $_locals->self;", ((Literal)node).Value.ToString());
                         break;
                     case "__FILE__":
                     case "__LINE__":

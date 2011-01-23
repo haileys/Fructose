@@ -27,13 +27,12 @@ namespace Fructose.Compiler.Generators
                 "public " : "";
 
             string signature = visibility + "function " + Mangling.RubyMethodToPHP(((MethodDefinition)node).Name) + "(";
-            bool first = true;
+            if (((MethodDefinition)node).Name.Contains("__lambda_"))
+                signature += "$_locals, ";
+            signature += "$block";
             foreach (var arg in ((MethodDefinition)node).Parameters.Mandatory)
             {
-                if (!first)
-                    signature += ", ";
-                signature += "$" + Mangling.RubyIdentifierToPHP(arg.ToString());
-                first = false;
+                signature += ", $" + Mangling.RubyIdentifierToPHP(arg.ToString());
             }
             signature += ")";
 
@@ -41,10 +40,13 @@ namespace Fructose.Compiler.Generators
             compiler.AppendLine("{");
             compiler.Indent();
             compiler.AppendLine("$_stack = array();");
+            compiler.AppendLine("if(!isset($_locals->self)) $_locals->self = $this;");
+            compiler.AppendLine("global $_lambda_objs;");
 
                 foreach (var child in ((MethodDefinition)node).Body.Statements)
                     compiler.CompileNode(child, parent.CreateChild(node));
 
+            compiler.AppendLine("return array_pop($_stack);");
             compiler.Dedent();
             compiler.AppendLine("}");
         }

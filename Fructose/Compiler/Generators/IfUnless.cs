@@ -7,6 +7,16 @@ using Microsoft.Scripting;
 
 namespace Fructose.Compiler.Generators
 {
+    [Generator(NodeTypes.UnlessExpression)]
+    public class Unless : AstNodeGenerator
+    {
+        public override void Compile(Compiler compiler, Node node, NodeParent parent)
+        {
+            var unless = (UnlessExpression)node;
+            compiler.CompileNode(new IfExpression(new NotExpression(unless.Condition, unless.Condition.Location), unless.Statements, new List<ElseIfClause> { unless.ElseClause }, unless.Location));
+        }
+    }
+
     [Generator(NodeTypes.IfExpression)]
     public class If : AstNodeGenerator
     {
