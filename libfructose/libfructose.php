@@ -30,17 +30,17 @@ class F_Object
 	public $_instance_vars = array();
 	public static $_class_vars = array();
 
-	public function F_to_s()
+	public function F_to_s($block)
 	{
 		return F_String::__from_string("Object");
 	}
 
-	public function F_puts($o)
+	public function F_puts($block,$o)
 	{
-		echo $o->F_to_s()->__STRING . "\n";
+		echo $o->F_to_s(NULL)->__STRING . "\n";
 	}
 	
-	public function F_class()
+	public function F_class($block)
 	{
 		return get_class($this);
 	}
@@ -54,51 +54,51 @@ class F_Number extends F_Object
 		$obj->__NUMBER = $num;
 		return $obj;
 	}
-	public function __operator_mod($operand)
+	public function __operator_mod($block,$operand)
 	{
 		return F_Number::__from_number($this->__NUMBER % $operand->__NUMBER);
 	}
-	public function __operator_bitwiseand($operand)
+	public function __operator_bitwiseand($block,$operand)
 	{
 		return F_Number::__from_number($this->__NUMBER & $operand->__NUMBER);
 	}
-	public function __operator_mul($operand)
+	public function __operator_mul($block,$operand)
 	{
 		return F_Number::__from_number($this->__NUMBER * $operand->__NUMBER);
 	}
-	public function __operator_exp($operand)
+	public function __operator_exp($block,$operand)
 	{
 		return F_Number::__from_number(pow($this->__NUMBER, $operand->__NUMBER));
 	}
-	public function __operator_add($operand)
+	public function __operator_add($block,$operand)
 	{
 		return F_Number::__from_number($this->__NUMBER + $operand->__NUMBER);
 	}
-	public function __operator_sub($operand)
+	public function __operator_sub($block,$operand)
 	{
 		return F_Number::__from_number($this->__NUMBER - $operand->__NUMBER);
 	}
-	public function __operator_unaryminus()
+	public function __operator_unaryminus($block)
 	{
 		return F_Number::__from_number(-$this->__NUMBER);
 	}
-	public function __operator_div($operand)
+	public function __operator_div($block,$operand)
 	{
 		return F_Number::__from_number($this->__NUMBER / $operand->__NUMBER);
 	}
-	public function __operator_lt($operand)
+	public function __operator_lt($block,$operand)
 	{
 		return F_TrueClass::__from_bool($this->__NUMBER < $operand->__NUMBER);
 	}
-	public function __operator_lshift($operand)
+	public function __operator_lshift($block,$operand)
 	{
 		return F_Number::__from_number($this->__NUMBER << $operand->__NUMBER);
 	}
-	public function __operator_lte($operand)
+	public function __operator_lte($block,$operand)
 	{
 		return F_TrueClass::__from_bool($this->__NUMBER <= $operand->__NUMBER);
 	}
-	public function __operator_spaceship($operand)
+	public function __operator_spaceship($block,$operand)
 	{
 		if($this->__NUMBER < $operand->__NUMBER)
 			return F_Number::__from_number(-1);
@@ -106,65 +106,65 @@ class F_Number extends F_Object
 			return F_Number::__from_number(1);
 		return F_Number::__from_number(0);
 	}
-	public function __operator_eq($operand)
+	public function __operator_eq($block,$operand)
 	{
 		return F_TrueClass::__from_bool($this->__NUMBER == $operand->__NUMBER);
 	}
-	public function __operator_stricteq($operand)
+	public function __operator_stricteq($block,$operand)
 	{
 		return F_TrueClass::__from_bool($this->__NUMBER === $operand->__NUMBER);
 	}
-	public function __operator_gt($operand)
+	public function __operator_gt($block,$operand)
 	{
 		return F_TrueClass::__from_bool($this->__NUMBER > $operand->__NUMBER);
 	}
-	public function __operator_rshift($operand)
+	public function __operator_rshift($block,$operand)
 	{
 		return F_Number::__from_number($this->__NUMBER >> $operand->__NUMBER);
 	}
-	public function __operator_gte($operand)
+	public function __operator_gte($block,$operand)
 	{
 		return F_TrueClass::__from_bool($this->__NUMBER >= $operand->__NUMBER);
 	}
-	public function __operator_arrayget($index)
+	public function __operator_arrayget($block,$index)
 	{
 		if($this->__NUMBER & (1 << $index->__NUMBER))
 			return F_Number::__from_number(1);
 		return F_Number::__from_number(0);
 	}
-	public function __operator_xor($operand)
+	public function __operator_xor($block,$operand)
 	{
 		return F_Number::__from_number($this->__NUMBER ^ $operand->__NUMBER);
 	}
-	public function F_abs()
+	public function F_abs($block)
 	{
 		return F_Number::__from_number(abs($this->__NUMBER));
 	}
-	public function F_even_QUES_()
+	public function F_even_QUES_($block)
 	{
 		return F_TrueClass::__from_bool(($this->__NUMBER % 2) == 0);
 	}
-	public function F_odd_QUES_()
+	public function F_odd_QUES_($block)
 	{
 		return F_TrueClass::__from_bool(($this->__NUMBER % 2) == 1);
 	}
-	public function F_next()
+	public function F_next($block)
 	{
 		return F_Number::__from_number($this->__NUMBER + 1);
 	}
-	public function F_to_s($base = 10)
+	public function F_to_s($block,$base = 10)
 	{
 		return F_String::__from_string(base_convert((string)$this->__NUMBER, 10, $base));
 	}
-	public function F_zero_QUES_()
+	public function F_zero_QUES_($block)
 	{
 		return F_TrueClass::__from_bool($this->__NUMBER == 0);
 	}
-	public function __operator_bitwiseor($operand)
+	public function __operator_bitwiseor($block,$operand)
 	{
 		return F_Number::__from_number($this->__NUMBER | $operand->__NUMBER);
 	}
-	public function __operator_bitwisenot($operand)
+	public function __operator_bitwisenot($block,$operand)
 	{
 		return F_Number::__from_number(~$this->__NUMBER);
 	}
@@ -180,7 +180,7 @@ class F_TrueClass extends F_Object
 			return new F_FalseClass;
 	}
 	
-	public function __operator_bitwiseand($operand)
+	public function __operator_bitwiseand($block,$operand)
 	{
 		$type = get_class($operand);
 		if($type === "F_NilClass" || $type === "F_FalseClass")
@@ -188,7 +188,7 @@ class F_TrueClass extends F_Object
 
 		return $this;
 	}
-	public function __operator_xor($operand)
+	public function __operator_xor($block,$operand)
 	{
 		$type = get_class($operand);
 		if($type === "F_NilClass" || $type === "F_FalseClass")
@@ -196,11 +196,11 @@ class F_TrueClass extends F_Object
 
 		return new F_FalseClass;
 	}
-	public function __operator_bitwiseor($operand)
+	public function __operator_bitwiseor($block,$operand)
 	{
 		return $this;
 	}
-	public function F_to_s()
+	public function F_to_s($block)
 	{
 		return F_String::__from_string("true");
 	}
@@ -208,11 +208,11 @@ class F_TrueClass extends F_Object
 
 class F_FalseClass extends F_Object
 {
-	public function __operator_bitwiseand($operand)
+	public function __operator_bitwiseand($block,$operand)
 	{
 		return $this;
 	}
-	public function __operator_xor($operand)
+	public function __operator_xor($block,$operand)
 	{
 		$type = get_class($operand);
 		if($type === "F_NilClass" || $type === "F_FalseClass")
@@ -220,7 +220,7 @@ class F_FalseClass extends F_Object
 
 		return new F_TrueClass;
 	}
-	public function __operator_bitwiseor($operand)
+	public function __operator_bitwiseor($block,$operand)
 	{
 		$type = get_class($operand);
 		if($type === "F_NilClass" || $type === "F_FalseClass")
@@ -228,7 +228,7 @@ class F_FalseClass extends F_Object
 
 		return new F_TrueClass;
 	}
-	public function F_to_s()
+	public function F_to_s($block)
 	{
 		return F_String::__from_string("false");
 	}
@@ -236,11 +236,11 @@ class F_FalseClass extends F_Object
 
 class F_NilClass extends F_Object
 {
-	public function __operator_bitwiseand($operand)
+	public function __operator_bitwiseand($block,$operand)
 	{
 		return new F_FalseClass;
 	}
-	public function __operator_xor($operand)
+	public function __operator_xor($block,$operand)
 	{
 		$type = get_class($operand);
 		if($type === "F_NilClass" || $type === "F_FalseClass")
@@ -248,19 +248,19 @@ class F_NilClass extends F_Object
 
 		return new F_TrueClass;
 	}
-	public function F_inspect()
+	public function F_inspect($block)
 	{
 		return F_String::__from_string("nil");
 	}
-	public function F_nil_QUES_()
+	public function F_nil_QUES_($block)
 	{
 		return new F_TrueClass;
 	}
-	public function F_to_s()
+	public function F_to_s($block)
 	{
 		return F_String::__from_string("");
 	}
-	public function __operator_bitwiseor($operand)
+	public function __operator_bitwiseor($block,$operand)
 	{
 		$type = get_class($operand);
 		if($type === "F_NilClass" || $type === "F_FalseClass")
@@ -278,56 +278,56 @@ class F_Symbol extends F_Object
 		$obj->__SYMBOL = $sym;
 		return $obj;
 	}
-	public function __operator_spaceship($operand)
+	public function __operator_spaceship($block,$operand)
 	{
 		return F_Number::__from_number(strcmp($this->__SYMBOL, $operand->__SYMBOL));
 	}
-	public function __operator_eq($operand)
+	public function __operator_eq($block,$operand)
 	{
 		if(get_class($operand) !== 'F_Symbol' && !is_subclass_of($operand, 'F_Symbol'))
 			return new F_FalseClass;
 			
 		return F_TrueClass::__from_bool($this->__SYMBOL === $operand->__SYMBOL);
 	}
-	public function __operator_stricteq($operand)
+	public function __operator_stricteq($block,$operand)
 	{
 		return $this->__operator_eq($operand);
 	}
-	public function F_to_s()
+	public function F_to_s($block)
 	{
 		return F_String::__from_string($this->__SYMBOL);
 	}
-	public function __operator_match($operand)
+	public function __operator_match($block,$operand)
 	{
-		return $this->F_to_s()->__operator_match($operand);
+		return $this->F_to_s(NULL)->__operator_match($operand);
 	}
-	public function F_capitalize($operand)
+	public function F_capitalize($block,$operand)
 	{
-		return $this->F_to_s()->F_capitalize()->F_to_sym();
+		return $this->F_to_s(NULL)->F_capitalize(NULL)->F_to_sym(NULL);
 	}
-	public function F_downcase($operand)
+	public function F_downcase($block,$operand)
 	{
-		return $this->F_to_s()->F_downcase()->F_to_sym();
+		return $this->F_to_s(NULL)->F_downcase(NULL)->F_to_sym(NULL);
 	}
-	public function F_upcase($operand)
+	public function F_upcase($block,$operand)
 	{
-		return $this->F_to_s()->F_upcase()->F_to_sym();
+		return $this->F_to_s(NULL)->F_upcase(NULL)->F_to_sym(NULL);
 	}
-	public function F_empty_QUES_()
+	public function F_empty_QUES_($block)
 	{
 		return F_TrueClass::__from_bool($this->__SYMBOL === '');
 	}
-	public function F_to_sym()
+	public function F_to_sym($block)
 	{
 		return $this;
 	}
-	public function F_length()
+	public function F_length($block)
 	{
-		return $this->F_to_s()->F_length();
+		return $this->F_to_s(NULL)->F_length(NULL);
 	}
-	public function __operator_arrayget($index)
+	public function __operator_arrayget($block,$index)
 	{
-		return $this->F_to_s()->__operator_arrayget($index);
+		return $this->F_to_s(NULL)->__operator_arrayget(NULL, $index);
 	}
 	
 }
@@ -340,19 +340,19 @@ class F_String extends F_Object
 		$sobj->__STRING = $str;
 		return $sobj;
 	}
-	public function F_to_s()
+	public function F_to_s($block)
 	{
 		return $this;
 	}
-	public function F_to_sym()
+	public function F_to_sym($block)
 	{
 		return F_Symbol::__from_string($this->__STRING);
 	}
-	public function __operator_add($operand)
+	public function __operator_add($block,$operand)
 	{
 		return F_String::__from_string($this->__STRING . $operand->F_to_s()->__STRING);
 	}
-	public function __operator_mod($operand)
+	public function __operator_mod($block,$operand)
 	{
 		if(get_class($operand) == 'F_Array' || is_subclass_of($operand, 'F_Array'))
 		{
@@ -366,28 +366,28 @@ class F_String extends F_Object
 		{
 			// @TODO
 		}
-		return F_String::__from_string(sprintf($this->__STRING, $operand->F_to_s()->__STRING));
+		return F_String::__from_string(sprintf($this->__STRING, $operand->F_to_s(NULL)->__STRING));
 	}
-	public function __operator_mul($operand)
+	public function __operator_mul($block,$operand)
 	{
 		return F_String::__from_string(str_repeat($this->__STRING, (int)$operand->__NUMBER < 0 ? 0 : (int)$operand->__NUMBER));
 	}
-	public function __operator_spaceship($operand)
+	public function __operator_spaceship($block,$operand)
 	{
 		return F_Number::__from_number(strcmp($this->__STRING, $operand->__STRING));
 	}
-	public function __operator_eq($operand)
+	public function __operator_eq($block,$operand)
 	{
 		if(get_class($operand) !== 'F_String' && !is_subclass_of($operand, 'F_String'))
 			return new F_FalseClass;
 			
 		return F_TrueClass::__from_bool($this->__STRING === $operand->__STRING);
 	}
-	public function __operator_stricteq($operand)
+	public function __operator_stricteq($block,$operand)
 	{
 		return $this->__operator_eq($operand);
 	}
-	public function __operator_match($operand)
+	public function __operator_match($block,$operand)
 	{
 		if(get_class($operand) === 'F_Regexp' || is_subclass_of($operand, 'F_Regexp'))
 		{
@@ -400,7 +400,7 @@ class F_String extends F_Object
 		
 		return $operand->__operator_match($this);
 	}
-	public function __operator_arrayget($operand, $operand2 = NULL)
+	public function __operator_arrayget($block,$operand, $operand2 = NULL)
 	{
 		if(get_class($operand) === 'F_Number' || is_subclass_of($operand, 'F_Number'))
 		{
@@ -446,15 +446,15 @@ class F_String extends F_Object
 		
 		return new F_NilClass;
 	}
-	public function __operator_arrayset($operand, $val)
+	public function __operator_arrayset($block,$operand, $val)
 	{
 		$this->__string[(int)$operand->__NUMBER] = $val->__STRING;
 	}
-	public function F_capitalize()
+	public function F_capitalize($block)
 	{
 		return F_String::__from_string(ucfirst(strtolower($this->__STRING)));
 	}
-	public function F_capitalize_EXCL_()
+	public function F_capitalize_EXCL_($block)
 	{
 		$new = ucfirst(strtolower($this->__STRING));
 		if($this->__STRING === $new)
@@ -463,23 +463,23 @@ class F_String extends F_Object
 		$this->__STRING = $new;
 		return $this;
 	}
-	public function F_casecmp($operand)
+	public function F_casecmp($block,$operand)
 	{
-		return new F_Number(strcmp(strtolower($this->__STRING), strtolower($operand->F_to_s()->__STRING)));
+		return new F_Number(strcmp(strtolower($this->__STRING), strtolower($operand->F_to_s(NULL)->__STRING)));
 	}
-	public function F_clear()
+	public function F_clear($block)
 	{
 		$this->__STRING = "";
 	}
-	public function F_crypt($operand)
+	public function F_crypt($block,$operand)
 	{
-		return F_String::__from_string(crypt($this->__STRING, $operand->F_to_s()->__STRING));
+		return F_String::__from_string(crypt($this->__STRING, $operand->F_to_s(NULL)->__STRING));
 	}
-	public function F_downcase()
+	public function F_downcase($block)
 	{
 		return F_String::__from_string(strtolower($this->__STRING));
 	}
-	public function F_downcase_EXCL_()
+	public function F_downcase_EXCL_($block)
 	{
 		$new = strtolower($this->__STRING);
 		if($this->__STRING === $new)
@@ -488,29 +488,29 @@ class F_String extends F_Object
 		$this->__STRING = $new;
 		return $this;
 	}
-	public function F_empty_QUES_()
+	public function F_empty_QUES_($block)
 	{
 		return F_TrueClass::__from_bool($this->__STRING === '');
 	}
-	public function F_eql_QUES_($operand)
+	public function F_eql_QUES_($block,$operand)
 	{
-		return F_TrueClass::__from_bool($this->__STRING === $operand->F_to_s()->__STRING);
+		return F_TrueClass::__from_bool($this->__STRING === $operand->F_to_s(NULL)->__STRING);
 	}
-	public function F_hash()
+	public function F_hash($block)
 	{
 		return F_String::__from_string(sha1($this->__STRING));
 	}
-	public function F_include_QUES_($operand)
+	public function F_include_QUES_($block,$operand)
 	{
-		return F_TrueClass::__from_bool(strpos($this->__STRING, $operand->F_to_s()->__STRING) !== FALSE);
+		return F_TrueClass::__from_bool(strpos($this->__STRING, $operand->F_to_s(NULL)->__STRING) !== FALSE);
 	}
-	public function F_length()
+	public function F_length($block)
 	{
 		return F_Number::__from_number(strlen($this->__STRING));
 	}
-	public function F_split($pattern)
+	public function F_split($block,$pattern)
 	{
-		$parts = explode($pattern->F_to_s()->__STRING, $this->__STRING);
+		$parts = explode($pattern->F_to_s(NULL)->__STRING, $this->__STRING);
 		$arr = array();
 		foreach($parts as $part)
 		{
@@ -518,15 +518,15 @@ class F_String extends F_Object
 		}
 		return F_Array::__from_array($arr);
 	}
-	public function F_to_n()
+	public function F_to_n($block)
 	{
 		return F_Number::__from_number($this->__STRING);
 	}
-	public function F_upcase()
+	public function F_upcase($block)
 	{
 		return F_String::__from_string(strtoupper($this->__STRING));
 	}
-	public function F_upcase_EXCL_()
+	public function F_upcase_EXCL_($block)
 	{
 		$new = strtoupper($this->__STRING);
 		if($this->__STRING === $new)
@@ -535,9 +535,9 @@ class F_String extends F_Object
 		$this->__STRING = $new;
 		return $this;
 	}
-	public function __operator_lshift($operand)
+	public function __operator_lshift($block,$operand)
 	{
-		$this->__STRING .= $operand->F_to_s()->__STRING;
+		$this->__STRING .= $operand->F_to_s(NULL)->__STRING;
 		return $this;
 	}
 }

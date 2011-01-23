@@ -18,6 +18,7 @@ namespace Fructose
         SourceUnitTree ast;
         ScriptSource source;
         ErrorSink errorSink;
+        Transformer.Transformations transformations;
 
         public Parser(string Source) : this(Source, ErrorSink.Default) { }
         public Parser(string Source, ErrorSink errorSink)
@@ -31,12 +32,15 @@ namespace Fructose
             var srcunit = HostingHelpers.GetSourceUnit(source);
             var parser = new IronRuby.Compiler.Parser(errorSink);
             ast = parser.Parse(srcunit, new RubyCompilerOptions(), errorSink);
+
+            var transformer = new Transformer.Transformer(ast);
+            transformations = transformer.Transform();
         }
 
         public string CompileToPHP()
         {
             var compiler = new Compiler.Compiler(ast);
-            return compiler.Compile();
+            return compiler.Compile(transformations);
         }
     }
 }

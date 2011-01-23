@@ -22,7 +22,7 @@ namespace Fructose.Compiler.Generators
             if (((MethodCall)node).Target == null)
             {
                 if (parent.OfType<ClassDefinition>().Count() > 0)
-                    compiler.AppendLine("$_stack[] = $this;");
+                    compiler.AppendLine("$_stack[] = $_locals->self;");
                 else
                     compiler.AppendLine("$_stack[] = new F_Object;");
             }
@@ -33,14 +33,31 @@ namespace Fructose.Compiler.Generators
                 else
                     compiler.CompileNode(((MethodCall)node).Target);
             }
+            
+            if (((MethodCall)node).Block != null)
+            {
+                compiler.AppendLine("$_lambda_objs_offset = count($_lambda_objs);");
+                compiler.AppendLine("$_lambda_objs[] = $_locals;");
+            }
 
             string call = callStatic 
                 ? string.Format("$_stack[] = {0}::{1}(", Mangling.RubyIdentifierToPHP(((ConstantVariable)((MethodCall)node).Target).Name), mname)
                 : string.Format("$_stack[] = array_pop($_stack)->{0}(", mname);
 
+            if (((MethodCall)node).Block != null)
+            {
+                var block_mname = compiler.Transformations.RefactoredBlocksToMethods[(BlockDefinition)((MethodCall)node).Block];
+                call += "create_function('',sprintf('global $_lambda_objs; $args = func_get_args(); $_locals = $_lambda_objs[%d]; array_unshift($args, $_locals); return call_user_func_array(array($_locals->self,\"" 
+                    + Mangling.RubyIdentifierToPHP(block_mname) + "\"), $args);',$_lambda_objs_offset))";
+            }
+            else
+                call += "NULL";
+
             if (((MethodCall)node).Arguments != null)
+            {
                 for (int i = 0; i < ((MethodCall)node).Arguments.Expressions.Length; i++)
-                    call += (i > 0 ? ", " : "") + "array_pop($_stack)";
+                    call += ", array_pop($_stack)";
+            }
 
             compiler.AppendLine(call + ");");
         }

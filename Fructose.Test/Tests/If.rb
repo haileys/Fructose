@@ -3,6 +3,7 @@
 #no
 #yes
 #no
+#yes
 
 if true
   puts "yes"
@@ -28,4 +29,10 @@ if not ""
   puts "yes"
 else
   puts "no"
+end
+
+unless true
+  puts "no"
+else
+  puts "yes"
 end

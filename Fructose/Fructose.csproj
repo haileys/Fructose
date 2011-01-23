@@ -49,21 +49,25 @@
   <ItemGroup>
     <Compile Include="Compiler\AstNodeGenerator.cs" />
     <Compile Include="Compiler\Compiler.cs" />
+    <Compile Include="Compiler\Generators\Yield.cs" />
+    <Compile Include="Compiler\Generators\Body.cs" />
     <Compile Include="Compiler\Generators\BooleanLogic.cs" />
     <Compile Include="Compiler\Generators\Class.cs" />
-    <Compile Include="Compiler\Generators\If.cs" />
+    <Compile Include="Compiler\Generators\IfUnless.cs" />
     <Compile Include="Compiler\Generators\Literal.cs" />
     <Compile Include="Compiler\Generators\Method.cs" />
     <Compile Include="Compiler\Generators\MethodCall.cs" />
     <Compile Include="Compiler\Generators\SimpleAssignment.cs" />
     <Compile Include="Compiler\Generators\StringSymbolConstructor.cs" />
     <Compile Include="Compiler\Generators\Variables.cs" />
+    <Compile Include="Compiler\Generators\While.cs" />
     <Compile Include="Compiler\NodeParent.cs" />
     <Compile Include="Mangling.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Compiler\FructoseCompileException.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Transformer\Transformer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

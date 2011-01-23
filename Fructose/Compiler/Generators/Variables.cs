@@ -47,6 +47,13 @@ namespace Fructose.Compiler.Generators
     {
         public override void Compile(Compiler compiler, Node node, NodeParent parent)
         {
+            var method = parent.OfType<MethodDefinition>().ToArray();
+            if (method.Length > 0 && method[0].Parameters != null
+                && method[0].Parameters.Mandatory.Where(p => p.ToString() == ((LocalVariable)node).Name).Count() > 0)
+            {
+                compiler.AppendLine("$_stack[] = ${0};", Mangling.RubyIdentifierToPHP(((Variable)node).Name));
+                return;
+            }
             compiler.AppendLine("$_stack[] = {0};", ((Variable)node).ToPHPVariable());
         }
     }

@@ -25,6 +25,7 @@ namespace Fructose.Compiler
         int indentLevel = 0;
         StringBuilder sb = new StringBuilder();
         public SourceUnitTree tree { get; private set; }
+        public Transformer.Transformations Transformations { get; private set; }
         public Compiler(SourceUnitTree tree)
         {
             this.tree = tree;
@@ -50,9 +51,11 @@ namespace Fructose.Compiler
             indentLevel--;
         }
 
-        public string Compile()
+        public string Compile(Transformer.Transformations transformations)
         {
-            sb.AppendLine("<?php include('libfructose.php');\n$_stack = array();\n\n");
+            Transformations = transformations;
+
+            sb.AppendLine("<?php\ninclude('libfructose.php');\n$_stack = array();\n$_lambda_objs = array();\n");
 
             foreach (var stmt in tree.Statements)
                 CompileNode(stmt);

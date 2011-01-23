@@ -22,11 +22,11 @@ namespace Fructose
                 case NodeTypes.GlobalVariable:
                     return string.Format("$_global_{0}", Mangling.RubyIdentifierToPHP(((GlobalVariable)var).Name));
                 case NodeTypes.LocalVariable:
-                    return string.Format("${0}", Mangling.RubyIdentifierToPHP(((LocalVariable)var).Name));
+                    return string.Format("$_locals->{0}", Mangling.RubyIdentifierToPHP(((LocalVariable)var).Name));
                 case NodeTypes.InstanceVariable:
-                    return string.Format("$this->_instance_vars[\"{0}\"]", Mangling.RubyIdentifierToPHP(((InstanceVariable)var).Name));
+                    return string.Format("$_locals->self->_instance_vars[\"{0}\"]", Mangling.RubyIdentifierToPHP(((InstanceVariable)var).Name));
                 case NodeTypes.ClassVariable:
-                    return string.Format("$this->_class_vars[\"{0}\"]", Mangling.RubyIdentifierToPHP(((ClassVariable)var).Name));
+                    return string.Format("$_locals->self->_class_vars[\"{0}\"]", Mangling.RubyIdentifierToPHP(((ClassVariable)var).Name));
                 default:
                     throw new Compiler.FructoseCompileException("Unknown variable type", var);
             }
