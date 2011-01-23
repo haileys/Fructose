@@ -19,15 +19,11 @@ namespace Fructose
         ScriptSource source;
         ErrorSink errorSink;
 
-        string sourcecode;
-
         public Parser(string Source) : this(Source, ErrorSink.Default) { }
         public Parser(string Source, ErrorSink errorSink)
         {
             source = Ruby.CreateRuntime().GetEngine("rb").CreateScriptSourceFromString(Source);
             this.errorSink = errorSink;
-
-            sourcecode = Source;
         }
 
         public void Parse()
