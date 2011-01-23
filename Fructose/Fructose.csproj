@@ -49,8 +49,9 @@
   <ItemGroup>
     <Compile Include="Compiler\AstNodeGenerator.cs" />
     <Compile Include="Compiler\Compiler.cs" />
-    <Compile Include="Compiler\Generators\And.cs" />
+    <Compile Include="Compiler\Generators\BooleanLogic.cs" />
     <Compile Include="Compiler\Generators\Class.cs" />
+    <Compile Include="Compiler\Generators\If.cs" />
     <Compile Include="Compiler\Generators\Literal.cs" />
     <Compile Include="Compiler\Generators\Method.cs" />
     <Compile Include="Compiler\Generators\MethodCall.cs" />
