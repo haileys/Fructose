@@ -6,7 +6,7 @@ It is composed of two parts - Fructose itself, which is written in C#, and libfr
 
 ### Requirements
 
-Fructose is written in C# and requires the .NET 4.0 framework to run. Fructose most likely works under Mono. Fructose also requires the presence of IronRuby to compile and run.
+Fructose is written in C# and requires the .NET 4.0 framework to run. Fructose **does** work and is supported under Mono, but you will need to find yourself a copy of Microsoft.Scripting.dll and Microsoft.Dynamic.dll to get it to compile. Fructose also requires the presence of IronRuby to compile and run.
 
 ### Licensing
 
