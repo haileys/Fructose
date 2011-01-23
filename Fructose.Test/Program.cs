@@ -61,7 +61,8 @@ namespace Fructose.Test
 
         static void Main(string[] args)
         {
-            foreach (var file in Directory.GetFiles(TestDir, "*.rb", SearchOption.AllDirectories))
+            foreach (var file in Directory.GetFiles(TestDir, "*.rb", SearchOption.AllDirectories).Where(
+                f => { if (args.Length == 0) return true; return f.ToLower().Contains(args[0].ToLower()); }))
             {
                 var testname = file.Remove(0, TestDir.Length);
                 testname = testname.Remove(testname.Length - 2);
