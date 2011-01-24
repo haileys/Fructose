@@ -69,7 +69,8 @@ class F_Enumerable extends F_Object
 {
 	private static $_all_callback_state = true;
 	private static $_all_callback_block = NULL;
-	public static all_callback($obj)
+	
+	public static function all_callback($obj)
 	{
 		$block = $this->_all_callback_block;
 		$val = $block($obj);
