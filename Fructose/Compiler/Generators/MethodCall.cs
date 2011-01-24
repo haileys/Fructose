@@ -21,17 +21,14 @@ namespace Fructose.Compiler.Generators
 
             if (((MethodCall)node).Target == null)
             {
-                if (parent.OfType<ClassDefinition>().Count() > 0)
-                    compiler.AppendLine("$_stack[] = $_locals->self;");
-                else
-                    compiler.AppendLine("$_stack[] = new F_Object;");
+                compiler.AppendLine("$_stack[] = $_locals->self;");
             }
             else
             {
                 if (((MethodCall)node).Target.NodeType == NodeTypes.ConstantVariable)
                     callStatic = true;
                 else
-                    compiler.CompileNode(((MethodCall)node).Target);
+                    compiler.CompileNode(((MethodCall)node).Target, parent.CreateChild(node));
             }
             
             if (((MethodCall)node).Block != null)
@@ -41,14 +38,20 @@ namespace Fructose.Compiler.Generators
             }
 
             string call = callStatic 
-                ? string.Format("$_stack[] = {0}::{1}(", Mangling.RubyIdentifierToPHP(((ConstantVariable)((MethodCall)node).Target).Name), mname)
+                ? string.Format("$_stack[] = {0}::S{1}(", Mangling.RubyIdentifierToPHP(((ConstantVariable)((MethodCall)node).Target).Name), mname)
                 : string.Format("$_stack[] = array_pop($_stack)->{0}(", mname);
 
             if (((MethodCall)node).Block != null)
             {
                 var block_mname = compiler.Transformations.RefactoredBlocksToMethods[(BlockDefinition)((MethodCall)node).Block];
-                call += "create_function('',sprintf('global $_lambda_objs; $args = func_get_args(); $offset = %d; $_locals = $_lambda_objs[$offset]; array_unshift($args, $_locals); $r = call_user_func_array(array($_locals->self,\""
-                    + Mangling.RubyIdentifierToPHP(block_mname) + "\"), $args); $_lambda_objs[$offset] = $r[\"locals\"]; return $r[\"retval\"];',$_lambda_objs_offset))";
+                call += "create_function('',sprintf('global $_lambda_objs; $args = func_get_args(); $offset = %d; $_locals = $_lambda_objs[$offset]; array_unshift($args, $_locals); $r = call_user_func_array(";
+
+                if (parent.OfType<ClassDefinition>().Count() > 0)
+                    call += "array($_locals->self,\"" + Mangling.RubyIdentifierToPHP(block_mname) + "\")";
+                else
+                    call += "\"" + Mangling.RubyIdentifierToPHP(block_mname) + "\"";
+
+                call += ", $args); $_lambda_objs[$offset] = $r[\"locals\"]; return $r[\"retval\"];',$_lambda_objs_offset))";
             }
             else
                 call += "NULL";

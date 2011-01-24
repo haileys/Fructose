@@ -42,6 +42,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Tests\Array.rb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Tests\If.rb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

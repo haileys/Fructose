@@ -40,6 +40,8 @@ namespace Fructose.Compiler.Generators
             compiler.AppendLine("{");
             compiler.Indent();
             compiler.AppendLine("$_stack = array();");
+            if (parent.OfType<ClassDefinition>().Count() == 0)
+                compiler.AppendLine("global $_locals;");
             compiler.AppendLine("if(!isset($_locals->self)) $_locals->self = $this;");
             compiler.AppendLine("if(!isset($_locals->block)) $_locals->block = $block;");
             compiler.AppendLine("global $_lambda_objs;");
@@ -56,29 +58,4 @@ namespace Fructose.Compiler.Generators
             compiler.AppendLine("}");
         }
     }
-
-    /*
-void CompileMethod(StringBuilder sb, PHP.Method method, string indentlevel = "")
-{
-    sb.Append(string.Format("{0}{1} function {2}(", indentlevel, method.VisibilityModifier, method.Name));
-    bool first = true;
-    foreach (var arg in method.Arguments.Mandatory)
-    {
-        sb.Append(string.Format("{0} ${1}", first ? "" : ",", Mangling.RubyIdentifierToPHP(arg.ToString())));
-        first = false;
-    }
-    sb.AppendLine(string.Format(")\n{0}{{", indentlevel));
-
-    foreach (var globref in method.GlobalReferences)
-        sb.AppendLine(string.Format("{0}{1}global $_global_{2};", indentlevel, Indent, Mangling.RubyIdentifierToPHP(globref.Name)));
-
-    sb.AppendLine(string.Format("{0}{1}$_stack = array();", indentlevel, Indent));
-
-    foreach(var node in method.RubyStatements)
-        compileRec(sb, node, indentlevel + Indent);
-
-    sb.AppendLine(string.Format("{0}{1}return array_pop($_stack);", indentlevel, Indent));
-    sb.AppendLine(string.Format("{0}}}", indentlevel));
-}
-*/
 }

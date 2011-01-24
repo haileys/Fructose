@@ -54,6 +54,11 @@ namespace Fructose.Compiler.Generators
                 compiler.AppendLine("$_stack[] = ${0};", Mangling.RubyIdentifierToPHP(((Variable)node).Name));
                 return;
             }
+            if (parent.OfType<ClassDefinition>().Count() == 0)
+            {
+                compiler.AppendLine("$_stack[] = $_locals->{0};", Mangling.RubyIdentifierToPHP(((Variable)node).Name));
+                return;
+            }
             compiler.AppendLine("$_stack[] = {0};", ((Variable)node).ToPHPVariable());
         }
     }
