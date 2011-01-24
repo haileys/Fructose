@@ -27,6 +27,7 @@ namespace Fructose.Compiler.Generators
 
             compiler.Indent();
 
+            compiler.AppendLine("function __construct() { }");
             compiler.AppendLine("public static function F_new()");
             compiler.AppendLine("{");
             compiler.Indent();
