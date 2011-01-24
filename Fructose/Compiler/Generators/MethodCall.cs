@@ -47,8 +47,8 @@ namespace Fructose.Compiler.Generators
             if (((MethodCall)node).Block != null)
             {
                 var block_mname = compiler.Transformations.RefactoredBlocksToMethods[(BlockDefinition)((MethodCall)node).Block];
-                call += "create_function('',sprintf('global $_lambda_objs; $args = func_get_args(); $_locals = $_lambda_objs[%d]; array_unshift($args, $_locals); return call_user_func_array(array($_locals->self,\"" 
-                    + Mangling.RubyIdentifierToPHP(block_mname) + "\"), $args);',$_lambda_objs_offset))";
+                call += "create_function('',sprintf('global $_lambda_objs; $args = func_get_args(); $offset = %d; $_locals = $_lambda_objs[$offset]; array_unshift($args, $_locals); $r = call_user_func_array(array($_locals->self,\""
+                    + Mangling.RubyIdentifierToPHP(block_mname) + "\"), $args); $_lambda_objs[$offset] = $r[\"locals\"]; return $r[\"retval\"];',$_lambda_objs_offset))";
             }
             else
                 call += "NULL";
@@ -60,6 +60,11 @@ namespace Fructose.Compiler.Generators
             }
 
             compiler.AppendLine(call + ");");
+
+            if (((MethodCall)node).Block != null)
+            {
+                compiler.AppendLine("$_locals = $_lambda_objs[$_lambda_objs_offset];");
+            }
         }
     }
 }

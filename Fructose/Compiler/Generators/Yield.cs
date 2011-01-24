@@ -17,7 +17,7 @@ namespace Fructose.Compiler.Generators
                 {
                     compiler.CompileNode(arg);
                 }
-            compiler.AppendLine("$_stack[] = $block(NULL" + string.Join("",(yield.Arguments ?? new Arguments()).Expressions.Select(ex => ", array_pop()").ToArray()) + ");");
+            compiler.AppendLine("$_stack[] = $block(NULL" + string.Join("",(yield.Arguments ?? new Arguments()).Expressions.Select(ex => ", array_pop($_stack)").ToArray()) + ");");
         }
     }
 }
