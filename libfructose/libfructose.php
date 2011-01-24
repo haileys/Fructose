@@ -72,17 +72,17 @@ class F_Enumerable extends F_Object
 	
 	public static function all_callback($obj)
 	{
-		$block = $this->_all_callback_block;
+		$block = F_Enumerable::$_all_callback_block;
 		$val = $block($obj);
 		if(get_class($val) == 'F_NilClass' || get_class($val) == 'F_FalseClass')
 		{
-			$_all_callback_state = false;
+			F_Enumerable::$_all_callback_state = false;
 		}
 	}
 	public function F_all_QUES_($block)
 	{
-		$this->_all_callback_state = true;
-		$this->_all_callback_block = $block;
+		F_Enumerable::$_all_callback_state = true;
+		F_Enumerable::$_all_callback_block = $block;
 		$this->F_each(create_function('','$a = func_get_args(); return F_Enumerable::all_callback($a[1]);'));
 		if($this->_all_callback_state)
 		{
