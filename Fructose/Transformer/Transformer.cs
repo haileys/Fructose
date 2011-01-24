@@ -7,6 +7,7 @@ using IronRuby.Compiler.Ast;
 using Fructose.Compiler;
 using Microsoft.Scripting;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace Fructose.Transformer
 {
@@ -54,12 +55,14 @@ namespace Fructose.Transformer
         }
         protected override void Walk(BlockDefinition node)
         {
-            if (currentClass == null)
-            {
-                throw new FructoseCompileException("Can't use blocks outside a class yet", node);
-            }
+            var statements = currentClass == null ? AST.Statements : currentClass.Body.Statements;
             var methodname = "__lambda_" + ++blockUniqueId;
-            currentClass.Body.Statements.Add(new MethodDefinition(currentClass.DefinedScope, null, methodname, node.Parameters, new Body(node.Body, null, null, null, node.Location), node.Location));
+
+            LexicalScope scope = currentClass != null ? currentClass.DefinedScope
+                : /* HACK HACK HACK */
+                (LexicalScope)AST.GetType().GetField("_definedScope", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(AST);
+
+            statements.Add(new MethodDefinition(scope, null, methodname, node.Parameters, new Body(node.Body, null, null, null, node.Location), node.Location));
             transformations.RefactoredBlocksToMethods.Add(node, methodname);
         }
     }

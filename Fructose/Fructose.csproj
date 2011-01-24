@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="Compiler\AstNodeGenerator.cs" />
     <Compile Include="Compiler\Compiler.cs" />
+    <Compile Include="Compiler\Generators\Array.cs" />
     <Compile Include="Compiler\Generators\Yield.cs" />
     <Compile Include="Compiler\Generators\Body.cs" />
     <Compile Include="Compiler\Generators\BooleanLogic.cs" />
