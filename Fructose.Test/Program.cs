@@ -65,10 +65,17 @@ namespace Fructose.Test
                 f => { if (args.Length == 0) return true; return f.ToLower().Contains(args[0].ToLower()); }))
             {
                 var testname = file.Remove(0, TestDir.Length);
-                testname = testname.Remove(testname.Length - 2);
+                testname = testname.Remove(testname.Length - 3);
+
+                var time = string.Format("[{0:HH:mm:ss}] [", DateTime.Now);
 
                 Console.ForegroundColor = ConsoleColor.Gray;
-                Console.Write("[{0:HH:mm:ss}] Running test ", DateTime.Now);
+                Console.Write(time);
+                Console.ForegroundColor = ConsoleColor.DarkGray;
+                Console.Write("WAIT");
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.Write("] Running test ");
+
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.Write(testname);
                 Console.ForegroundColor = ConsoleColor.Gray;
@@ -77,12 +84,18 @@ namespace Fructose.Test
                 try
                 {
                     Test(file);
+                    Console.Write("\r"); 
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                    Console.Write(time);
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("PASS");
                     Console.ForegroundColor = ConsoleColor.Gray;
                 }
                 catch (TestFailException e)
                 {
+                    Console.Write("\r");
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                    Console.Write(time);
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("FAIL");
                     Console.ForegroundColor = ConsoleColor.Gray;
