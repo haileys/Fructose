@@ -104,7 +104,7 @@ class F_Array extends F_Enumerable
 		return $a;
 	}
 	
-	public static function __operator_arrayget($block)
+	public static function S__operator_arrayget($block)
 	{
 		$a = func_get_args();
 		array_shift($a); // remove $block
