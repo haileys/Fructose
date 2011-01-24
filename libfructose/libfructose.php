@@ -83,7 +83,7 @@ class F_Enumerable extends F_Object
 	{
 		$this->_all_callback_state = true;
 		$this->_all_callback_block = $block;
-		$this->F_each("F_Enumerable::all_callback");
+		$this->F_each(create_function('','$a = func_get_args(); return F_Enumerable::all_callback($a[1]);'));
 		if($this->_all_callback_state)
 		{
 			return new F_TrueClass;
@@ -114,7 +114,7 @@ class F_Array extends F_Enumerable
 	public function F_each($block)
 	{
 		foreach($this->__ARRAY as $i)
-			$block($i);
+			$block(NULL, $i);
 	}
 }
 
