@@ -1,6 +1,7 @@
 ﻿#TEST EXPECTS:
 #foobar
 #42
+#hello world
 
 class A
   def bar
@@ -27,3 +28,17 @@ class B
 end
 
 B.new.test
+
+class C
+  def b
+    puts yield
+  end
+  def c
+    b { yield }
+  end
+  def d
+    c { "hello world" }
+  end
+end
+
+C.new.d
