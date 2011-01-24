@@ -48,7 +48,7 @@ namespace Fructose.Compiler.Generators
 
                     compiler.AppendLine("$_stack[] = F_String::__from_string('');");
 
-                    foreach (var part in sc.Parts)
+                    foreach (int i = 0; i < sc.Parts.Count; i++)
                         compiler.AppendLine("$_stack[] = array_pop($_stack)->__operator_lshift(NULL, array_pop($_stack));");
 
                     break;
