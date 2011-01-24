@@ -6,6 +6,14 @@ using IronRuby.Compiler.Ast;
 
 namespace Fructose.Compiler.Generators
 {
+    [Generator(NodeTypes.StringLiteral)]
+    public class StringLiteralGenerator : AstNodeGenerator
+    {
+        public override void Compile(Compiler compiler, Node node, NodeParent parent)
+        {
+            compiler.AppendLine("$_stack[] = F_String::__from_string('{0}');", ((StringLiteral)node).Value.ToString().Replace("\\","\\\\").Replace("'","\\'"));
+        }
+    }
     [Generator(NodeTypes.Literal)]
     public class LiteralGenerator : AstNodeGenerator
     {

@@ -43,10 +43,14 @@ namespace Fructose.Compiler.Generators
                     break;
 
                 case StringKind.Mutable:
-                    if (sc.Parts.Count > 1 || (sc.Parts.Count > 0 &&sc.Parts[0].NodeType != NodeTypes.StringLiteral))
-                        throw new FructoseCompileException("String interpolation not supported _yet_", node);
-                    compiler.AppendLine("$_stack[] = F_String::__from_string('{0}');",
-                        sc.Parts.Count > 0 ? ((StringLiteral)sc.Parts[0]).Value.ToString().Replace("'", "\\'") : "");
+                    foreach (var part in ((IEnumerable<Expression>)sc.Parts).Reverse())
+                        compiler.CompileNode(part);
+
+                    compiler.AppendLine("$_stack[] = F_String::__from_string('');");
+
+                    foreach (var part in sc.Parts)
+                        compiler.AppendLine("$_stack[] = array_pop($_stack)->__operator_lshift(NULL, array_pop($_stack));");
+
                     break;
             }
         }
