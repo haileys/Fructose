@@ -28,6 +28,7 @@ freely, subject to the following restrictions:
 class F_Object
 {
 	public $_instance_vars = array();
+	public $_dyn_methods = array();
 	public static $_class_vars = array();
 
 	public function F_to_s($block)
@@ -43,6 +44,76 @@ class F_Object
 	public function F_class($block)
 	{
 		return get_class($this);
+	}
+	
+	public function __call($name, $args)
+	{
+		if(isset($_dyn_methods[$name]))
+			return call_user_func_array($_dyn_methods[$name], $args);
+		
+		if(get_class($this) === 'F_Object')
+			return call_user_func_array($name, $args);
+		
+		echo "No such method " . substr(get_class($this), 2) . "#" . substr($name, 2);
+		debug_print_backtrace();
+		die;
+	}
+	
+	public function __add_method($name, $fn)
+	{
+		$_dyn_methods[$name] = $fn;
+	}
+}
+
+class F_Enumerable extends F_Object
+{
+	private static $_all_callback_state = true;
+	private static $_all_callback_block = NULL;
+	public static all_callback($obj)
+	{
+		$block = $this->_all_callback_block;
+		$val = $block($obj);
+		if(get_class($val) == 'F_NilClass' || get_class($val) == 'F_FalseClass')
+		{
+			$_all_callback_state = false;
+		}
+	}
+	public function F_all_QUES_($block)
+	{
+		$this->_all_callback_state = true;
+		$this->_all_callback_block = $block;
+		$this->F_each("F_Enumerable::all_callback");
+		if($this->_all_callback_state)
+		{
+			return new F_TrueClass;
+		}
+		else
+		{
+			return new F_FalseClass;
+		}
+	}
+}
+
+class F_Array extends F_Enumerable
+{
+	public static function __from_array($arr)
+	{
+		$a = new F_Array;
+		$a->__ARRAY = $arr;
+		return $a;
+	}
+	
+	public static function __operator_arrayget($block)
+	{
+		$a = func_get_args();
+		array_shift($a); // remove $block
+		return F_Array::__from_array($a);
+	}
+	
+	public function F_each($block)
+	{
+		foreach($this->__ARRAY as $i)
+			$block($i);
 	}
 }
 
