@@ -46,7 +46,11 @@ namespace Fructose.Compiler.Generators
                 foreach (var child in ((MethodDefinition)node).Body.Statements)
                     compiler.CompileNode(child, parent.CreateChild(node));
 
-            compiler.AppendLine("return array_pop($_stack);");
+            if (((MethodDefinition)node).Name.Contains("__lambda_"))
+                compiler.AppendLine("return array( 'locals' => $_locals, 'retval' => array_pop($_stack) );");
+            else
+                compiler.AppendLine("return array_pop($_stack);");
+
             compiler.Dedent();
             compiler.AppendLine("}");
         }
