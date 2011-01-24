@@ -41,6 +41,7 @@ namespace Fructose.Compiler.Generators
             compiler.Indent();
             compiler.AppendLine("$_stack = array();");
             compiler.AppendLine("if(!isset($_locals->self)) $_locals->self = $this;");
+            compiler.AppendLine("if(!isset($_locals->block)) $_locals->block = $block;");
             compiler.AppendLine("global $_lambda_objs;");
 
                 foreach (var child in ((MethodDefinition)node).Body.Statements)
