@@ -13,6 +13,7 @@
 #4
 #ABC
 #abcd
+#foobar
 
 puts "a" + "b"
 puts "a%sc" % "b"
@@ -31,3 +32,6 @@ puts "abc".upcase
 x = "a"
 x << "bc" << "d"
 puts x
+
+x = "oba"
+puts "fo#{x}r"
