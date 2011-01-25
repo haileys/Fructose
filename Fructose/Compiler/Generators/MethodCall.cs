@@ -75,7 +75,7 @@ namespace Fructose.Compiler.Generators
             {
                 compiler.Dedent();
                 compiler.AppendLine("}");
-                compiler.AppendLine("catch(ReturnFromBlock $rfb");
+                compiler.AppendLine("catch(ReturnFromBlock $rfb)");
                 compiler.AppendLine("{");
                 compiler.Indent();
                 compiler.AppendLine("return $rfb->val;");
