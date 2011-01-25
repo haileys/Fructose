@@ -96,7 +96,7 @@ class F_Enumerable extends F_Object
 	public function F_all_QUES_($block)
 	{
 		if($block === NULL)
-			$block = "F_Enumerable::_identity";
+			$block = create_function('','$a = func_get_args(); return F_Enumerable::_identity($a[1]);');
 			
 		F_Enumerable::$_all_callback_state = true;
 		F_Enumerable::$_all_callback_block = $block;
@@ -124,7 +124,8 @@ class F_Enumerable extends F_Object
 	public function F_any_QUES_($block)
 	{
 		if($block === NULL)
-			$block = "F_Enumerable::_identity";
+			$block = create_function('','$a = func_get_args(); return F_Enumerable::_identity($a[1]);');
+			
 		F_Enumerable::$_any_callback_state = false;
 		F_Enumerable::$_any_callback_block = $block;
 		$this->F_each(create_function('','$a = func_get_args(); return F_Enumerable::any_callback($a[1]);'));
