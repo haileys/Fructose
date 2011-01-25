@@ -25,6 +25,16 @@ freely, subject to the following restrictions:
    
 */
 
+class ReturnFromBlock extends Exception
+{
+	public $val;
+	
+	function __construct($val)
+	{
+		$this->val = $val;
+	}
+}
+
 class F_Object
 {
 	public $_instance_vars = array();
@@ -67,24 +77,31 @@ class F_Object
 
 class F_Enumerable extends F_Object
 {
+	public static function _identity($o)
+	{
+		return $o;
+	}
+	
 	private static $_all_callback_state = true;
 	private static $_all_callback_block = NULL;
-	
 	public static function all_callback($obj)
 	{
 		$block = F_Enumerable::$_all_callback_block;
-		$val = $block($obj);
-		if(get_class($val) == 'F_NilClass' || get_class($val) == 'F_FalseClass')
+		$val = $block(NULL, $obj);
+		if(get_class($val) === 'F_NilClass' || get_class($val) === 'F_FalseClass')
 		{
 			F_Enumerable::$_all_callback_state = false;
 		}
 	}
 	public function F_all_QUES_($block)
 	{
+		if($block === NULL)
+			$block = "F_Enumerable::_identity";
+			
 		F_Enumerable::$_all_callback_state = true;
 		F_Enumerable::$_all_callback_block = $block;
 		$this->F_each(create_function('','$a = func_get_args(); return F_Enumerable::all_callback($a[1]);'));
-		if($this->_all_callback_state)
+		if(F_Enumerable::$_all_callback_state)
 		{
 			return new F_TrueClass;
 		}
@@ -92,6 +109,46 @@ class F_Enumerable extends F_Object
 		{
 			return new F_FalseClass;
 		}
+	}
+	private static $_any_callback_state = false;
+	private static $_any_callback_block = NULL;
+	public static function any_callback($obj)
+	{
+		$block = F_Enumerable::$_any_callback_block;
+		$val = $block(NULL, $obj);
+		if(get_class($val) !== 'F_NilClass' && get_class($val) !== 'F_FalseClass')
+		{
+			F_Enumerable::$_any_callback_state = true;
+		}
+	}
+	public function F_any_QUES_($block)
+	{
+		if($block === NULL)
+			$block = "F_Enumerable::_identity";
+		F_Enumerable::$_any_callback_state = false;
+		F_Enumerable::$_any_callback_block = $block;
+		$this->F_each(create_function('','$a = func_get_args(); return F_Enumerable::any_callback($a[1]);'));
+		if(F_Enumerable::$_any_callback_state)
+		{
+			return new F_TrueClass;
+		}
+		else
+		{
+			return new F_FalseClass;
+		}
+	}
+	private static $_collect_callback_state = array();
+	private static $_collect_callback_block = NULL;
+	public static function collect_callback($obj)
+	{
+		$_collect_callback_state[] = $obj;
+	}
+	public function F_collect($block)
+	{
+		F_Enumerable::$_collect_callback_state = array();
+		F_Enumerable::$_collect_callback_block = $block;
+		$this->F_each(create_function('','$a = func_get_args(); return F_Enumerable::any_callback($a[1]);'));
+		return F_Enumerable::$_collect_callback_state;		
 	}
 }
 

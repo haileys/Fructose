@@ -12,7 +12,7 @@ namespace Fructose.Compiler.Generators
         public override void Compile(Compiler compiler, Node node, NodeParent parent)
         {
             foreach (var stmt in ((Body)node).Statements)
-                compiler.CompileNode(stmt);
+                compiler.CompileNode(stmt, parent.CreateChild(node));
         }
     }
 }

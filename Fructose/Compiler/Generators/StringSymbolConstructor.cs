@@ -44,7 +44,7 @@ namespace Fructose.Compiler.Generators
 
                 case StringKind.Mutable:
                     foreach (var part in ((IEnumerable<Expression>)sc.Parts).Reverse())
-                        compiler.CompileNode(part);
+                        compiler.CompileNode(part, parent.CreateChild(node));
 
                     compiler.AppendLine("$_stack[] = F_String::__from_string('');");
 

@@ -19,13 +19,13 @@ namespace Fructose.Compiler.Generators
             if(((WhileLoopExpression)node).IsPostTest)
             {
                 foreach(var stmt in ((WhileLoopExpression)node).Statements)
-                    compiler.CompileNode(stmt);
+                    compiler.CompileNode(stmt, parent.CreateChild(node));
             }
 
             if (((WhileLoopExpression)node).IsWhileLoop)
-                compiler.CompileNode(((WhileLoopExpression)node).Condition);
+                compiler.CompileNode(((WhileLoopExpression)node).Condition, parent.CreateChild(node));
             else
-                compiler.CompileNode(new NotExpression(((WhileLoopExpression)node).Condition, node.Location));
+                compiler.CompileNode(new NotExpression(((WhileLoopExpression)node).Condition, node.Location), parent.CreateChild(node));
 
             compiler.AppendLine("$_cond = array_pop($_stack);");
             compiler.AppendLine("if(get_class($_cond) === 'F_NilClass' || get_class($_cond) === 'F_FalseClass' || is_subclass_of($_cond, 'F_NilClass') || is_subclass_of($_cond, 'F_FalseClass'))");
@@ -38,7 +38,7 @@ namespace Fructose.Compiler.Generators
             if (!((WhileLoopExpression)node).IsPostTest)
             {
                 foreach (var stmt in ((WhileLoopExpression)node).Statements)
-                    compiler.CompileNode(stmt);
+                    compiler.CompileNode(stmt, parent.CreateChild(node));
             }
 
             compiler.Dedent();
