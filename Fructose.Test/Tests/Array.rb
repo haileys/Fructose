@@ -10,5 +10,5 @@ puts arr.all? { |o| o > 1 }
 
 arr = [false, false, false]
 puts arr.any?
-arr = [false, true, false]
+arr[1] = true
 puts arr.any?

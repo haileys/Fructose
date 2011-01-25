@@ -169,6 +169,28 @@ class F_Array extends F_Enumerable
 		return F_Array::__from_array($a);
 	}
 	
+	public function __operator_arrayset($index, $val)
+	{
+		$idx = (int)$index->__NUMBER;
+		if($idx < 0)
+			$idx += count($this->__ARRAY);
+			
+			
+		if($idx < 0)
+		{
+			// TODO throw IndexError
+			return;
+		}
+		
+		if($idx >= count($this->__ARRAY))
+		{
+			for($i = count($this->__ARRAY); $i < $idx; $i++)
+				$this->__ARRAY[$i] = new F_NilClass;
+		}
+		
+		$this->__ARRAY[$idx] = $val;
+	}
+	
 	public function F_each($block)
 	{
 		foreach($this->__ARRAY as $i)
