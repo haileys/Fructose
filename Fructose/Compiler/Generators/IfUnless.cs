@@ -13,7 +13,7 @@ namespace Fructose.Compiler.Generators
         public override void Compile(Compiler compiler, Node node, NodeParent parent)
         {
             var unless = (UnlessExpression)node;
-            compiler.CompileNode(new IfExpression(new NotExpression(unless.Condition, unless.Condition.Location), unless.Statements, new List<ElseIfClause> { unless.ElseClause }, unless.Location));
+            compiler.CompileNode(new IfExpression(new NotExpression(unless.Condition, unless.Condition.Location), unless.Statements, new List<ElseIfClause> { unless.ElseClause }, unless.Location), parent.CreateChild(node));
         }
     }
 
@@ -46,12 +46,12 @@ namespace Fructose.Compiler.Generators
                 if (firstelseif.Condition == null)
                 {
                     foreach (var stmt in firstelseif.Statements)
-                        compiler.CompileNode(stmt);
+                        compiler.CompileNode(stmt, parent.CreateChild(node));
                 }
                 else
                 {
-                    compiler.CompileNode(new IfExpression(firstelseif.Condition, firstelseif.Statements, rest, 
-                        new SourceSpan(firstelseif.Location.Start, (rest.Count > 0 ? rest.Last() : firstelseif).Location.End)));
+                    compiler.CompileNode(new IfExpression(firstelseif.Condition, firstelseif.Statements, rest,
+                        new SourceSpan(firstelseif.Location.Start, (rest.Count > 0 ? rest.Last() : firstelseif).Location.End)), parent.CreateChild(node));
                 }
 
                 compiler.Dedent();

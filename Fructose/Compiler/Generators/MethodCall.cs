@@ -37,6 +37,13 @@ namespace Fructose.Compiler.Generators
                 compiler.AppendLine("$_lambda_objs[] = $_locals;");
             }
 
+            if (((MethodCall)node).Block != null)
+            {
+                compiler.AppendLine("try");
+                compiler.AppendLine("{");
+                compiler.Indent();
+            }
+
             string call = callStatic 
                 ? string.Format("$_stack[] = {0}::S{1}(", Mangling.RubyIdentifierToPHP(((ConstantVariable)((MethodCall)node).Target).Name), mname)
                 : string.Format("$_stack[] = array_pop($_stack)->{0}(", mname);
@@ -66,6 +73,14 @@ namespace Fructose.Compiler.Generators
 
             if (((MethodCall)node).Block != null)
             {
+                compiler.Dedent();
+                compiler.AppendLine("}");
+                compiler.AppendLine("catch(ReturnFromBlock $rfb");
+                compiler.AppendLine("{");
+                compiler.Indent();
+                compiler.AppendLine("return $rfb->val;");
+                compiler.Dedent();
+                compiler.AppendLine("}");
                 compiler.AppendLine("$_locals = $_lambda_objs[$_lambda_objs_offset];");
             }
         }
