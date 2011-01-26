@@ -141,22 +141,26 @@ class F_Object
 class F_Enumerable extends F_Object
 {
 	public static $_states = array();
-	
 	public static function _identity($o)
 	{
 		return $o;
 	}
-	
 	public function F_all_QUES_($block)
 	{
 		if($block === NULL)
 			$block = create_function('','$a = func_get_args(); return F_Enumerable::_identity($a[1]);');
-		
 		$state = count(F_Enumerable::$_states);
 		F_Enumerable::$_states[$state] = true;
-		
 		$this->F_each(create_function('',sprintf('$a = func_get_args(); $f = "%s"; if(! _isTruthy($f(NULL, $a[1]))) { F_Enumerable::$_states[%d] = false; }', $block, $state)));
-		
+		return F_TrueClass::__from_bool(F_Enumerable::$_states[$state]);
+	}
+	public function F_any_QUES_($block)
+	{
+		if($block === NULL)
+			$block = create_function('','$a = func_get_args(); return F_Enumerable::_identity($a[1]);');
+		$state = count(F_Enumerable::$_states);
+		F_Enumerable::$_states[$state] = false;
+		$this->F_each(create_function('',sprintf('$a = func_get_args(); $f = "%s"; if(_isTruthy($f(NULL, $a[1]))) { F_Enumerable::$_states[%d] = true; }', $block, $state)));
 		return F_TrueClass::__from_bool(F_Enumerable::$_states[$state]);
 	}
 }
