@@ -163,6 +163,25 @@ class F_Enumerable extends F_Object
 		$this->F_each(create_function('',sprintf('$a = func_get_args(); $f = "%s"; if(_isTruthy($f(NULL, $a[1]))) { F_Enumerable::$_states[%d] = true; }', $block, $state)));
 		return F_TrueClass::__from_bool(F_Enumerable::$_states[$state]);
 	}
+	public function F_collect($block)
+	{
+		$state = count(F_Enumerable::$_states);
+		F_Enumerable::$_states[$state] = array();
+		$this->F_each(create_function('',sprintf('$a = func_get_args(); $f = "%s"; F_Enumerable::$_states[%d][] = $f(NULL, $a[1]);', $block, $state)));
+		return F_Array::__from_array(F_Enumerable::$_states[$state]);
+	}
+	public function F_count($block, $item = NULL)
+	{
+		if($block === NULL && $item === NULL)
+		{
+			if(_isTruthy($this->F_respond_to_QUES_(NULL, F_Symbol::__from_string('size'))))
+				return $this->F_size();
+			$state = count(F_Enumerable::$_states);
+			F_Enumerable::$_states[$state] = 0;
+			$this->F_each(create_function('',sprintf('F_Enumerable::$_states[%d]++;', $state)));
+			return F_Number::__from_number(F_Enumerable::$_states[$state]);
+		}
+	}
 }
 
 class F_Array extends F_Enumerable
