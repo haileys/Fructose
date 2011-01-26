@@ -40,11 +40,10 @@ namespace Fructose.Compiler.Generators
             compiler.AppendLine("{");
             compiler.Indent();
             compiler.AppendLine("$_stack = array();");
-            if (parent.OfType<ClassDefinition>().Count() == 0)
-                compiler.AppendLine("global $_locals;");
             compiler.AppendLine("if(!isset($_locals->self)) $_locals->self = $this;");
             compiler.AppendLine("if(!isset($_locals->block)) $_locals->block = $block;");
             compiler.AppendLine("global $_lambda_objs;");
+            compiler.AppendLine("global $_globals;");
 
                 foreach (var child in ((MethodDefinition)node).Body.Statements)
                     compiler.CompileNode(child, parent.CreateChild(node));

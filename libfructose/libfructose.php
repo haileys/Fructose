@@ -35,6 +35,42 @@ class ReturnFromBlock extends Exception
 	}
 }
 
+$_operator_lookup["!"] = "__operator_not";
+$_operator_lookup["~"] = "__operator_bitwisenot";
+$_operator_lookup["+@"] = "__operator_unaryplus";
+$_operator_lookup["**"] = "__operator_exp";
+$_operator_lookup["-@"] = "__operator_unaryminus";
+$_operator_lookup["*"] = "__operator_mul";
+$_operator_lookup["/"] = "__operator_div";
+$_operator_lookup["%"] = "__operator_mod";
+$_operator_lookup["+"] = "__operator_add";
+$_operator_lookup["-"] = "__operator_sub";
+$_operator_lookup["<<"] = "__operator_lshift";
+$_operator_lookup[">>"] = "__operator_rshift";
+$_operator_lookup["&"] = "__operator_bitwiseand";
+$_operator_lookup["|"] = "__operator_bitwiseor";
+$_operator_lookup["^"] = "__operator_xor";
+$_operator_lookup["<"] = "__operator_lt";
+$_operator_lookup["<="] = "__operator_lte";
+$_operator_lookup[">"] = "__operator_gt";
+$_operator_lookup[">="] = "__operator_gte";
+$_operator_lookup["=="] = "__operator_eq";
+$_operator_lookup["==="] = "__operator_stricteq";
+$_operator_lookup["!="] = "__operator_neq";
+$_operator_lookup["=~"] = "__operator_match";
+$_operator_lookup["!~"] = "__operator_notmatch";
+$_operator_lookup["<=>"] = "__operator_spaceship";
+$_operator_lookup["[]"] = "__operator_arrayget";
+$_operator_lookup["[]="] = "__operator_arrayset";
+
+function _rmethod_to_php($method)
+{
+	if(isset($_operator_lookup[$method]))
+		return $_operator_lookup[$method];
+	
+	return "F_" . str_replace("?", "_QUES_", str_replace("!", "_EXCL", str_replace("=", "__set", $method)));
+}
+
 class F_Object
 {
 	public $_instance_vars = array();
@@ -54,6 +90,27 @@ class F_Object
 	public function F_class($block)
 	{
 		return get_class($this);
+	}
+	
+	public function F_respond_to_QUES_($block, $sym, $include_private = NULL)
+	{
+		if($include_private === NULL)
+			$include_private = new F_FalseClass;
+		
+		if(method_exists($this, _rmethod_to_php($sym->__SYMBOL)))
+			return new F_TrueClass;
+		
+		if(method_exists($this, "F_respond_to_missing_QUES_"))
+			return $this->F_respond_to_missing_QUES_($sym, $include_private);
+			
+		return new F_FalseClass;
+	}
+	
+	public function F_send($block, $sym)
+	{
+		$args = func_get_args();
+		array_splice($args, 1, 1);
+		return call_user_func_array(array($this, $sym), $args);
 	}
 	
 	public function __call($name, $args)
@@ -150,6 +207,22 @@ class F_Enumerable extends F_Object
 		F_Enumerable::$_collect_callback_block = $block;
 		$this->F_each(create_function('','$a = func_get_args(); return F_Enumerable::any_callback($a[1]);'));
 		return F_Enumerable::$_collect_callback_state;		
+	}
+	private static $_count_callback_state = 0;
+	private static $_count_callback_block = NULL;
+	public static function count_callback($obj)
+	{
+		$_collect_callback_state[] = $obj;
+	}
+	public function F_count($block, $eq = NULL)
+	{
+		if($block === NULL && $eq === NULL && get_class($this->F_respond_to_QUES_(F_Symbol::__from_string('size'))) === 'F_TrueClass')
+			return $this->F_size(NULL);
+			
+		F_Enumerable::$_count_callback_state = 0;
+		F_Enumerable::$_collect_callback_block = $block;
+		$this->F_each(create_function('','$a = func_get_args(); return F_Enumerable::count_callback($a[1]);'));
+		return F_Enumerable::$_collect_callback_state;
 	}
 }
 
