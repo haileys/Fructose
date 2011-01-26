@@ -71,6 +71,12 @@ function _rmethod_to_php($method)
 	return "F_" . str_replace("?", "_QUES_", str_replace("!", "_EXCL", str_replace("=", "__set", $method)));
 }
 
+function _isTruthy($obj)
+{
+	$class = get_class($obj);
+	return $class !== 'F_NilClass' && $class !== 'F_FalseClass';
+}
+
 class F_Object
 {
 	public $_instance_vars = array();
@@ -121,7 +127,7 @@ class F_Object
 		if(get_class($this) === 'F_Object')
 			return call_user_func_array($name, $args);
 		
-		echo "No such method " . substr(get_class($this), 2) . "#" . substr($name, 2);
+		echo "No such method " . substr(get_class($this), 2) . "#" . substr($name, 2) . "\n";
 		debug_print_backtrace();
 		die;
 	}
@@ -134,95 +140,24 @@ class F_Object
 
 class F_Enumerable extends F_Object
 {
+	public static $_states = array();
+	
 	public static function _identity($o)
 	{
 		return $o;
 	}
 	
-	private static $_all_callback_state = true;
-	private static $_all_callback_block = NULL;
-	public static function all_callback($obj)
-	{
-		$block = F_Enumerable::$_all_callback_block;
-		$val = $block(NULL, $obj);
-		if(get_class($val) === 'F_NilClass' || get_class($val) === 'F_FalseClass')
-		{
-			F_Enumerable::$_all_callback_state = false;
-		}
-	}
 	public function F_all_QUES_($block)
 	{
 		if($block === NULL)
 			$block = create_function('','$a = func_get_args(); return F_Enumerable::_identity($a[1]);');
-			
-		F_Enumerable::$_all_callback_state = true;
-		F_Enumerable::$_all_callback_block = $block;
-		$this->F_each(create_function('','$a = func_get_args(); return F_Enumerable::all_callback($a[1]);'));
-		if(F_Enumerable::$_all_callback_state)
-		{
-			return new F_TrueClass;
-		}
-		else
-		{
-			return new F_FalseClass;
-		}
-	}
-	private static $_any_callback_state = false;
-	private static $_any_callback_block = NULL;
-	public static function any_callback($obj)
-	{
-		$block = F_Enumerable::$_any_callback_block;
-		$val = $block(NULL, $obj);
-		if(get_class($val) !== 'F_NilClass' && get_class($val) !== 'F_FalseClass')
-		{
-			F_Enumerable::$_any_callback_state = true;
-		}
-	}
-	public function F_any_QUES_($block)
-	{
-		if($block === NULL)
-			$block = create_function('','$a = func_get_args(); return F_Enumerable::_identity($a[1]);');
-			
-		F_Enumerable::$_any_callback_state = false;
-		F_Enumerable::$_any_callback_block = $block;
-		$this->F_each(create_function('','$a = func_get_args(); return F_Enumerable::any_callback($a[1]);'));
-		if(F_Enumerable::$_any_callback_state)
-		{
-			return new F_TrueClass;
-		}
-		else
-		{
-			return new F_FalseClass;
-		}
-	}
-	private static $_collect_callback_state = array();
-	private static $_collect_callback_block = NULL;
-	public static function collect_callback($obj)
-	{
-		$_collect_callback_state[] = $obj;
-	}
-	public function F_collect($block)
-	{
-		F_Enumerable::$_collect_callback_state = array();
-		F_Enumerable::$_collect_callback_block = $block;
-		$this->F_each(create_function('','$a = func_get_args(); return F_Enumerable::any_callback($a[1]);'));
-		return F_Enumerable::$_collect_callback_state;		
-	}
-	private static $_count_callback_state = 0;
-	private static $_count_callback_block = NULL;
-	public static function count_callback($obj)
-	{
-		$_collect_callback_state[] = $obj;
-	}
-	public function F_count($block, $eq = NULL)
-	{
-		if($block === NULL && $eq === NULL && get_class($this->F_respond_to_QUES_(F_Symbol::__from_string('size'))) === 'F_TrueClass')
-			return $this->F_size(NULL);
-			
-		F_Enumerable::$_count_callback_state = 0;
-		F_Enumerable::$_collect_callback_block = $block;
-		$this->F_each(create_function('','$a = func_get_args(); return F_Enumerable::count_callback($a[1]);'));
-		return F_Enumerable::$_collect_callback_state;
+		
+		$state = count(F_Enumerable::$_states);
+		F_Enumerable::$_states[$state] = true;
+		
+		$this->F_each(create_function('',sprintf('$a = func_get_args(); $f = "%s"; if(! _isTruthy($f(NULL, $a[1]))) { F_Enumerable::$_states[%d] = false; }', $block, $state)));
+		
+		return F_TrueClass::__from_bool(F_Enumerable::$_states[$state]);
 	}
 }
 
