@@ -7,6 +7,7 @@
 #false
 #3
 #42
+#2
 
 arr = [1, 2, 3]
 puts arr.all? { |o| o > 0 }
@@ -29,5 +30,13 @@ class A < Enumerable
     42
   end
 end
-
 puts A.new.count
+
+# size isn't defined so it has to call each
+class B < Enumerable
+  def each
+    yield
+    yield
+  end
+end
+puts B.new.count
