@@ -27,7 +27,7 @@ puts arr.count
 # A#each isn't defined so count must call size, or else it'll fail.
 class A < Enumerable
   def size
-    42
+    41
   end
 end
 puts A.new.count
