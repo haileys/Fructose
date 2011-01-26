@@ -177,25 +177,35 @@ class F_Array extends F_Enumerable
 		return F_Array::__from_array($a);
 	}
 	
-	public function __operator_arrayset($index, $val)
+	public function __operator_arrayget($index, $val)
 	{
 		$idx = (int)$index->__NUMBER;
 		if($idx < 0)
 			$idx += count($this->__ARRAY);
-			
-			
 		if($idx < 0)
 		{
 			// TODO throw IndexError
 			return;
 		}
-		
+		if($idx >= count($this->__ARRAY))
+			return new F_NilClass;
+		return $this->__ARRAY[$idx];
+	}
+	public function __operator_arrayset($index, $val)
+	{
+		$idx = (int)$index->__NUMBER;
+		if($idx < 0)
+			$idx += count($this->__ARRAY);
+		if($idx < 0)
+		{
+			// TODO throw IndexError
+			return;
+		}
 		if($idx >= count($this->__ARRAY))
 		{
 			for($i = count($this->__ARRAY); $i < $idx; $i++)
 				$this->__ARRAY[$i] = new F_NilClass;
 		}
-		
 		$this->__ARRAY[$idx] = $val;
 	}
 	
