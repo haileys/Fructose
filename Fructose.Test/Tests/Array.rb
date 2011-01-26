@@ -4,6 +4,9 @@
 #3
 #false
 #true
+#false
+#3
+#42
 
 arr = [1, 2, 3]
 puts arr.all? { |o| o > 0 }
@@ -14,3 +17,17 @@ arr = [false, false, false]
 puts arr.any?
 arr[1] = true
 puts arr.any?
+
+puts arr.collect{ |o| not o }[1]
+
+puts arr.count
+
+# this'll make sure it calls size if the class responds to it
+# A#each isn't defined so count must call size, or else it'll fail.
+class A < Enumerable
+  def size
+    42
+  end
+end
+
+puts A.new.count
