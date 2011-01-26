@@ -177,7 +177,7 @@ class F_Array extends F_Enumerable
 		return F_Array::__from_array($a);
 	}
 	
-	public function __operator_arrayget($index, $val)
+	public function __operator_arrayget($block, $index)
 	{
 		$idx = (int)$index->__NUMBER;
 		if($idx < 0)
@@ -191,7 +191,7 @@ class F_Array extends F_Enumerable
 			return new F_NilClass;
 		return $this->__ARRAY[$idx];
 	}
-	public function __operator_arrayset($index, $val)
+	public function __operator_arrayset($block, $index, $val)
 	{
 		$idx = (int)$index->__NUMBER;
 		if($idx < 0)
