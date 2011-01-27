@@ -60,6 +60,7 @@ require_once 'libfructose.php';
 $_stack = array();
 $_lambda_objs = array();
 $_locals->self = new F_Object;
+$_gthis = $_locals->self;
 $_globals = array();");
 
             foreach (var stmt in tree.Statements)
