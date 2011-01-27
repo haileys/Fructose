@@ -8,6 +8,19 @@
 #3
 #42
 #2
+#2
+#3
+#4
+#true
+#true
+#3
+#3
+#12
+#1
+#6
+#1
+#6
+#3
 
 arr = [1, 2, 3]
 puts arr.all? { |o| o > 0 }
@@ -27,7 +40,7 @@ puts arr.count
 # A#each isn't defined so count must call size, or else it'll fail.
 class A < Enumerable
   def size
-    41
+    42
   end
 end
 puts A.new.count
@@ -40,3 +53,26 @@ class B < Enumerable
   end
 end
 puts B.new.count
+
+arr = [1, 2, 4, 2]
+
+puts arr.count 2
+puts arr.count { |n| n > 1 }
+
+puts arr.find { |n| n > 3 }
+puts arr.find { |n| n > 4 }.nil?
+
+arr = arr.drop 2
+puts arr.count == arr[1]
+
+arr = [1, 2, 3, 4, 5, 6]
+puts arr.drop_while { |n| n <= 3 }.count
+
+puts arr.find { |n| n > 2 }
+
+puts arr.select { |n| n.even? } .reduce(:+)
+puts arr.first
+puts arr.max
+puts arr.min
+puts arr.sort { |a,b| -(a <=> b) }.first
+puts arr.take(3).max

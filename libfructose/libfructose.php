@@ -65,6 +65,7 @@ $_operator_lookup["[]="] = "__operator_arrayset";
 
 function _rmethod_to_php($method)
 {
+	global $_operator_lookup;
 	if(isset($_operator_lookup[$method]))
 		return $_operator_lookup[$method];
 	
@@ -91,11 +92,12 @@ class F_Object
 	public function F_puts($block,$o)
 	{
 		echo $o->F_to_s(NULL)->__STRING . "\n";
+		return new F_NilClass;
 	}
 	
 	public function F_class($block)
 	{
-		return get_class($this);
+		return F_Symbol::__from_string(get_class($this));
 	}
 	
 	public function F_respond_to_QUES_($block, $sym, $include_private = NULL)
@@ -141,14 +143,10 @@ class F_Object
 class F_Enumerable extends F_Object
 {
 	public static $_states = array();
-	public static function _identity($o)
-	{
-		return $o;
-	}
 	public function F_all_QUES_($block)
 	{
 		if($block === NULL)
-			$block = create_function('','$a = func_get_args(); return F_Enumerable::_identity($a[1]);');
+			$block = create_function('','$a = func_get_args(); return $a[1];');
 		$state = count(F_Enumerable::$_states);
 		F_Enumerable::$_states[$state] = true;
 		$this->F_each(create_function('',sprintf('$a = func_get_args(); $f = "%s"; if(! _isTruthy($f(NULL, $a[1]))) { F_Enumerable::$_states[%d] = false; }', $block, $state)));
@@ -157,7 +155,7 @@ class F_Enumerable extends F_Object
 	public function F_any_QUES_($block)
 	{
 		if($block === NULL)
-			$block = create_function('','$a = func_get_args(); return F_Enumerable::_identity($a[1]);');
+			$block = create_function('','$a = func_get_args(); return $a[1];');
 		$state = count(F_Enumerable::$_states);
 		F_Enumerable::$_states[$state] = false;
 		$this->F_each(create_function('',sprintf('$a = func_get_args(); $f = "%s"; if(_isTruthy($f(NULL, $a[1]))) { F_Enumerable::$_states[%d] = true; }', $block, $state)));
@@ -175,12 +173,236 @@ class F_Enumerable extends F_Object
 		if($block === NULL && $item === NULL)
 		{
 			if(_isTruthy($this->F_respond_to_QUES_(NULL, F_Symbol::__from_string('size'))))
-				return $this->F_size();
+				return $this->F_size(NULL);
 			$state = count(F_Enumerable::$_states);
 			F_Enumerable::$_states[$state] = 0;
 			$this->F_each(create_function('',sprintf('F_Enumerable::$_states[%d]++;', $state)));
 			return F_Number::__from_number(F_Enumerable::$_states[$state]);
 		}
+		if($item !== NULL)
+		{
+			$state = count(F_Enumerable::$_states);
+			F_Enumerable::$_states[$state] = array('item' => $item, 'count' => 0);
+			$this->F_each(create_function('',sprintf('$a = func_get_args(); if(_isTruthy(F_Enumerable::$_states[%d]["item"]->__operator_eq(NULL, $a[1]))) { F_Enumerable::$_states[%d]["count"]++; }', $state, $state)));
+			return F_Number::__from_number(F_Enumerable::$_states[$state]['count']);
+		}
+		$state = count(F_Enumerable::$_states);
+		F_Enumerable::$_states[$state] = 0;
+		$this->F_each(create_function('',sprintf('$a = func_get_args(); $f = "%s"; if(_isTruthy($f(NULL, $a[1]))) { F_Enumerable::$_states[%d]++; }', $block, $state)));
+		return F_Number::__from_number(F_Enumerable::$_states[$state]);
+	}
+	public function F_find($block)
+	{
+		try
+		{
+			$this->F_each(create_function('',sprintf('$a = func_get_args(); $f = "%s"; if(_isTruthy($f(NULL, $a[1]))) { throw new ReturnFromBlock($a[1]); }', $block)));
+		}
+		catch(ReturnFromBlock $rfb)
+		{
+			return $rfb->val;
+		}
+		
+		return new F_NilClass;
+	}
+	public function F_drop($block, $n)
+	{
+		$state = count(F_Enumerable::$_states);
+		F_Enumerable::$_states[$state] = array('n' => $n, 'arr' => array());
+		$this->F_each(create_function('',sprintf('$a = func_get_args(); $state = %d;
+		if(--F_Enumerable::$_states[$state]["n"] < 0)
+		{
+			F_Enumerable::$_states[$state]["arr"][] = $a[1];
+		}', $n)));
+		return F_Array::__from_array(F_Enumerable::$_states[$state]['arr']);
+	}
+	public function F_drop_while($block)
+	{
+		$state = count(F_Enumerable::$_states);
+		F_Enumerable::$_states[$state] = array('dropping' => true, 'arr' => array());
+		$this->F_each(create_function('',sprintf('$a = func_get_args(); $f = "%s";
+		if(!F_Enumerable::$_states[%d]["dropping"] || !_isTruthy($f(NULL,$a[1]))) {
+			F_Enumerable::$_states[%d]["dropping"] = false;
+			F_Enumerable::$_states[%d]["arr"][] = $a[1];
+		}', $block, $state, $state, $state)));
+		return F_Array::__from_array(F_Enumerable::$_states[$state]['arr']);
+	}
+	public function F_to_a($block)
+	{
+		$state = count(F_Enumerable::$_states);
+		F_Enumerable::$_states[$state] = array();
+		$this->F_each(create_function('',sprintf('$a = func_get_args(); F_Enumerable::$_states[%d][] = $a[1];', $state)));
+		return F_Array::__from_array(F_Enumerable::$_states[$state]);
+	}
+	public function F_select($block)
+	{
+		$state = count(F_Enumerable::$_states);
+		F_Enumerable::$_states[$state] = array();
+		$this->F_each(create_function('',sprintf('$a = func_get_args(); $f = "%s"; if(_isTruthy($f(NULL, $a[1]))) { F_Enumerable::$_states[%d][] = $a[1]; }', $block, $state)));
+		return F_Array::__from_array(F_Enumerable::$_states[$state]);
+	}
+	public function F_first($block)
+	{
+		try
+		{
+			$this->F_each(create_function('','$a = func_get_args(); throw new ReturnFromBlock($a[1]);'));
+		}
+		catch(ReturnFromBlock $rfb)
+		{
+			return $rfb->val;
+		}
+		
+		return new F_NilClass;
+	}
+	public function F_include_QUES_($block, $obj)
+	{
+		$state = count(F_Enumerable::$_states);
+		F_Enumerable::$_states[$state] = $obj;
+		try
+		{
+			$this->F_each(create_function('',sprintf('$a = func_get_args(); if(_isTruthy($a[1]->__operator_eq(NULL, F_Enumerable::$_states[%d]))) { throw new ReturnFromBlock($a[1]); }', $state, $obj)));
+		}
+		catch(ReturnFromBlock $rfb)
+		{
+			return $rfb->val;
+		}
+		
+		return new F_NilClass;
+	}
+	public function F_reduce($block, $sym = NULL)
+	{
+		$state = count(F_Enumerable::$_states);
+		F_Enumerable::$_states[$state] = NULL;
+		
+		if($block === NULL && $sym !== NULL)
+			$block = create_function('',sprintf('$a = func_get_args(); return call_user_func(array($a[1],"%s"), NULL, $a[2]);', _rmethod_to_php($sym->__SYMBOL)));
+			
+		if($block === NULL)
+		{
+			// @TODO
+			// throw some exception
+		}
+		$this->F_each(create_function('',sprintf('$a = func_get_args(); $state = %d; $f = "%s";
+		if(F_Enumerable::$_states[$state] === NULL)
+		{
+			F_Enumerable::$_states[$state] = $a[1];
+		}
+		else
+		{
+			F_Enumerable::$_states[$state] = $f(NULL, F_Enumerable::$_states[$state], $a[1]);
+		}', $state, $block)));
+		return F_Enumerable::$_states[$state] === NULL ? new F_NilClass : F_Enumerable::$_states[$state];
+	}
+	public function _F_minmax($block, $compare)
+	{
+		if($block === NULL)
+			$block = create_function('', '$a = func_get_args(); return $a[1]->__operator_spaceship(NULL, $a[2]);');
+		
+		$state = count(F_Enumerable::$_states);
+		F_Enumerable::$_states[$state] = NULL;
+		
+		$this->F_each(create_function('',sprintf('$a = func_get_args(); $state = %d; $f = "%s"; 
+		if(F_Enumerable::$_states[$state] === NULL)
+		{
+			F_Enumerable::$_states[$state] = $a[1];
+		}
+		else
+		{
+			if($f(NULL, F_Enumerable::$_states[$state], $a[1])->__NUMBER ' . $compare . ' 0)
+			{
+				F_Enumerable::$_states[$state] = $a[1];
+			}
+		}', $state, $block)));
+		return F_Enumerable::$_states[$state] === NULL ? new F_NilClass : F_Enumerable::$_states[$state];
+	}
+	public function F_max($block)
+	{
+		return $this->_F_minmax($block, '<');
+	}
+	public function F_min($block)
+	{
+		return $this->_F_minmax($block, '>');
+	}
+	public function F_minmax($block)
+	{
+		return F_Array::__from_array(array($this->F_min($block), $this->F_max($block)));
+	}
+	public function F_none_QUES_($block)
+	{
+		return $this->F_any_QUES_($block) ? new F_FalseClass : new F_TrueClass;
+	}
+	public function F_one_QUES_($block)
+	{
+		if($block === NULL)
+			$block = create_function('','$a = func_get_args(); return $a[1];');
+		$state = count(F_Enumerable::$_states);
+		F_Enumerable::$_states[$state] = 0;
+		$this->F_each(create_function('',sprintf('$a = func_get_args(); $f = "%s"; if(_isTruthy($f(NULL, $a[1]))) { F_Enumerable::$_states[%d]++; }', $block, $state)));
+		return F_TrueClass::__from_bool(F_Enumerable::$_states[$state] === 1);
+	}
+	public function F_partition($block)
+	{
+		$state = count(F_Enumerable::$_states);
+		F_Enumerable::$_states[$state] = array('t' => array(), 'f' => array());
+		$this->F_each(create_function('',sprintf('$a = func_get_args(); $f = "%s"; F_Enumerable::$_states[%d][ _isTruthy($f(NULL, $a[1])) ? "t" : "f" ][] = $a[1];', $block, $state)));
+		return F_Array::__from_array(F_Enumerable::$_states[$state]);
+	}
+	public function F_reject($block)
+	{
+		$state = count(F_Enumerable::$_states);
+		F_Enumerable::$_states[$state] = array();
+		$this->F_each(create_function('',sprintf('$a = func_get_args(); $f = "%s"; if(!_isTruthy($f(NULL, $a[1]))) { F_Enumerable::$_states[%d][] = $a[1]; }', $block, $state)));
+		return F_Array::__from_array(F_Enumerable::$_states[$state]);
+	}
+	public function F_reverse_each($block)
+	{
+		$state = count(F_Enumerable::$_states);
+		F_Enumerable::$_states[$state] = array();
+		$this->F_each(create_function('',sprintf('$a = func_get_args(); array_unshift(F_Enumerable::$_states[%d], $a[1]);', $state)));
+		return F_Array::__from_array(F_Enumerable::$_states[$state])->F_each($block);
+	}
+	public function F_sort($block)
+	{
+		if($block === NULL)
+			$block = create_function('', '$a = func_get_args(); return $a[1]->__operator_spaceship(NULL, $a[2]);');
+		$a = $this->F_to_a(NULL);
+		usort($a->__ARRAY, create_function('$a,$b', sprintf('$f = "%s"; return $f(NULL, $a, $b)->__NUMBER;', $block)));
+		return $a;
+	}
+	public function F_take($block, $n)
+	{
+		$state = count(F_Enumerable::$_states);
+		F_Enumerable::$_states[$state] = array('n' => $n->__NUMBER, 'arr' => array());
+		try
+		{
+			$this->F_each(create_function('',sprintf('$a = func_get_args(); $state = %d; if(--F_Enumerable::$_states[$state]["n"] < 0)
+			{
+				throw new ReturnFromBlock(NULL);
+			}
+			else
+			{
+				F_Enumerable::$_states[$state]["arr"][] = $a[1];
+			}', $state)));
+		}
+		catch(ReturnFromBlock $rfb)
+		{ }
+		return F_Array::__from_array(F_Enumerable::$_states[$state]['arr']);
+	}
+	public function F_take_while($block)
+	{
+		$state = count(F_Enumerable::$_states);
+		F_Enumerable::$_states[$state] = array();
+		try
+		{
+			$this->F_each(create_function('',sprintf('$a = func_get_args(); $f = "%s";
+			if(!_isTruthy($f(NULL,$a[1]))) {
+				throw new ReturnFromBlock(NULL);
+			}
+			F_Enumerable::$_states[%d][] = $a[1];
+			', $block, $state)));
+		}
+		catch(ReturnFromBlock $rfb)
+		{ }
+		return F_Array::__from_array(F_Enumerable::$_states[$state]);
 	}
 }
 
@@ -230,12 +452,14 @@ class F_Array extends F_Enumerable
 				$this->__ARRAY[$i] = new F_NilClass;
 		}
 		$this->__ARRAY[$idx] = $val;
+		return $val;
 	}
 	
 	public function F_each($block)
 	{
 		foreach($this->__ARRAY as $i)
 			$block(NULL, $i);
+		return new F_NilClass;
 	}
 }
 
@@ -642,6 +866,7 @@ class F_String extends F_Object
 	public function __operator_arrayset($block,$operand, $val)
 	{
 		$this->__string[(int)$operand->__NUMBER] = $val->__STRING;
+		return $val;
 	}
 	public function F_capitalize($block)
 	{
@@ -663,6 +888,7 @@ class F_String extends F_Object
 	public function F_clear($block)
 	{
 		$this->__STRING = "";
+		return new F_NilClass;
 	}
 	public function F_crypt($block,$operand)
 	{
