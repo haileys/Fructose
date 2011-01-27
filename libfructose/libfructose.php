@@ -212,7 +212,7 @@ class F_Enumerable extends F_Object
 		if(--F_Enumerable::$_states[$state]["n"] < 0)
 		{
 			F_Enumerable::$_states[$state]["arr"][] = $a[1];
-		}', $n)));
+		}', $state)));
 		return F_Array::__from_array(F_Enumerable::$_states[$state]['arr']);
 	}
 	public function F_drop_while($block)
