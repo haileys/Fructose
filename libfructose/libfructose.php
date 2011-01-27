@@ -422,6 +422,34 @@ class F_Array extends F_Enumerable
 		return F_Array::__from_array($a);
 	}
 	
+	public function __operator_bitwiseand($block, $array)
+	{
+		// @TODO
+		// this is a O(n^2) intersection for now. i'll optimize it later
+		$intersect = array();
+		for($i = 0; $i < count($this->__ARRAY); $i++)
+			for($j = 0; $j < count($array->__ARRAY); $j++)
+				if(_isTruthy($this->__ARRAY[$i]->__operator_eq($array->__ARRAY[$j])))
+					$intersect[] = $this->__ARRAY[$i];
+					
+		// @TODO
+		// ruby-doc says this operator returns the intersection without dupes.
+		// for now i'll just return dupes
+		return F_Array::__from_array($intersect);
+	}
+	
+	public function __operator_mul($block, $operand)
+	{
+		if($index->F_class()->__SYMBOL === 'F_String')
+			return $this->F_join(NULL, $operand);
+		
+		$arr = array();
+		for($i = 0; $i < $operand->__NUMBER; $i++)
+			$arr = array_merge($arr, $this->__ARRAY);
+			
+		return F_Array::__from_array($arr);
+	}
+	
 	public function __operator_arrayget($block, $index)
 	{
 		$idx = (int)$index->__NUMBER;
@@ -429,7 +457,7 @@ class F_Array extends F_Enumerable
 			$idx += count($this->__ARRAY);
 		if($idx < 0)
 		{
-			// TODO throw IndexError
+			// @TODO throw IndexError
 			return;
 		}
 		if($idx >= count($this->__ARRAY))
@@ -443,7 +471,7 @@ class F_Array extends F_Enumerable
 			$idx += count($this->__ARRAY);
 		if($idx < 0)
 		{
-			// TODO throw IndexError
+			// @TODO throw IndexError
 			return;
 		}
 		if($idx >= count($this->__ARRAY))
