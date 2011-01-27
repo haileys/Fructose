@@ -40,7 +40,15 @@ namespace Fructose.Compiler.Generators
             compiler.AppendLine("{");
             compiler.Indent();
             compiler.AppendLine("$_stack = array();");
-            compiler.AppendLine("if(!isset($_locals->self)) $_locals->self = $this;");
+            if (parent.OfType<ClassDefinition>().Count() > 0)
+            {
+                compiler.AppendLine("if(!isset($_locals->self)) $_locals->self = $this;");
+            }
+            else
+            {
+                compiler.AppendLine("global $_gthis;");
+                compiler.AppendLine("if(!isset($_locals->self)) $_locals->self = $_gthis;");
+            }
             compiler.AppendLine("if(!isset($_locals->block)) $_locals->block = $block;");
             compiler.AppendLine("global $_lambda_objs;");
             compiler.AppendLine("global $_globals;");
