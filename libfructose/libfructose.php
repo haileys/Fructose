@@ -795,7 +795,7 @@ class F_String extends F_Object
 	}
 	public function __operator_add($block,$operand)
 	{
-		return F_String::__from_string($this->__STRING . $operand->F_to_s()->__STRING);
+		return F_String::__from_string($this->__STRING . $operand->F_to_s(NULL)->__STRING);
 	}
 	public function __operator_mod($block,$operand)
 	{
