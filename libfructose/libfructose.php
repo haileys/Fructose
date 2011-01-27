@@ -207,7 +207,7 @@ class F_Enumerable extends F_Object
 	public function F_drop($block, $n)
 	{
 		$state = count(F_Enumerable::$_states);
-		F_Enumerable::$_states[$state] = array('n' => $n, 'arr' => array());
+		F_Enumerable::$_states[$state] = array('n' => $n->__NUMBER, 'arr' => array());
 		$this->F_each(create_function('',sprintf('$a = func_get_args(); $state = %d;
 		if(--F_Enumerable::$_states[$state]["n"] < 0)
 		{
