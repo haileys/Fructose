@@ -50,6 +50,9 @@ namespace Fructose.Compiler.Generators
 
             if (((MethodCall)node).Block != null)
             {
+                if (((MethodCall)node).Block.NodeType == NodeTypes.BlockReference)
+                    throw new FructoseCompileException("Block References not yet supported.", ((MethodCall)node).Block);
+
                 var block_mname = compiler.Transformations.RefactoredBlocksToMethods[(BlockDefinition)((MethodCall)node).Block];
                 call += "create_function('',sprintf('global $_lambda_objs; $args = func_get_args(); $offset = %d; $_locals = $_lambda_objs[$offset]; array_unshift($args, $_locals); $r = call_user_func_array(";
 
