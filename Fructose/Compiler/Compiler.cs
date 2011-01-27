@@ -55,7 +55,12 @@ namespace Fructose.Compiler
         {
             Transformations = transformations;
 
-            sb.AppendLine("<?php\nrequire_once 'libfructose.php';\n$_stack = array();\n$_lambda_objs = array();\n$_locals->self = new F_Object;\n$_globals = array();\n");
+            sb.AppendLine(@"<?php
+require_once 'libfructose.php';
+$_stack = array();
+$_lambda_objs = array();
+$_locals->self = new F_Object;
+$_globals = array();");
 
             foreach (var stmt in tree.Statements)
                 CompileNode(stmt);
