@@ -18,7 +18,27 @@ namespace Fructose.Compiler.Generators
             compiler.AppendLine("{");
             compiler.Indent();
 
-                compiler.CompileNode(((AndExpression)node).Left, parent.CreateChild(node));
+                compiler.CompileNode(((AndExpression)node).Right, parent.CreateChild(node));
+
+            compiler.Dedent();
+            compiler.AppendLine("}");
+        }
+    }
+
+    [Generator(NodeTypes.OrExpression)]
+    public class Or : AstNodeGenerator
+    {
+        public override void Compile(Compiler compiler, Node node, NodeParent parent)
+        {
+            compiler.CompileNode(((OrExpression)node).Left, parent.CreateChild(node));
+
+            compiler.AppendLine("$_and_tmp = get_class($_stack[count($_stack)-1]);");
+            compiler.AppendLine("if($_and_tmp === 'F_NilClass' || $_and_tmp === 'F_FalseClass')");
+            compiler.AppendLine("{");
+            compiler.Indent();
+
+            compiler.AppendLine("array_pop($_stack);");
+            compiler.CompileNode(((OrExpression)node).Right, parent.CreateChild(node));
 
             compiler.Dedent();
             compiler.AppendLine("}");

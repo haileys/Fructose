@@ -45,6 +45,9 @@
     <None Include="Tests\Array.rb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Tests\BooleanLogic.rb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Tests\Globals.rb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
