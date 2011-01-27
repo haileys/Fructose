@@ -748,15 +748,15 @@ class F_Symbol extends F_Object
 	{
 		return $this->F_to_s(NULL)->__operator_match($operand);
 	}
-	public function F_capitalize($block,$operand)
+	public function F_capitalize($block)
 	{
 		return $this->F_to_s(NULL)->F_capitalize(NULL)->F_to_sym(NULL);
 	}
-	public function F_downcase($block,$operand)
+	public function F_downcase($block)
 	{
 		return $this->F_to_s(NULL)->F_downcase(NULL)->F_to_sym(NULL);
 	}
-	public function F_upcase($block,$operand)
+	public function F_upcase($block)
 	{
 		return $this->F_to_s(NULL)->F_upcase(NULL)->F_to_sym(NULL);
 	}
