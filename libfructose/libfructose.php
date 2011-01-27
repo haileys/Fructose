@@ -597,9 +597,11 @@ class F_Number extends F_Object
 	{
 		return F_Number::__from_number($this->__NUMBER + 1);
 	}
-	public function F_to_s($block,$base = 10)
+	public function F_to_s($block,$base = NULL)
 	{
-		return F_String::__from_string(base_convert((string)$this->__NUMBER, 10, $base));
+		if($base === NULL)
+			$base = F_Number::__from_number(10);
+		return F_String::__from_string(base_convert((string)($this->__NUMBER), 10, $base->__NUMBER));
 	}
 	public function F_zero_QUES_($block)
 	{
@@ -911,7 +913,7 @@ class F_String extends F_Object
 	}
 	public function F_casecmp($block,$operand)
 	{
-		return new F_Number(strcmp(strtolower($this->__STRING), strtolower($operand->F_to_s(NULL)->__STRING)));
+		return F_Number::__from_number(strcmp(strtolower($this->__STRING), strtolower($operand->F_to_s(NULL)->__STRING)));
 	}
 	public function F_clear($block)
 	{
