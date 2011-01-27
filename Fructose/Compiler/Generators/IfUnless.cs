@@ -17,6 +17,24 @@ namespace Fructose.Compiler.Generators
         }
     }
 
+    [Generator(NodeTypes.ConditionalStatement)]
+    public class Conditional : AstNodeGenerator
+    {
+        public override void Compile(Compiler compiler, Node node, NodeParent parent)
+        {
+            var cond = (ConditionalStatement)node;
+            Expression cond_expr = cond.Condition;
+            if(cond.IsUnless)
+                cond_expr = new NotExpression(cond_expr, cond.Location);
+
+            var elseif = cond.ElseStatement != null
+                ? new List<ElseIfClause>() { new ElseIfClause(null, new Statements(cond.ElseStatement), cond.ElseStatement.Location) }
+                : new List<ElseIfClause>();
+
+            compiler.CompileNode(new IfExpression(cond_expr, new Statements(cond.Body), elseif, cond.Location));
+        }
+    }
+
     [Generator(NodeTypes.IfExpression)]
     public class If : AstNodeGenerator
     {
