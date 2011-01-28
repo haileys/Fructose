@@ -450,6 +450,38 @@ class F_Array extends F_Enumerable
 		return F_Array::__from_array($arr);
 	}
 	
+	public function __operator_add($block, $operand)
+	{
+		return F_Array:__from_array(array_merge($this->__ARRAY, $operand->__ARRAY));
+	}
+	
+	public function __operator_sub($block, $operand)
+	{
+		$new = array();
+		for($i = 0; $i < count($this->__ARRAY); $i++)
+			if(!_isTruthy($operand->F_include_QUES_(NULL, $this->__ARRAY[$i])))
+				$new[] = $this->__ARRAY[$i];
+		return F_Array::__from_array($new);
+	}
+	
+	public function __operator_lshift($block, $operand)
+	{
+		$this->__ARRAY[] = $operand;
+		return $this;
+	}
+	
+	public function __operator_eq($block, $operand)
+	{
+		if(count($this->__ARRAY) !== count($operand->__ARRAY))
+			return new F_FalseClass;
+			
+		for($i = 0; $i < count($this->__ARRAY); $i++)
+			if(!_isTruthy($this->__ARRAY[$i]->__operator_eq(NULL, $operand->__ARRAY[$i])))
+				return new F_FalseClass;
+				
+		return new F_TrueClass;
+	}
+	
 	public function __operator_arrayget($block, $index)
 	{
 		$idx = (int)$index->__NUMBER;
@@ -481,6 +513,135 @@ class F_Array extends F_Enumerable
 		}
 		$this->__ARRAY[$idx] = $val;
 		return $val;
+	}
+	
+	public function F_clear($block)
+	{
+		$this->__ARRAY = array();
+		return $this;
+	}
+	
+	public function F_compact($block)
+	{
+		$new = array();
+		for($i = 0; $i < count($this->__ARRAY); $i++)
+			if(get_class($this->__ARRAY[$i]) !== 'F_NilClass')
+				$new[] = $this->__ARRAY[$i];
+		return F_Array::__from_array($new);
+	}
+	
+	public function F_compact_EXCL($block)
+	{
+		$new = array();
+		$changed = false;
+		for($i = 0; $i < count($this->__ARRAY); $i++)
+			if(get_class($this->__ARRAY[$i]) !== 'F_NilClass')
+			{
+				$changed = true;
+				$new[] = $this->__ARRAY[$i];
+			}
+		$this->__ARRAY = $new;
+		if(!$changed)
+			return new F_NilClass;
+		return $this;
+	}
+	
+	public function F_concat($block, $ary)
+	{
+		return $this->__operator_add(NULL, $ary);
+	}
+	
+	public function F_count($block)
+	{
+		return F_Number::__from_number(count($this->__ARRAY));
+	}
+	
+	public function F_delete($block, $val)
+	{
+		$new = array();
+		$changed = false;
+		for($i = 0; $i < count($this->__ARRAY); $i++)
+			if(!_isTruthy($this->__ARRAY[$i]->__operator_eq(NULL, $val)))
+			{
+				$changed = true;
+				$new[] = $this->__ARRAY[$i];
+			}
+		if($changed)
+			return $val;
+		else
+		{
+			if($block !== NULL)
+				return $block(NULL);
+			
+			return new F_NilClass;
+		}
+	}
+	
+	public function F_delete_at($block, $index)
+	{
+		$idx = (int)$index->__NUMBER;
+		if($idx < 0)
+			$idx += count($this->__ARRAY);
+		if($idx < 0)
+			return new F_NilClass;
+		
+		$val = $this->__operator_arrayget(NULL, $index);
+		array_splice($this->__ARRAY, $idx, 1);
+		return $val;
+	}
+	
+	public function F_delete_if($block)
+	{
+		$new = array();
+		for($i = 0; $i < count($this->__ARRAY); $i++)
+			if(!_isTruthy($block(NULL, $this->__ARRAY[$i])))
+				$new[] = $this->__ARRAY[$i];
+		$this->__ARRAY = $new;
+		return $this;
+	}
+	
+	public function F_empty_QUES_($block)
+	{
+		return new F_TrueClass::__from_bool(count($this->__ARRAY) === 0);
+	}
+	
+	public function F_include_QUES_($block, $val)
+	{
+		for($i = 0; $i < count($this->__ARRAY); $i++)
+			if(_isTruthy($this->__ARRAY[$i]->__operator_eq(NULL, $val)))
+				return new F_TrueClass;
+		return new F_FalseClass;
+	}
+	
+	public function F_index($block, $val)
+	{
+		for($i = 0; $i < count($this->__ARRAY); $i++)
+			if(_isTruthy($this->__ARRAY[$i]->__operator_eq(NULL, $val)))
+				return F_Number::__from_number($i);
+		return new F_NilClass;
+	}
+	
+	public function F_replace($block, $ary)
+	{
+		$this->__ARRAY = $ary->__ARRAY;
+		return $this;
+	}
+	
+	public function F_insert($block, $index)
+	{
+		$objs = func_get_args();
+		array_splice($objs, 0, 2);
+		
+		$idx = (int)$index->__NUMBER;
+		if($idx < 0)
+			$idx += count($this->__ARRAY);
+		if($idx < 0)
+		{
+			// @TODO throw IndexError
+			return;
+		}
+		
+		
 	}
 	
 	public function F_each($block)
