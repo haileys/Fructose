@@ -37,9 +37,9 @@ namespace Fructose
             transformations = transformer.Transform();
         }
 
-        public string CompileToPHP()
+        public string CompileToPHP(string source = null)
         {
-            var compiler = new Compiler.Compiler(ast);
+            var compiler = new Compiler.Compiler(ast, source);
             return compiler.Compile(transformations);
         }
     }
