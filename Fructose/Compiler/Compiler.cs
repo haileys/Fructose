@@ -75,6 +75,9 @@ $_globals = array();");
         }
         public void CompileNode(Node node, NodeParent parents)
         {
+            if (node == null)
+                return;
+
             if (!generators.ContainsKey(node.NodeType))
                 throw new NotImplementedException("NodeType " + node.NodeType + " not supported yet: " + node.Location.ToString());
 
