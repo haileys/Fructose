@@ -76,7 +76,7 @@ namespace Fructose.Compiler.Generators
             var sb = new StringBuilder();
             foreach (var lval in pa.Left.LeftValues)
                 sb.Append(SimpleAssignment.assignmentVar(lval, parent) + ",");
-            compiler.AppendLine("list({0}) = array_pop($_stack)->__ARRAY;", sb.ToString());
+            compiler.AppendLine("@list({0}) = array_pop($_stack)->__ARRAY;", sb.ToString());
 
             foreach (var lval in pa.Left.LeftValues.Reverse())
                 compiler.AppendLine("if({0} === NULL) {0} = new F_NilClass;", SimpleAssignment.assignmentVar(lval, parent));
