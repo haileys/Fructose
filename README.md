@@ -7,14 +7,14 @@ It is composed of two parts - Fructose itself, which is written in C#, and libfr
 ### libfructose Status
 
 <table>
-<tr><td>Enumerable</td><td><span style="font-color:#009900;font-weight:bold;">Done</span></td></tr>
-<tr><td>Array</td><td><span style="font-color:#009900;font-weight:bold;">Done</span></td></tr>
-<tr><td>String</td><td><span style="font-color:#009900;font-weight:bold;">Done</span></td></tr>
-<tr><td>Symbol</td><td><span style="font-color:#009900;font-weight:bold;">Done</span></td></tr>
-<tr><td>Number</td><td><span style="font-color:#009900;font-weight:bold;">Done</span></td></tr>
-<tr><td>TrueClass/FalseClass</td><td><span style="font-color:#009900;font-weight:bold;">Done</span></td></tr>
-<tr><td>NilClass</td><td><span style="font-color:#009900;font-weight:bold;">Done</span></td></tr>
-<tr><td>Object (including Kernel)</td><td><span style="font-color:#CCCC00;">In progress</span></td></tr>
+<tr><td>Enumerable</td><td><b>Done</b></td></tr>
+<tr><td>Array</td><td><b>Done</b></td></tr>
+<tr><td>String</td><td><b>Done</b></td></tr>
+<tr><td>Symbol</td><td><b>Done</b></td></tr>
+<tr><td>Number</td><td><b>Done</b></td></tr>
+<tr><td>TrueClass/FalseClass</td><td><b>Done</b></td></tr>
+<tr><td>NilClass</td><td><b>Done</b></td></tr>
+<tr><td>Object (including Kernel)</td><td><i>In progress</i></td></tr>
 <tr><td>Hash</td><td></td></tr>
 <tr><td>Exceptions/Errors</td><td></td></tr>
 <tr><td>Regexp</td><td></td></tr>
