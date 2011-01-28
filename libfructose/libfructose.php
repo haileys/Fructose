@@ -551,11 +551,6 @@ class F_Array extends F_Enumerable
 		return $this->__operator_add(NULL, $ary);
 	}
 	
-	public function F_count($block)
-	{
-		return F_Number::__from_number(count($this->__ARRAY));
-	}
-	
 	public function F_delete($block, $val)
 	{
 		$new = array();
