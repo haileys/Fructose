@@ -6,24 +6,26 @@ It is composed of two parts - Fructose itself, which is written in C#, and libfr
 
 ### libfructose Status
 
-+ Enumerable - **Done**
-+ Array - **Done**
-+ String - **Done**
-+ Symbol - **Done**
-+ Number - **Done**
-+ TrueClass/FalseClass - **Done**
-+ NilClass - **Done**
-+ Object (including Kernel) - *In progress*
-+ Hash
-+ Exceptions/Errors
-+ Regexp
-+ Match
-+ Proc
-+ Random
-+ Range
-+ Time
-+ Dir
-+ File
+<table>
+<tr><td>Enumerable</td><td>**Done**</td></tr>
+<tr><td>Array</td><td>**Done**</td></tr>
+<tr><td>String</td><td>**Done**</td></tr>
+<tr><td>Symbol</td><td>**Done**</td></tr>
+<tr><td>Number</td><td>**Done**</td></tr>
+<tr><td>TrueClass/FalseClass</td><td>**Done**</td></tr>
+<tr><td>NilClass</td><td>**Done**</td></tr>
+<tr><td>Object (including Kernel)</td><td>*In progress*</td></tr>
+<tr><td>Hash</td><td></td></tr>
+<tr><td>Exceptions/Errors</td><td></td></tr>
+<tr><td>Regexp</td><td></td></tr>
+<tr><td>Match</td><td></td></tr>
+<tr><td>Proc</td><td></td></tr>
+<tr><td>Random</td><td></td></tr>
+<tr><td>Range</td><td></td></tr>
+<tr><td>Time</td><td></td></tr>
+<tr><td>Dir</td><td></td></tr>
+<tr><td>File</td><td></td></tr>
+</table>
 
 ### Requirements
 
