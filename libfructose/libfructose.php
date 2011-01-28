@@ -452,7 +452,7 @@ class F_Array extends F_Enumerable
 	
 	public function __operator_add($block, $operand)
 	{
-		return F_Array:__from_array(array_merge($this->__ARRAY, $operand->__ARRAY));
+		return F_Array::__from_array(array_merge($this->__ARRAY, $operand->__ARRAY));
 	}
 	
 	public function __operator_sub($block, $operand)
@@ -640,8 +640,6 @@ class F_Array extends F_Enumerable
 			// @TODO throw IndexError
 			return;
 		}
-		
-		
 	}
 	
 	public function F_each($block)
