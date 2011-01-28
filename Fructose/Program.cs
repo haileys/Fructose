@@ -27,11 +27,12 @@ namespace Fructose
 
             using (var sr = new StreamReader(input))
             {
-                var translator = new Parser(sr.ReadToEnd());
+                var source = sr.ReadToEnd();
+                var translator = new Parser(source);
                 translator.Parse();
                 using (var sw = new StreamWriter(output))
                 {
-                    sw.Write(translator.CompileToPHP());
+                    sw.Write(translator.CompileToPHP(source));
                     sw.Flush();
                 }
             }
