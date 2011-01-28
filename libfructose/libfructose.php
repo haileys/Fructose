@@ -602,7 +602,7 @@ class F_Array extends F_Enumerable
 	
 	public function F_empty_QUES_($block)
 	{
-		return new F_TrueClass::__from_bool(count($this->__ARRAY) === 0);
+		return F_TrueClass::__from_bool(count($this->__ARRAY) === 0);
 	}
 	
 	public function F_include_QUES_($block, $val)
