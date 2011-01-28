@@ -4,6 +4,27 @@
 
 It is composed of two parts - Fructose itself, which is written in C#, and libfructose - a support library written in PHP and included by every file Fructose outputs. libfructose is designed to provide a subset of the Ruby standard library to Fructose programs.
 
+### libfructose Status
+
++ Enumerable - **Done**
++ Array - **Done**
++ String - **Done**
++ Symbol - **Done**
++ Number - **Done**
++ TrueClass/FalseClass - **Done**
++ NilClass - **Done**
++ Object (including Kernel) - *In progress*
++ Hash
++ Exceptions/Errors
++ Regexp
++ Match
++ Proc
++ Random
++ Range
++ Time
++ Dir
++ File
+
 ### Requirements
 
 Fructose is written in C# and requires the .NET 4.0 framework to run. Fructose **does** work and is supported under Mono, but you will need to find yourself a copy of Microsoft.Scripting.dll and Microsoft.Dynamic.dll to get it to compile. Fructose also requires the presence of IronRuby to compile and run.
