@@ -18,7 +18,7 @@ namespace Fructose
             switch (var.NodeType)
             {
                 case NodeTypes.ConstantVariable:
-                    return string.Format("{0}", Mangling.RubyIdentifierToPHP(((LocalVariable)var).Name));
+                    return string.Format("{0}", Mangling.RubyIdentifierToPHP(((ConstantVariable)var).Name));
                 case NodeTypes.GlobalVariable:
                     return string.Format("$_globals['{0}']", Mangling.RubyIdentifierToPHP(((GlobalVariable)var).Name));
                 case NodeTypes.LocalVariable:
