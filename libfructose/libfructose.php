@@ -117,7 +117,7 @@ class F_Object
 	{
 		$args = func_get_args();
 		array_splice($args, 1, 1);
-		return call_user_func_array(array($this, $sym), $args);
+		return call_user_func_array(array($this, _rmethod_to_php($sym->__SYMBOL)), $args);
 	}
 	public function __call($name, $args)
 	{
@@ -147,14 +147,14 @@ class F_Object
 	public function F_clone($block)
 	{
 		$new = clone $this;
-		if(_isTruthy($new->F_respond_to_QUES_(F_Symbol::__from_symbol("initialize_copy"))))
+		if(_isTruthy($new->F_respond_to_QUES_(NULL, F_Symbol::__from_string("initialize_copy"))))
 			$new->F_initialize_copy(NULL, $this);
 		return $new;
 	}
 	public function F_dup($block)
 	{
 		$new = clone $this;
-		if(_isTruthy($new->F_respond_to_QUES_(F_Symbol::__from_symbol("initialize_copy"))))
+		if(_isTruthy($new->F_respond_to_QUES_(NULL, F_Symbol::__from_string("initialize_copy"))))
 			$new->F_initialize_copy(NULL, $this);
 		return $new;
 	}

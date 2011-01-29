@@ -74,6 +74,9 @@
     <None Include="Tests\HelloWorld.rb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Tests\Object.rb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Tests\ParallelAssignment.rb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
