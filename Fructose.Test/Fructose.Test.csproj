@@ -80,6 +80,9 @@
     <None Include="Tests\ParallelAssignment.rb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Tests\Random.rb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Tests\String.rb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

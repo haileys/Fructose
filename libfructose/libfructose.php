@@ -213,6 +213,24 @@ class F_Object
 	}
 }
 
+class F_Random extends F_Object
+{
+	static $seed = 0;
+	public static function SF_seed($block, $seed = NULL)
+	{
+		$n = $seed !== NULL ? (int)$seed->__NUMBER : time();
+		mt_srand($n);
+		$old_seed = F_Random::$seed;
+		F_Random::$seed = $n;
+		return F_Number::__from_number($old_seed);
+	}
+	public static function SF_rand($max = NULL)
+	{
+		$m = $max !== NULL ? $max->__NUMBER : 1.0;
+		return F_Number::__from_number((mt_rand() / mt_getrandmax())  * $m);
+	}
+}
+
 class F_Enumerable extends F_Object
 {
 	public static $_states = array();
