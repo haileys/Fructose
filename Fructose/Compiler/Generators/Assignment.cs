@@ -40,8 +40,13 @@ namespace Fructose.Compiler.Generators
                     compiler.CompileNode(new MethodCall(aia.Array, "[]=", new Arguments(aia.Arguments.Expressions.Concat(new[] { sae.Right }).ToArray()), sae.Location), parent);
                     return;
             }
-
+            
             compiler.CompileNode(sae.Right, parent.CreateChild(node));
+            if (sae.Operation != null)
+            {
+                compiler.AppendLine("$_stack[] = {0};", assignmentVar(sae.Left, parent));
+                compiler.AppendLine("$_stack[] = array_pop($_stack)->{0}(NULL, array_pop($_stack));", Mangling.RubyMethodToPHP(sae.Operation));
+            }
             compiler.AppendLine("{0} = $_stack[count($_stack)-1];", assignmentVar(sae.Left, parent));
         }
     }
