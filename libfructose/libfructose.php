@@ -84,22 +84,22 @@ class F_Object
 	public $_dyn_methods = array();
 	public static $_class_vars = array();
 
+	public $_tainted = FALSE;
+	public $_untrusted = FALSE;
+	
 	public function F_to_s($block)
 	{
 		return F_String::__from_string("Object");
 	}
-
 	public function F_puts($block,$o)
 	{
 		echo $o->F_to_s(NULL)->__STRING . "\n";
 		return new F_NilClass;
 	}
-	
 	public function F_class($block)
 	{
 		return F_Symbol::__from_string(get_class($this));
 	}
-	
 	public function F_respond_to_QUES_($block, $sym, $include_private = NULL)
 	{
 		if($include_private === NULL)
@@ -113,14 +113,12 @@ class F_Object
 			
 		return new F_FalseClass;
 	}
-	
 	public function F_send($block, $sym)
 	{
 		$args = func_get_args();
 		array_splice($args, 1, 1);
 		return call_user_func_array(array($this, $sym), $args);
 	}
-	
 	public function __call($name, $args)
 	{
 		if(isset($_dyn_methods[$name]))
@@ -133,10 +131,85 @@ class F_Object
 		debug_print_backtrace();
 		die;
 	}
-	
 	public function __add_method($name, $fn)
 	{
 		$_dyn_methods[$name] = $fn;
+	}
+	public function __operator_notmatch($block, $operand)
+	{
+		// foo ^ true == !foo
+		return $this->__operator_match(NULL, $operand)->__operator_xor(new F_TrueClass);
+	}
+	public function __operator_stricteq($block, $operand)
+	{
+		return $this->__operator_eq($operand);
+	}
+	public function F_clone($block)
+	{
+		$new = clone $this;
+		if(_isTruthy($new->F_respond_to_QUES_(F_Symbol::__from_symbol("initialize_copy"))))
+			$new->F_initialize_copy(NULL, $this);
+		return $new;
+	}
+	public function F_dup($block)
+	{
+		$new = clone $this;
+		if(_isTruthy($new->F_respond_to_QUES_(F_Symbol::__from_symbol("initialize_copy"))))
+			$new->F_initialize_copy(NULL, $this);
+		return $new;
+	}
+	public function __operator_eq($block, $operand)
+	{
+		return F_TrueClass::__from_bool($this === $operand);
+	}
+	public function F_equal_QUES_($block, $operand)
+	{
+		return F_TrueClass::__from_bool($this === $operand);
+	}
+	public function F_inspect($block)
+	{
+		return $this->F_to_s(NULL);
+	}
+	public function F_instance_of_QUES_($block, $sym)
+	{
+		return F_TrueClass::__from_bool(get_class($this) === _rmethod_to_php($sym->__SYMBOL));
+	}
+	public function F_is_a_QUES_($block, $sym)
+	{
+		return F_TrueClass::__from_bool(is_a($this, _rmethod_to_php($sym->__SYMBOL)));
+	}
+	public function F_nil_QUES_($block)
+	{
+		return new F_FalseClass;
+	}
+	public function F_taint($block)
+	{
+		$this->_tainted = TRUE;
+	}
+	public function F_untaint($block)
+	{
+		$this->_tainted = FALSE;
+	}
+	public function F_tainted_QUES_($block)
+	{
+		return F_TrueClass::__from_bool($this->_tainted);
+	}
+	public function F_tap($block)
+	{
+		$block(NULL, $this);
+		return $this;
+	}
+	public function F_trust($block)
+	{
+		$this->_untrusted = FALSE;
+	}
+	public function F_untrust($block)
+	{
+		$this->_untrusted = TRUE;
+	}
+	public function F_untrusted_QUES_($block)
+	{
+		return F_TrueClass::__from_bool($this->_untrusted);
 	}
 }
 
