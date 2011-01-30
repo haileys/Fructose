@@ -17,9 +17,9 @@ namespace Fructose.Compiler.Generators
             foreach (var maplet in hash.Maplets)
             {
                 compiler.CompileNode(maplet.Key, parent.CreateChild(node));
-                compiler.AppendLine("$_tmp_pairs[count($tmp_pairs)-1][] = array_pop($_stack);");
+                compiler.AppendLine("$_tmp_pairs[count($_tmp_pairs)-1][] = array_pop($_stack);");
                 compiler.CompileNode(maplet.Value, parent.CreateChild(node));
-                compiler.AppendLine("$_tmp_pairs[count($tmp_pairs)-1][] = array_pop($_stack);");
+                compiler.AppendLine("$_tmp_pairs[count($_tmp_pairs)-1][] = array_pop($_stack);");
             }
 
             compiler.AppendLine("$_stack[] = F_Hash::__by_flatpairs(array_pop($_tmp_pairs));");
