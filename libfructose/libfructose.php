@@ -795,7 +795,7 @@ class F_Hash extends F_Enumerable
 	{
 		foreach($this->__PAIRS as $pair)
 		{
-			if(_isTruthy($pair->__K->__operator_eq($key)))
+			if(_isTruthy($pair->__K->__operator_eq(NULL, $key)))
 				return $pair->__V;
 		}
 		return $this->F_default(NULL, $key);
@@ -804,7 +804,7 @@ class F_Hash extends F_Enumerable
 	{
 		foreach($this->__PAIRS as $pair)
 		{
-			if(_isTruthy($pair->__K->__operator_eq($key)))
+			if(_isTruthy($pair->__K->__operator_eq(NULL, $key)))
 			{
 				$pair->__V = $val;
 				return $pair->__V;
@@ -817,7 +817,7 @@ class F_Hash extends F_Enumerable
 	{
 		foreach($this->__PAIRS as $pair)
 		{
-			if(_isTruthy($pair->__K->__operator_eq($key)))
+			if(_isTruthy($pair->__K->__operator_eq(NULL, $key)))
 				return $pair->__V;
 		}
 		return new F_NilClass;
@@ -845,7 +845,7 @@ class F_Hash extends F_Enumerable
 		$val = NULL;
 		foreach($this->__PAIRS as $pair)
 		{
-			if(!_isTruthy($pair->__K->__operator_eq($key)))
+			if(!_isTruthy($pair->__K->__operator_eq(NULL, $key)))
 				$new_pairs[] = $pair;
 			else
 				$val = $pair->__V;
@@ -898,14 +898,14 @@ class F_Hash extends F_Enumerable
 	public function F_has_key_QUES_($block, $key)
 	{
 		foreach($this->__PAIRS as $pair)
-			if(_isTruthy($pair->__K->__operator_eq($key)))
+			if(_isTruthy($pair->__K->__operator_eq(NULL, $key)))
 				return new F_TrueClass;
 		return new F_FalseClass;
 	}
 	public function F_has_value_QUES_($block, $val)
 	{
 		foreach($this->__PAIRS as $pair)
-			if(_isTruthy($pair->__V->__operator_eq($val)))
+			if(_isTruthy($pair->__V->__operator_eq(NULL, $val)))
 				return new F_TrueClass;
 		return new F_FalseClass;
 	}
@@ -953,7 +953,7 @@ class F_Hash extends F_Enumerable
 	{
 		foreach($this->__PAIRS as $pair)
 		{
-			if(_isTruthy($pair->__V->__operator_eq($val)))
+			if(_isTruthy($pair->__V->__operator_eq(NULL, $val)))
 				return $pair->__K;
 		}
 		return new F_NilClass;
