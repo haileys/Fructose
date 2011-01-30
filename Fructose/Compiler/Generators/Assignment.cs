@@ -32,12 +32,16 @@ namespace Fructose.Compiler.Generators
         {
             var sae = (SimpleAssignmentExpression)node;
 
+            // substitute a method call of []= rather than the crap that ironruby's parser produces:
             switch (sae.Left.NodeType)
             {
                 case NodeTypes.ArrayItemAccess:
                     var aia = (ArrayItemAccess)sae.Left;
-                    // substitute a method call of []= rather than the crap that ironruby's parser produces
-                    compiler.CompileNode(new MethodCall(aia.Array, "[]=", new Arguments(aia.Arguments.Expressions.Concat(new[] { sae.Right }).ToArray()), sae.Location), parent);
+                    compiler.CompileNode(new MethodCall(aia.Array, "[]=", new Arguments(aia.Arguments.Expressions.Concat(new[] { sae.Right }).ToArray()), sae.Location), parent.CreateChild(node));
+                    return;
+                case NodeTypes.AttributeAccess:
+                    var aa = (AttributeAccess)sae.Left;
+                    compiler.CompileNode(new MethodCall(aa.Qualifier, aa.Name, new Arguments(sae.Right), aa.Location), parent.CreateChild(node));
                     return;
             }
             
