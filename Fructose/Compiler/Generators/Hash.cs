@@ -22,7 +22,7 @@ namespace Fructose.Compiler.Generators
                 compiler.AppendLine("$_tmp_pairs[count($_tmp_pairs)-1][] = array_pop($_stack);");
             }
 
-            compiler.AppendLine("$_stack[] = F_Hash::__by_flatpairs(array_pop($_tmp_pairs));");
+            compiler.AppendLine("$_stack[] = F_Hash::__from_flatpairs(array_pop($_tmp_pairs));");
         }
     }
 }
