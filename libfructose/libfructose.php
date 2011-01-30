@@ -496,7 +496,6 @@ class F_Enumerable extends F_Object
 		return F_Array::__from_array(F_Enumerable::$_states[$state]);
 	}
 }
-
 class F_Array extends F_Enumerable
 {
 	public static function __from_array($arr)
@@ -735,7 +734,7 @@ class F_Array extends F_Enumerable
 		return new F_NilClass;
 	}
 }
-
+/*
 class F_Pair extends F_Object
 {
 	public static function SF_new($block, $k, $v)
@@ -754,6 +753,7 @@ class F_Pair extends F_Object
 		return $this->__V;
 	}
 }
+*/
 class F_Hash extends F_Enumerable
 {
 	public static function __from_pairs($pairs)
@@ -769,7 +769,7 @@ class F_Hash extends F_Enumerable
 		$hash->__DEFAULT = new F_NilClass;
 		
 		for($i = 0; $i < count($flatpairs); $i += 2)
-			$hash->__PAIRS[] = F_Pair::SF_new(NULL, $flatpairs[$i], $flatpairs[$i+1]);
+			$hash->__PAIRS[] = F_Array::__from_array(array($flatpairs[$i], $flatpairs[$i+1]));
 			
 		return $hash;
 	}
@@ -795,8 +795,8 @@ class F_Hash extends F_Enumerable
 	{
 		foreach($this->__PAIRS as $pair)
 		{
-			if(_isTruthy($pair->__K->__operator_eq(NULL, $key)))
-				return $pair->__V;
+			if(_isTruthy($pair->__ARRAY[0]->__operator_eq(NULL, $key)))
+				return $pair->__ARRAY[1];
 		}
 		return $this->F_default(NULL, $key);
 	}
@@ -804,21 +804,21 @@ class F_Hash extends F_Enumerable
 	{
 		foreach($this->__PAIRS as $pair)
 		{
-			if(_isTruthy($pair->__K->__operator_eq(NULL, $key)))
+			if(_isTruthy($pair->__ARRAY[0]->__operator_eq(NULL, $key)))
 			{
-				$pair->__V = $val;
-				return $pair->__V;
+				$pair->__ARRAY[1] = $val;
+				return $pair->__ARRAY[0];
 			}
 		}
-		$this->__PAIRS[] = F_Pair::SF_new(NULL, $key->F_dup(NULL), $val);
+		$this->__PAIRS[] = F_Array::__from_array(array($key->F_dup(NULL), $val));
 		return $val;
 	}
 	public function F_assoc($block, $key)
 	{
 		foreach($this->__PAIRS as $pair)
 		{
-			if(_isTruthy($pair->__K->__operator_eq(NULL, $key)))
-				return $pair->__V;
+			if(_isTruthy($pair->__ARRAY[0]->__operator_eq(NULL, $key)))
+				return $pair->__ARRAY[1];
 		}
 		return new F_NilClass;
 	}
@@ -845,10 +845,10 @@ class F_Hash extends F_Enumerable
 		$val = NULL;
 		foreach($this->__PAIRS as $pair)
 		{
-			if(!_isTruthy($pair->__K->__operator_eq(NULL, $key)))
+			if(!_isTruthy($pair->__ARRAY[0]->__operator_eq(NULL, $key)))
 				$new_pairs[] = $pair;
 			else
-				$val = $pair->__V;
+				$val = $pair->__ARRAY[1];
 		}
 		if($val === NULL)
 		{
@@ -868,7 +868,7 @@ class F_Hash extends F_Enumerable
 		$old_pairs = array();
 		foreach($this->__PAIRS as $pair)
 		{
-			if(!_isTruthy($block(NULL, $pair->__K, $pair->__V)))
+			if(!_isTruthy($block(NULL, $pair->__ARRAY[0], $pair->__ARRAY[1])))
 				$new_pairs[] = $pair;
 			else
 				$old_pairs[] = $pair;
@@ -879,17 +879,17 @@ class F_Hash extends F_Enumerable
 	public function F_each($block)
 	{
 		foreach($this->__PAIRS as $pair)
-			$block(NULL, $pair->__K, $pair->__V);
+			$block(NULL, $pair->__ARRAY[0], $pair->__ARRAY[1]);
 	}
 	public function F_each_key($block)
 	{
 		foreach($this->__PAIRS as $pair)
-			$block(NULL, $pair->__K);
+			$block(NULL, $pair->__ARRAY[0]);
 	}
 	public function F_each_value($block)
 	{
 		foreach($this->__PAIRS as $pair)
-			$block(NULL, $pair->__V);
+			$block(NULL, $pair->__ARRAY[1]);
 	}
 	public function F_empty_QUES_($block)
 	{
@@ -898,14 +898,14 @@ class F_Hash extends F_Enumerable
 	public function F_has_key_QUES_($block, $key)
 	{
 		foreach($this->__PAIRS as $pair)
-			if(_isTruthy($pair->__K->__operator_eq(NULL, $key)))
+			if(_isTruthy($pair->__ARRAY[0]->__operator_eq(NULL, $key)))
 				return new F_TrueClass;
 		return new F_FalseClass;
 	}
 	public function F_has_value_QUES_($block, $val)
 	{
 		foreach($this->__PAIRS as $pair)
-			if(_isTruthy($pair->__V->__operator_eq(NULL, $val)))
+			if(_isTruthy($pair->__ARRAY[1]->__operator_eq(NULL, $val)))
 				return new F_TrueClass;
 		return new F_FalseClass;
 	}
@@ -918,7 +918,7 @@ class F_Hash extends F_Enumerable
 			if(!$first)
 				$str .= ", ";
 			$first = FALSE;
-			$str .= $pairs->__K->F_to_s(NULL) . " => " . $pairs->__V->F_to_s(NULL);
+			$str .= $pairs->__ARRAY[0]->F_to_s(NULL) . " => " . $pairs->__ARRAY[1]->F_to_s(NULL);
 		}
 		$str .= " }";
 		return F_String::__from_string($str);
@@ -931,8 +931,8 @@ class F_Hash extends F_Enumerable
 	{
 		$new_pairs = array();
 		foreach($this->__PAIRS as $pair)
-			$new_pairs[] = F_Pair::SF_new(NULL, $pair->__V, $pair->__K);
-			
+			$new_pairs[] = F_Array::__from_array(array($pair->__ARRAY[1], $pair->__ARRAY[0]));
+		
 		return F_Hash::__from_pairs($new_pairs);
 	}
 	public function F_keep_if($block)
@@ -941,7 +941,7 @@ class F_Hash extends F_Enumerable
 		$old_pairs = array();
 		foreach($this->__PAIRS as $pair)
 		{
-			if(_isTruthy($block(NULL, $pair->__K, $pair->__V)))
+			if(_isTruthy($block(NULL, $pair->__ARRAY[0], $pair->__ARRAY[1])))
 				$new_pairs[] = $pair;
 			else
 				$old_pairs[] = $pair;
@@ -953,8 +953,8 @@ class F_Hash extends F_Enumerable
 	{
 		foreach($this->__PAIRS as $pair)
 		{
-			if(_isTruthy($pair->__V->__operator_eq(NULL, $val)))
-				return $pair->__K;
+			if(_isTruthy($pair->__ARRAY[1]->__operator_eq(NULL, $val)))
+				return $pair->__ARRAY[0];
 		}
 		return new F_NilClass;
 	}
@@ -962,7 +962,7 @@ class F_Hash extends F_Enumerable
 	{
 		$arr = array();
 		foreach($this->__PAIRS as $pair)
-			$arr[] = $pair->__K;
+			$arr[] = $pair->__ARRAY[0];
 		return F_Array::__from_array($arr);
 	}
 	public function F_size($block)
@@ -973,15 +973,15 @@ class F_Hash extends F_Enumerable
 	{
 		$new = F_Hash::SF_new(NULL);
 		foreach($this->__PAIRS as $pair)
-			$new->__operator_arrayset(NULL, $pair->__K, $pair->__V);
+			$new->__operator_arrayset(NULL, $pair->__ARRAY[0], $pair->__ARRAY[1]);
 		foreach($other->__PAIRS as $pair)
-			$new->__operator_arrayset(NULL, $pair->__K, $pair->__V);
+			$new->__operator_arrayset(NULL, $pair->__ARRAY[0], $pair->__ARRAY[1]);
 		return $new;
 	}
 	public function F_merge_EXCL_($block, $other)
 	{
 		foreach($other->__PAIRS as $pair)
-			$this->__operator_arrayset(NULL, $pair->__K, $pair->__V);
+			$this->__operator_arrayset(NULL, $pair->__ARRAY[0], $pair->__ARRAY[1]);
 		return $this;
 	}
 	public function F_reject($block)
@@ -989,7 +989,7 @@ class F_Hash extends F_Enumerable
 		$new_pairs = array();
 		foreach($this->__PAIRS as $pair)
 		{
-			if(!_isTruthy($block(NULL, $pair->__K, $pair->__V)))
+			if(!_isTruthy($block(NULL, $pair->__ARRAY[0], $pair->__ARRAY[1])))
 				$new_pairs[] = $pair;
 		}
 		return F_Hash::__from_pairs($new_pairs);
