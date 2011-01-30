@@ -66,7 +66,10 @@ namespace Fructose
 
                 default:
                     if (mname.Last() == '=')
-                        return mname.Substring(0, mname.Length - 1) + "__set";
+                    {
+                        var m = RubyIdentifierToPHP(mname);
+                        return m.Substring(0, m.Length - 1) + "__set";
+                    }
 
                     return RubyIdentifierToPHP(mname);
             }
