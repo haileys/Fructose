@@ -736,6 +736,264 @@ class F_Array extends F_Enumerable
 	}
 }
 
+class F_Pair extends F_Object
+{
+	public static function SF_new($block, $k, $v)
+	{
+		$pair = new F_Pair;
+		$pair->__K = $k;
+		$pair->__V = $v;
+		return $pair;
+	}
+	public function F_key($block)
+	{
+		return $this->__K;
+	}
+	public function F_value($block)
+	{
+		return $this->__V;
+	}
+}
+class F_Hash extends F_Enumerable
+{
+	public static function __by_pairs($pairs)
+	{
+		$hash = new F_Hash;
+		$hash->__DEFAULT = new F_NilClass;
+		$hash->__PAIRS = $pairs;
+		return $hash;
+	}
+	public static function SF_new($block, $obj = NULL)
+	{
+		$hsh = new F_Hash;
+		if($block === NULL && $obj === NULL)
+		{
+			$hsh->__DEFAULT = new F_NilClass;
+		}
+		elseif($obj !== NULL)
+		{
+			$hsh->__DEFAULT = $obj;
+		}
+		else
+		{
+			$hsh->__DEFAULT = $block;
+		}
+		$hsh->__PAIRS = array();
+		return $hsh;
+	}
+	public function __operator_arrayget($block, $key)
+	{
+		foreach($this->__PAIRS as $pair)
+		{
+			if(_isTruthy($pair->__K->__operator_eq($key)))
+				return $pair->__V;
+		}
+		return $this->F_default(NULL, $key);
+	}
+	public function __operator_arrayset($block, $key, $val)
+	{
+		foreach($this->__PAIRS as $pair)
+		{
+			if(_isTruthy($pair->__K->__operator_eq($key)))
+			{
+				$pair->__V = $val;
+				return $pair->__V;
+			}
+		}
+		$this->__PAIRS[] = F_Pair::SF_new(NULL, $key->F_dup(NULL), $val);
+		return $val;
+	}
+	public function F_assoc($block, $key)
+	{
+		foreach($this->__PAIRS as $pair)
+		{
+			if(_isTruthy($pair->__K->__operator_eq($key)))
+				return $pair->__V;
+		}
+		return new F_NilClass;
+	}
+	public function F_clear($block)
+	{
+		$this->__PAIRS = array();
+	}
+	public function F_default($block, $key = NULL)
+	{
+		if(is_string($this->__DEFAULT) && $key !== NULL)
+		{
+			$blockfn = $this->__DEFAULT;
+			return $blockfn(NULL, $this, $key);
+		}
+		return $this->__DEFAULT;
+	}
+	public function F_default__set($block, $default)
+	{
+		$this->__DEFAULT = $default;
+	}
+	public function F_delete($block, $key)
+	{
+		$new_pairs = array();
+		$val = NULL;
+		foreach($this->__PAIRS as $pair)
+		{
+			if(!_isTruthy($pair->__K->__operator_eq($key)))
+				$new_pairs[] = $pair;
+			else
+				$val = $pair->__V;
+		}
+		if($val !== NULL)
+		{
+			if($block === NULL)
+				return new F_NilClass;
+			return $block(NULL, $key);
+		}
+		else
+		{
+			$this->__PAIRS = $new_pairs;
+			return $val;
+		}
+	}
+	public function F_delete_if($block)
+	{
+		$new_pairs = array();
+		$old_pairs = array();
+		foreach($this->__PAIRS as $pair)
+		{
+			if(_isTruthy($block(NULL, $pair->__K, $pair->__V))
+				$new_pairs[] = $pair;
+			else
+				$old_pairs[] = $pair;
+		}
+		$this->__PAIRS = $new_pairs;
+		return F_Hash::__from_pairs($old_pairs);
+	}
+	public function F_each($block)
+	{
+		foreach($this->__PAIRS as $pair)
+			$block(NULL, $pair->__K, $pair->__V);
+	}
+	public function F_each_key($block)
+	{
+		foreach($this->__PAIRS as $pair)
+			$block(NULL, $pair->__K);
+	}
+	public function F_each_value($block)
+	{
+		foreach($this->__PAIRS as $pair)
+			$block(NULL, $pair->__V);
+	}
+	public function F_empty_QUES_($block)
+	{
+		return F_TrueClass::__from_bool(count($this->__PAIRS) === 0);
+	}
+	public function F_has_key_QUES_($block, $key)
+	{
+		foreach($this->__PAIRS as $pair)
+			if(_isTruthy($pair->__K->__operator_eq($key)))
+				return new F_TrueClass;
+		return new F_FalseClass;
+	}
+	public function F_has_value_QUES_($block, $val)
+	{
+		foreach($this->__PAIRS as $pair)
+			if(_isTruthy($pair->__V->__operator_eq($val)))
+				return new F_TrueClass;
+		return new F_FalseClass;
+	}
+	public function F_to_s($block)
+	{
+		$str = "{ ";
+		$first = TRUE;
+		foreach($this->__PAIRS as $pairs)
+		{
+			if(!$first)
+				$str .= ", ";
+			$first = FALSE;
+			$str .= $pairs->__K->F_to_s(NULL) . " => " . $pairs->__V->F_to_s(NULL);
+		}
+		$str .= " }";
+		return F_String::__from_string($str);
+	}
+	public function F_inspect($block)
+	{
+		return $this->F_to_s(NULL);
+	}
+	public function F_invert($block)
+	{
+		$new_pairs = array();
+		foreach($this->__PAIRS as $pair)
+			$new_pairs[] = F_Pair::SF_new(NULL, $pair->__V, $pair->__K);
+			
+		return F_Hash::__from_pairs($new_pairs);
+	}
+	public function F_keep_if($block)
+	{
+		$new_pairs = array();
+		$old_pairs = array();
+		foreach($this->__PAIRS as $pair)
+		{
+			if(!_isTruthy($block(NULL, $pair->__K, $pair->__V))
+				$new_pairs[] = $pair;
+			else
+				$old_pairs[] = $pair;
+		}
+		$this->__PAIRS = $new_pairs;
+		return F_Hash::__from_pairs($old_pairs);
+	}
+	public function F_key($block, $val)
+	{
+		foreach($this->__PAIRS as $pair)
+		{
+			if(_isTruthy($pair->__V->__operator_eq($val)))
+				return $pair->__K;
+		}
+		return new F_NilClass;
+	}
+	public function F_keys($block)
+	{
+		$arr = array();
+		foreach($this->__PAIRS as $pair)
+			$arr[] = $pair->__K;
+		return F_Array::__from_array($arr);
+	}
+	public function F_size($block)
+	{
+		return F_Number::__from_number(count($this->__PAIRS));
+	}
+	public function F_merge($block, $other)
+	{
+		$new = F_Hash::SF_new(NULL);
+		foreach($this->__PAIRS as $pair)
+			$new->__operator_arrayset(NULL, $pair->__K, $pair->__V);
+		foreach($other->__PAIRS as $pair)
+			$new->__operator_arrayset(NULL, $pair->__K, $pair->__V);
+		return $new;
+	}
+	public function F_merge_EXCL($block, $other)
+	{
+		foreach($other->__PAIRS as $pair)
+			$this->__operator_arrayset(NULL, $pair->__K, $pair->__V);
+		return $this;
+	}
+	public function F_reject($block)
+	{
+		$new_pairs = array();
+		foreach($this->__PAIRS as $pair)
+		{
+			if(!_isTruthy($block(NULL, $pair->__K, $pair->__V))
+				$new_pairs[] = $pair;
+		}
+		return F_Hash::__from_pairs($new_pairs);
+	}
+	public function F_shift($block)
+	{
+		return array_shift($this->__PAIRS);
+	}
+	public function F_to_hash($block)
+	{
+		return $this;
+	}
+}
+
 class F_Number extends F_Object
 {
 	public static function __from_number($num)
