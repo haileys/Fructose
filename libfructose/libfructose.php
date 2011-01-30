@@ -756,14 +756,14 @@ class F_Pair extends F_Object
 }
 class F_Hash extends F_Enumerable
 {
-	public static function __by_pairs($pairs)
+	public static function __from_pairs($pairs)
 	{
 		$hash = new F_Hash;
 		$hash->__DEFAULT = new F_NilClass;
 		$hash->__PAIRS = $pairs;
 		return $hash;
 	}
-	public static function __by_flatpairs($flatpairs)
+	public static function __from_flatpairs($flatpairs)
 	{
 		$hash = new F_Hash;
 		$hash->__DEFAULT = new F_NilClass;
@@ -868,7 +868,7 @@ class F_Hash extends F_Enumerable
 		$old_pairs = array();
 		foreach($this->__PAIRS as $pair)
 		{
-			if(_isTruthy($block(NULL, $pair->__K, $pair->__V)))
+			if(!_isTruthy($block(NULL, $pair->__K, $pair->__V)))
 				$new_pairs[] = $pair;
 			else
 				$old_pairs[] = $pair;
@@ -941,7 +941,7 @@ class F_Hash extends F_Enumerable
 		$old_pairs = array();
 		foreach($this->__PAIRS as $pair)
 		{
-			if(!_isTruthy($block(NULL, $pair->__K, $pair->__V)))
+			if(_isTruthy($block(NULL, $pair->__K, $pair->__V)))
 				$new_pairs[] = $pair;
 			else
 				$old_pairs[] = $pair;
@@ -978,7 +978,7 @@ class F_Hash extends F_Enumerable
 			$new->__operator_arrayset(NULL, $pair->__K, $pair->__V);
 		return $new;
 	}
-	public function F_merge_EXCL($block, $other)
+	public function F_merge_EXCL_($block, $other)
 	{
 		foreach($other->__PAIRS as $pair)
 			$this->__operator_arrayset(NULL, $pair->__K, $pair->__V);
