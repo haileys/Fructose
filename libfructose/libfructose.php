@@ -763,6 +763,16 @@ class F_Hash extends F_Enumerable
 		$hash->__PAIRS = $pairs;
 		return $hash;
 	}
+	public static function __by_flatpairs($flatpairs)
+	{
+		$hash = new F_Hash;
+		$hash->__DEFAULT = new F_NilClass;
+		
+		for($i = 0; $i < count($flatpairs); $i += 2)
+			$hash->__PAIRS[] = F_Pair::SF_new(NULL, $flatpairs[$i], $flatpairs[$i+1]);
+			
+		return $hash;
+	}
 	public static function SF_new($block, $obj = NULL)
 	{
 		$hsh = new F_Hash;
@@ -858,7 +868,7 @@ class F_Hash extends F_Enumerable
 		$old_pairs = array();
 		foreach($this->__PAIRS as $pair)
 		{
-			if(_isTruthy($block(NULL, $pair->__K, $pair->__V))
+			if(_isTruthy($block(NULL, $pair->__K, $pair->__V)))
 				$new_pairs[] = $pair;
 			else
 				$old_pairs[] = $pair;
@@ -931,7 +941,7 @@ class F_Hash extends F_Enumerable
 		$old_pairs = array();
 		foreach($this->__PAIRS as $pair)
 		{
-			if(!_isTruthy($block(NULL, $pair->__K, $pair->__V))
+			if(!_isTruthy($block(NULL, $pair->__K, $pair->__V)))
 				$new_pairs[] = $pair;
 			else
 				$old_pairs[] = $pair;
@@ -979,7 +989,7 @@ class F_Hash extends F_Enumerable
 		$new_pairs = array();
 		foreach($this->__PAIRS as $pair)
 		{
-			if(!_isTruthy($block(NULL, $pair->__K, $pair->__V))
+			if(!_isTruthy($block(NULL, $pair->__K, $pair->__V)))
 				$new_pairs[] = $pair;
 		}
 		return F_Hash::__from_pairs($new_pairs);
