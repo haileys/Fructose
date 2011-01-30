@@ -850,7 +850,7 @@ class F_Hash extends F_Enumerable
 			else
 				$val = $pair->__V;
 		}
-		if($val !== NULL)
+		if($val === NULL)
 		{
 			if($block === NULL)
 				return new F_NilClass;
