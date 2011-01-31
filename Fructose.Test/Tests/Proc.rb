@@ -1,4 +1,4 @@
-﻿#TEST_EXPECTS:
+﻿#TEST EXPECTS:
 #hello
 #3
 #true
