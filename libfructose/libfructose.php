@@ -835,6 +835,97 @@ class F_Array extends F_Enumerable
 		return F_Enumerator::__from_array($this->__ARRAY);
 	}
 }
+class F_Range extends F_Enumerable
+{
+	public static function SF_new($block, $begin, $end, $exclusive = NULL)
+	{
+		$r = new F_Range;
+		$r->__BEGIN = $begin;
+		$r->__END = $end;
+		$r->__EXCLUSIVE = $exclusive === NULL ? FALSE : _isTruthy($exclusive);
+		return $r;
+	}
+	private function enumerate_range()
+	{
+		if(isset($this->__RANGE))
+			return;
+		
+		$i = $this->__BEGIN;
+		while(true)
+		{
+			if(_isTruthy($this->__END->__operator_eq($i)))
+			{
+				if(!$this->__EXCLUSIVE)
+					$this->__RANGE[] = $i;
+				break;
+			}
+			$this->__RANGE[] = $i;
+			
+			$i = $i->F_succ(NULL);
+		}
+	}
+	public function __operator_eq($block, $operand)
+	{
+		return F_TrueClass::__from_bool(_isTruthy($this->__BEGIN->__operator_eq($operand->__BEGIN))
+										&& _isTruthy($this->__END->__operator_eq($operand->__END))
+										&& $this->__EXCLUSIVE === $operand->__EXCLUSIVE);
+	}
+	public function __operator_stricteq($block, $operand)
+	{
+		if(_isTruthy($operand->F_respond_to_QUES_(F_Symbol::__from_string("<=>"))))
+		{
+			if($operand->__operator_spaceship($this->__BEGIN)->__NUMBER >= 0
+				&& $operand->__operator_spaceship($this->__END)->__NUMBER <= 0)
+			{
+				return new F_TrueClass;
+			}
+			else
+			{
+				return new F_FalseClass;
+			}
+		}
+		// we're going to have to enumerate the range to see if $operand included
+		$this->enumerate_range();
+		foreach($this->__RANGE as $i)
+			if(_isTruthy($i->__operator_eq($operand)))
+				return new F_TrueClass;
+		return new F_FalseClass;
+	}
+	public function F_begin($block)
+	{
+		return $this->__BEGIN;
+	}
+	public function F_cover_QUES_($block, $val)
+	{
+		return $this->__operator_stricteq(NULL, $val);
+	}
+	public function F_include_QUES_($block, $val)
+	{
+		return $this->__operator_stricteq(NULL, $val);
+	}
+	public function F_each($block)
+	{
+		$this->enumerate_range();
+		if($block === NULL)
+			return F_Enumerator::__from_array($this->__RANGE);
+		
+		foreach($this->__RANGE as $i)
+			$block(NULL, $i);
+	}
+	public function F_end($block)
+	{
+		return $this->__END;
+	}
+	public function F_exclude_end_QUES_($block)
+	{
+		return F_TrueClass::__from_bool($this->__EXCLUSIVE);
+	}
+	public function F_to_a($block)
+	{
+		$this->enumerate_range();
+		return F_Array::__from_array($this->__RANGE);
+	}
+}
 class F_Hash extends F_Enumerable
 {
 	public static function __from_pairs($pairs)
