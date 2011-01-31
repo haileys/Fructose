@@ -218,10 +218,17 @@ class F_Object
 	{
 		return F_TrueClass::__from_bool($this->_untrusted);
 	}
+	public function F_raise($block, $err)
+	{		
+		if(is_a($err, 'F_Error'))
+			throw new ErrorCarrier($err);
+			
+		throw new ErrorCarrier(F_Error::SF_new(NULL, $err));
+	}
 }
 class F_Error extends F_Object
 {
-	public function SF_new($block, $msg = NULL)
+	public static function SF_new($block, $msg = NULL)
 	{
 		$err = new F_Error;
 		$err->__MESSAGE = $msg !== NULL ? $msg->F_to_s(NULL) : new F_NilClass;
@@ -230,6 +237,10 @@ class F_Error extends F_Object
 	public function F_message($block)
 	{
 		return $this->__MESSAGE;
+	}
+	public function F_message__set($block, $val)
+	{
+		return ($this->__MESSAGE = $val);
 	}
 	public function F_to_s($block)
 	{
@@ -245,7 +256,7 @@ class F_Error extends F_Object
 }
 class F_StopIteration extends F_Error
 {
-	public function SF_new($block, $msg = NULL)
+	public static function SF_new($block, $msg = NULL)
 	{
 		$err = new F_StopIteration;
 		$err->__MESSAGE = $msg !== NULL ? $msg->F_to_s(NULL) : new F_NilClass;
@@ -255,7 +266,7 @@ class F_StopIteration extends F_Error
 
 class F_Proc extends F_Object
 {
-	public function SF_new($block)
+	public static function SF_new($block)
 	{
 		$p = new F_Proc;
 		$p->__BLOCK = $block;
@@ -1059,7 +1070,6 @@ class F_Hash extends F_Enumerable
 		return $this;
 	}
 }
-
 class F_Number extends F_Object
 {
 	public static function __from_number($num)
