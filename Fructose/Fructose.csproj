@@ -50,6 +50,7 @@
     <Compile Include="Compiler\AstNodeGenerator.cs" />
     <Compile Include="Compiler\Compiler.cs" />
     <Compile Include="Compiler\Generators\Array.cs" />
+    <Compile Include="Compiler\Generators\For.cs" />
     <Compile Include="Compiler\Generators\Hash.cs" />
     <Compile Include="Compiler\Generators\Return.cs" />
     <Compile Include="Compiler\Generators\Yield.cs" />

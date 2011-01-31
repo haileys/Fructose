@@ -263,7 +263,26 @@ class F_StopIteration extends F_Error
 		return $err;
 	}
 }
-
+class F_Enumerator extends F_Object
+{
+	public static function __from_array($array)
+	{
+		$e = new F_Enumerator;
+		$e->__ARRAY = $array;
+		$e->__INDEX = 0;
+		return $e;
+	}
+	public function F_next($block)
+	{
+		if($this->__INDEX === count($this->__ARRAY))
+			throw new ErrorCarrier(F_StopIteration::SF_new(NULL));
+		return $this->__ARRAY[$this->__INDEX++];
+	}
+	public function F_peek($block)
+	{
+		return $this->__ARRAY[$this->__INDEX];
+	}
+}
 class F_Proc extends F_Object
 {
 	public static function SF_new($block)
@@ -806,9 +825,14 @@ class F_Array extends F_Enumerable
 	
 	public function F_each($block)
 	{
-		foreach($this->__ARRAY as $i)
-			$block(NULL, $i);
-		return new F_NilClass;
+		if($block !== NULL)
+		{
+			foreach($this->__ARRAY as $i)
+				$block(NULL, $i);
+			return new F_NilClass;
+		}
+		
+		return F_Enumerator::__from_array($this->__ARRAY);
 	}
 }
 class F_Hash extends F_Enumerable
@@ -945,8 +969,13 @@ class F_Hash extends F_Enumerable
 	}
 	public function F_each($block)
 	{
-		foreach($this->__PAIRS as $pair)
-			$block(NULL, $pair->__ARRAY[0], $pair->__ARRAY[1]);
+		if($block !== NULL)
+		{
+			foreach($this->__PAIRS as $pair)
+				$block(NULL, $pair->__ARRAY[0], $pair->__ARRAY[1]);
+		}
+		
+		return F_Enumerator::__from_array($this->__PAIRS);
 	}
 	public function F_each_key($block)
 	{

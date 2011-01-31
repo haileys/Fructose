@@ -51,6 +51,9 @@
     <None Include="Tests\Error.rb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Tests\For.rb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Tests\Globals.rb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
