@@ -221,9 +221,11 @@ class F_Object
 }
 class F_Error extends F_Object
 {
-	public function F_initialize($block, $msg = NULL)
+	public function SF_new($block, $msg = NULL)
 	{
-		$this->__MESSAGE = $msg !== NULL ? $msg->F_to_s(NULL) : new F_NilClass;
+		$err = new F_Error;
+		$err->__MESSAGE = $msg !== NULL ? $msg->F_to_s(NULL) : new F_NilClass;
+		return $err;
 	}
 	public function F_message($block)
 	{
@@ -241,13 +243,23 @@ class F_Error extends F_Object
 		return $ex;
 	}
 }
-class F_StopIteration extends F_Error { }
+class F_StopIteration extends F_Error
+{
+	public function SF_new($block, $msg = NULL)
+	{
+		$err = new F_StopIteration;
+		$err->__MESSAGE = $msg !== NULL ? $msg->F_to_s(NULL) : new F_NilClass;
+		return $err;
+	}
+}
 
 class F_Proc extends F_Object
 {
-	public function F_initialize($block)
+	public function SF_new($block)
 	{
-		$this->__BLOCK = $block;
+		$p = new F_Proc;
+		$p->__BLOCK = $block;
+		return $p;
 	}
 	public function __operator_eq($block, $operand)
 	{
