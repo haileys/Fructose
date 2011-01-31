@@ -28,7 +28,14 @@ freely, subject to the following restrictions:
 class ReturnFromBlock extends Exception
 {
 	public $val;
-	
+	function __construct($val)
+	{
+		$this->val = $val;
+	}
+}
+class ErrorCarrier extends Exception
+{
+	public $val;
 	function __construct($val)
 	{
 		$this->val = $val;
@@ -212,7 +219,55 @@ class F_Object
 		return F_TrueClass::__from_bool($this->_untrusted);
 	}
 }
+class F_Error extends F_Object
+{
+	public function F_initialize($block, $msg = NULL)
+	{
+		$this->__MESSAGE = $msg !== NULL ? $msg->F_to_s(NULL) : new F_NilClass;
+	}
+	public function F_message($block)
+	{
+		return $this->__MESSAGE;
+	}
+	public function F_to_s($block)
+	{
+		return _isTruthy($this->__MESSAGE) ? $this->__MESSAGE : $this->F_class(NULL);
+	}
+	public function F_inspect($block)
+	{
+		$ex = $this->F_class(NULL)->F_to_s(NULL);
+		$ex->__operator_lshift(NULL, F_String::__from_string(": "));
+		$ex->__operator_lshift(NULL, $this->__MESSAGE);
+		return $ex;
+	}
+}
+class F_StopIteration extends F_Error { }
 
+class F_Proc extends F_Object
+{
+	public function F_initialize($block)
+	{
+		$this->__BLOCK = $block;
+	}
+	public function __operator_eq($block, $operand)
+	{
+		return F_TrueClass::__from_bool($this->__BLOCK === $operand->__BLOCK);
+	}
+	public function __operator_stricteq($block, $operand)
+	{
+		$blockfn = $this->__BLOCK;
+		return $blockfn(NULL, $operand);
+	}
+	public function F_call($block)
+	{
+		$args = func_get_args();
+		return call_user_func_array($this->__BLOCK, $args);
+	}
+	public function F_to_s($block)
+	{
+		return F_String::__from_string($this->__BLOCK);
+	}
+}
 class F_Random extends F_Object
 {
 	static $seed = 0;
@@ -230,7 +285,6 @@ class F_Random extends F_Object
 		return F_Number::__from_number((mt_rand() / mt_getrandmax())  * $m);
 	}
 }
-
 class F_Enumerable extends F_Object
 {
 	public static $_states = array();
@@ -734,26 +788,6 @@ class F_Array extends F_Enumerable
 		return new F_NilClass;
 	}
 }
-/*
-class F_Pair extends F_Object
-{
-	public static function SF_new($block, $k, $v)
-	{
-		$pair = new F_Pair;
-		$pair->__K = $k;
-		$pair->__V = $v;
-		return $pair;
-	}
-	public function F_key($block)
-	{
-		return $this->__K;
-	}
-	public function F_value($block)
-	{
-		return $this->__V;
-	}
-}
-*/
 class F_Hash extends F_Enumerable
 {
 	public static function __from_pairs($pairs)
@@ -770,6 +804,16 @@ class F_Hash extends F_Enumerable
 		
 		for($i = 0; $i < count($flatpairs); $i += 2)
 			$hash->__PAIRS[] = F_Array::__from_array(array($flatpairs[$i], $flatpairs[$i+1]));
+			
+		return $hash;
+	}
+	public static function __from_assoc($assoc)
+	{
+		$hash = new F_Hash;
+		$hash->__DEFAULT = new F_NilClass;
+		
+		foreach($assoc as $k => $v)
+			$hash->__PAIRS[] = F_Array::__from_array(array(F_Symbol::__from_string($k), F_String::__from_string($v)));
 			
 		return $hash;
 	}
