@@ -1166,6 +1166,10 @@ class F_Number extends F_Object
 	{
 		return F_Number::__from_number($this->__NUMBER + 1);
 	}
+	public function F_succ($block)
+	{
+		return F_Number::__from_number($this->__NUMBER + 1);
+	}
 	public function F_to_s($block,$base = NULL)
 	{
 		if($base === NULL)
