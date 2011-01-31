@@ -17,9 +17,6 @@ namespace Fructose.Compiler.Generators
             if (((MethodDefinition)node).Parameters.Unsplat != null)
                 throw new FructoseCompileException("Unsplats not currently supported.", node);
 
-            if (((MethodDefinition)node).Parameters.Block != null)
-                throw new FructoseCompileException("Blocks not currently supported.", node);
-
             if (((MethodDefinition)node).Parameters.Optional.Length > 0)
                 throw new FructoseCompileException("Optional parameters not currently supported.", node);
 
