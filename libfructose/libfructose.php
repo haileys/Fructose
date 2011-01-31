@@ -849,11 +849,11 @@ class F_Range extends F_Enumerable
 	{
 		if(isset($this->__RANGE))
 			return;
-		
+				
 		$i = $this->__BEGIN;
 		while(true)
 		{
-			if(_isTruthy($this->__END->__operator_eq($i)))
+			if(_isTruthy($this->__END->__operator_eq(NULL, $i)))
 			{
 				if(!$this->__EXCLUSIVE)
 					$this->__RANGE[] = $i;
@@ -861,6 +861,11 @@ class F_Range extends F_Enumerable
 			}
 			$this->__RANGE[] = $i;
 			
+			if(!_isTruthy($i->F_respond_to_QUES_(NULL, F_Symbol::__from_string('succ'))))
+			{
+				throw new ErrorCarrier(F_Error::SF_new(NULL, F_String::__from_string('Item in range does not respond to #succ')));
+			}
+				
 			$i = $i->F_succ(NULL);
 		}
 	}
@@ -1669,6 +1674,12 @@ class F_String extends F_Object
 			$arr[] = F_String::__from_string($part);
 		}
 		return F_Array::__from_array($arr);
+	}
+	public function F_succ($block)
+	{
+		$str = $this->__STRING;
+		$str++;
+		return F_String::__from_string($str);
 	}
 	public function F_to_n($block)
 	{

@@ -52,6 +52,7 @@
     <Compile Include="Compiler\Generators\Array.cs" />
     <Compile Include="Compiler\Generators\For.cs" />
     <Compile Include="Compiler\Generators\Hash.cs" />
+    <Compile Include="Compiler\Generators\Range.cs" />
     <Compile Include="Compiler\Generators\Return.cs" />
     <Compile Include="Compiler\Generators\Yield.cs" />
     <Compile Include="Compiler\Generators\Body.cs" />

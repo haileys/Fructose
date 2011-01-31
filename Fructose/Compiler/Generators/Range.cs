@@ -14,7 +14,7 @@ namespace Fructose.Compiler.Generators
             var re = (RangeExpression)node;
             compiler.CompileNode(re.End, parent.CreateChild(node));
             compiler.CompileNode(re.Begin, parent.CreateChild(node));
-            compiler.AppendLine("$_stack[] = F_Range::SF_new(array_pop($_stack), array_pop($_stack), new F_{0}Class);", re.IsExclusive.ToString());
+            compiler.AppendLine("$_stack[] = F_Range::SF_new(NULL, array_pop($_stack), array_pop($_stack), new F_{0}Class);", re.IsExclusive.ToString());
         }
     }
 }
