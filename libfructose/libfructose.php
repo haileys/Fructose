@@ -409,7 +409,7 @@ class F_File extends F_Enumerable
 		foreach(fstat($this->__HANDLE) as $k=>$v)
 		{
 			$stats[] = F_Symbol::__from_string($k);
-			$stats[] = F_Number::__from_number($v)
+			$stats[] = F_Number::__from_number($v);
 		}
 		
 		return F_Hash::__from_flatpairs($stats);
