@@ -106,17 +106,17 @@ class F_Object
 	public function F_require($block, $str)
 	{
 		$path = $str->F_to_s(NULL)->__STRING;
-		if(file_get_contents($path) !== FALSE)
+		if(@file_get_contents($path) !== FALSE)
 		{
 			require_once $path;
 			return new F_TrueClass;
 		}
-		if(file_get_contents($path . '.php') !== FALSE)
+		if(@file_get_contents($path . '.php') !== FALSE)
 		{
 			require_once $path . '.php';
 			return new F_TrueClass;
 		}
-		if(file_get_contents($path . '.fruc.php') !== FALSE)
+		if(@file_get_contents($path . '.fruc.php') !== FALSE)
 		{
 			require_once $path . '.fruc.php';
 			return new F_TrueClass;
