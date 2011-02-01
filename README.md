@@ -24,7 +24,7 @@ It is composed of two parts - Fructose itself, which is written in C#, and libfr
 <tr><td>Range</td><td><b>Done</b></td></tr>
 <tr><td>Time</td><td></td></tr>
 <tr><td>Dir</td><td></td></tr>
-<tr><td>File</td><td></td></tr>
+<tr><td>File</td><td><b>Done</b></td></tr>
 </table>
 
 ### Requirements
