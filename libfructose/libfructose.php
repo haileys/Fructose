@@ -105,8 +105,23 @@ class F_Object
 	}
 	public function F_require($block, $str)
 	{
-		require_once $str->F_to_s(NULL)->__STRING;
-		return new F_TrueClass;
+		$path = $str->F_to_s(NULL)->__STRING;
+		if(file_get_contents($path) !== NULL)
+		{
+			require_once $path;
+			return new F_TrueClass;
+		}
+		if(file_get_contents($path . '.php') !== NULL)
+		{
+			require_once $path . '.php';
+			return new F_TrueClass;
+		}
+		if(file_get_contents($path . '.fruc.php') !== NULL)
+		{
+			require_once $path . '.fruc.php';
+			return new F_TrueClass;
+		}
+		return new F_FalseClass;
 	}
 	public function F_class($block)
 	{
