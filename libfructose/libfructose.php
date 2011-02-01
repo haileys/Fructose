@@ -103,6 +103,11 @@ class F_Object
 		echo $o->F_to_s(NULL)->__STRING . "\n";
 		return new F_NilClass;
 	}
+	public function F_require($block, $str)
+	{
+		require_once $str->F_to_s(NULL)->__STRING;
+		return new F_TrueClass;
+	}
 	public function F_class($block)
 	{
 		return F_Symbol::__from_string(get_class($this));
@@ -261,6 +266,160 @@ class F_StopIteration extends F_Error
 		$err = new F_StopIteration;
 		$err->__MESSAGE = $msg !== NULL ? $msg->F_to_s(NULL) : new F_NilClass;
 		return $err;
+	}
+}
+class F_IOError extends F_Error
+{
+	public static function SF_new($block, $msg = NULL)
+	{
+		$err = new F_IOError;
+		$err->__MESSAGE = $msg !== NULL ? $msg->F_to_s(NULL) : new F_NilClass;
+		return $err;
+	}
+}
+class F_File extends F_Enumerable
+{
+	public static function SF_new($block, $filename, $m = NULL)
+	{
+		$mode = $m === NULL ? "r" : $m->F_to_s(NULL)->__STRING;
+		$file = new F_File;
+		$file->__HANDLE = fopen($filename->F_to_s(NULL)->__STRING, $mode);
+		$file->__CLOSED = FALSE;
+		if($block === NULL)
+			return $file;
+		
+		$block(NULL, $file);
+		
+		if(!$file->__CLOSED)
+			$file->F_close(NULL);
+	}
+	public function F_close($block)
+	{
+		if($this->__CLOSED)
+			throw new ErrorCarrier(F_IOError::SF_new(NULL, F_String::__from_string("File already closed")));
+		fclose($this->__HANDLE);
+		$file->__CLOSED = TRUE;
+		return new F_NilClass;
+	}
+	public function F_closed_QUES_($block)
+	{
+		return F_TrueClass::__from_bool($this->__CLOSED);
+	}
+	public function __operator_lshift($block, $obj)
+	{
+		if($this->__CLOSED)
+			throw new ErrorCarrier(F_IOError::SF_new(NULL, F_String::__from_string("File closed")));
+		fwrite($this->__HANDLE, $obj->F_to_s(NULL)->__STRING);
+		return $this;
+	}
+	public function F_each($block)
+	{
+		if($this->__CLOSED)
+			throw new ErrorCarrier(F_IOError::SF_new(NULL, F_String::__from_string("File closed")));
+			
+		if($block !== NULL)
+		{
+			while(($line = fgets($this->__HANDLE)) !== FALSE)
+				$block(NULL, F_String::__from_string($line));
+			return new F_NilClass;
+		}
+		
+		while(($line = fgets($this->__HANDLE)) !== FALSE)
+			$lines[] = F_String::__from_string($line);
+		return F_Enumerator::__from_array($lines);
+	}
+	public function F_eof_QUES_($block)
+	{
+		if($this->__CLOSED)
+			throw new ErrorCarrier(F_IOError::SF_new(NULL, F_String::__from_string("File closed")));
+		return F_TrueClass::__from_bool(feof($this->__HANDLE));
+	}
+	public function F_flush($block)
+	{
+		if($this->__CLOSED)
+			throw new ErrorCarrier(F_IOError::SF_new(NULL, F_String::__from_string("File closed")));
+		fflush($this->__HANDLE);
+		return new F_NilClass;
+	}
+	public function F_getc($block)
+	{
+		if($this->__CLOSED)
+			throw new ErrorCarrier(F_IOError::SF_new(NULL, F_String::__from_string("File closed")));
+		if(feof($this->__HANDLE))
+			return new F_NilClass;
+		return F_String::__from_string(fgetc($this->__HANDLE));
+	}
+	public function F_gets($block)
+	{
+		if($this->__CLOSED)
+			throw new ErrorCarrier(F_IOError::SF_new(NULL, F_String::__from_string("File closed")));
+		if(feof($this->__HANDLE))
+			return new F_NilClass;
+		return F_String::__from_string(fgets($this->__HANDLE));
+	}
+	public function F_tell($block)
+	{
+		if($this->__CLOSED)
+			throw new ErrorCarrier(F_IOError::SF_new(NULL, F_String::__from_string("File closed")));
+		return F_Number::__from_number(ftell($this->__HANDLE));
+	}
+	public function F_read($block, $length, $buffer = NULL)
+	{
+		if($this->__CLOSED)
+			throw new ErrorCarrier(F_IOError::SF_new(NULL, F_String::__from_string("File closed")));
+		if(feof($this->__HANDLE))
+			return new F_NilClass;
+			
+		$buff = F_String::__from_string(fread($this->__HANDLE, $length->__NUMBER));
+		if($buffer !== NULL)
+		{
+			$buffer->__operator_lshift(NULL, $buff);
+			return $buffer;
+		}
+		
+		return $buff;
+	}
+	public function F_rewind($block)
+	{
+		if($this->__CLOSED)
+			throw new ErrorCarrier(F_IOError::SF_new(NULL, F_String::__from_string("File closed")));
+		fseek($this->__HANDLE, 0);
+		return F_Number::__from_number(0);
+	}
+	public function F_seek($block, $offset, $whence = NULL)
+	{
+		if($this->__CLOSED)
+			throw new ErrorCarrier(F_IOError::SF_new(NULL, F_String::__from_string("File closed")));
+
+		$w = SEEK_SET;
+		if(_isTruthy($whence->__operator_eq(NULL, F_Symbol::__from_string("cur"))))
+			$w = SEEK_CUR;
+		elseif(_isTruthy($whence->__operator_eq(NULL, F_Symbol::__from_string("end"))))
+			$w = SEEK_END;
+			
+		fseek($this->__HANDLE, $offset->__NUMBER, $w);
+		return F_Number::__from_number(0);
+	}
+	public function F_stat($block)
+	{
+		if($this->__CLOSED)
+			throw new ErrorCarrier(F_IOError::SF_new(NULL, F_String::__from_string("File closed")));
+		
+		$stats = array();
+		foreach(fstat($this->__HANDLE) as $k=>$v)
+		{
+			$stats[] = F_Symbol::__from_string($k);
+			$stats[] = F_Number::__from_number($v)
+		}
+		
+		return F_Hash::__from_flatpairs($stats);
+	}
+	public function F_write($block, $obj)
+	{
+		if($this->__CLOSED)
+			throw new ErrorCarrier(F_IOError::SF_new(NULL, F_String::__from_string("File closed")));
+		fwrite($this->__HANDLE, $obj->F_to_s(NULL)->__STRING);
+		return $this;
 	}
 }
 class F_Enumerator extends F_Object
