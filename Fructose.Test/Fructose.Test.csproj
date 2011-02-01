@@ -92,6 +92,9 @@
     <None Include="Tests\ParallelAssignment.rb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Tests\PHPCall.rb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Tests\Proc.rb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -117,10 +120,14 @@
     <Content Include="Tests\Include.php">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Tests\PHPCall.php">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy "$(SolutionDir)libfructose\libfructose.php" "$(TargetDir)libfructose.php"</PostBuildEvent>
+    <PostBuildEvent>copy "$(SolutionDir)libfructose\libfructose.php" "$(TargetDir)libfructose.php"
+copy "$(SolutionDir)libfructose\phpcall.php" "$(TargetDir)phpcall.php"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
