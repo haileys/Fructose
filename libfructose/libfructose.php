@@ -106,17 +106,17 @@ class F_Object
 	public function F_require($block, $str)
 	{
 		$path = $str->F_to_s(NULL)->__STRING;
-		if(file_get_contents($path) !== NULL)
+		if(file_get_contents($path) !== FALSE)
 		{
 			require_once $path;
 			return new F_TrueClass;
 		}
-		if(file_get_contents($path . '.php') !== NULL)
+		if(file_get_contents($path . '.php') !== FALSE)
 		{
 			require_once $path . '.php';
 			return new F_TrueClass;
 		}
-		if(file_get_contents($path . '.fruc.php') !== NULL)
+		if(file_get_contents($path . '.fruc.php') !== FALSE)
 		{
 			require_once $path . '.fruc.php';
 			return new F_TrueClass;
@@ -768,20 +768,30 @@ class F_Enumerable extends F_Object
 }
 class F_Array extends F_Enumerable
 {
+	public function toPHP()
+	{
+		$arr = array();
+		foreach($this->__ARRAY as $v)
+		{
+			if(method_exists($v, "toPHP"))
+				$arr[] = $v->toPHP();
+			else
+				$arr[] = NULL;
+		}
+		return $arr;
+	}
 	public static function __from_array($arr)
 	{
 		$a = new F_Array;
 		$a->__ARRAY = $arr;
 		return $a;
 	}
-	
 	public static function S__operator_arrayget($block)
 	{
 		$a = func_get_args();
 		array_shift($a); // remove $block
 		return F_Array::__from_array($a);
 	}
-	
 	public function __operator_bitwiseand($block, $array)
 	{
 		// @TODO
@@ -797,7 +807,6 @@ class F_Array extends F_Enumerable
 		// for now i'll just return dupes
 		return F_Array::__from_array($intersect);
 	}
-	
 	public function __operator_mul($block, $operand)
 	{
 		if($index->F_class()->__SYMBOL === 'F_String')
@@ -809,12 +818,10 @@ class F_Array extends F_Enumerable
 			
 		return F_Array::__from_array($arr);
 	}
-	
 	public function __operator_add($block, $operand)
 	{
 		return F_Array::__from_array(array_merge($this->__ARRAY, $operand->__ARRAY));
 	}
-	
 	public function __operator_sub($block, $operand)
 	{
 		$new = array();
@@ -823,13 +830,11 @@ class F_Array extends F_Enumerable
 				$new[] = $this->__ARRAY[$i];
 		return F_Array::__from_array($new);
 	}
-	
 	public function __operator_lshift($block, $operand)
 	{
 		$this->__ARRAY[] = $operand;
 		return $this;
 	}
-	
 	public function __operator_eq($block, $operand)
 	{
 		if(count($this->__ARRAY) !== count($operand->__ARRAY))
@@ -841,7 +846,6 @@ class F_Array extends F_Enumerable
 				
 		return new F_TrueClass;
 	}
-	
 	public function __operator_arrayget($block, $index)
 	{
 		$idx = (int)$index->__NUMBER;
@@ -874,13 +878,11 @@ class F_Array extends F_Enumerable
 		$this->__ARRAY[$idx] = $val;
 		return $val;
 	}
-	
 	public function F_clear($block)
 	{
 		$this->__ARRAY = array();
 		return $this;
 	}
-	
 	public function F_compact($block)
 	{
 		$new = array();
@@ -1011,6 +1013,19 @@ class F_Array extends F_Enumerable
 }
 class F_Range extends F_Enumerable
 {
+	public function toPHP()
+	{
+		$arr = array();
+		$this->enumerate_range();
+		foreach($this->__RANGE as $v)
+		{
+			if(method_exists($v, "toPHP"))
+				$arr[] = $v->toPHP();
+			else
+				$arr[] = NULL;
+		}
+		return $arr;
+	}
 	public static function SF_new($block, $begin, $end, $exclusive = NULL)
 	{
 		$r = new F_Range;
@@ -1107,6 +1122,21 @@ class F_Range extends F_Enumerable
 }
 class F_Hash extends F_Enumerable
 {
+	public function toPHP()
+	{
+		$arr = array();
+		foreach($this->__PAIRS as $kv)
+		{
+			$k = $kv->__ARRAY[0]->F_to_s(NULL)->__STRING;
+			$v = $kv->__ARRAY[1];
+			
+			if(method_exists($v, "toPHP"))
+				$arr[$k] = $v->toPHP();
+			else
+				$arr[$k] = NULL;
+		}
+		return $arr;
+	}
 	public static function __from_pairs($pairs)
 	{
 		$hash = new F_Hash;
@@ -1371,6 +1401,10 @@ class F_Hash extends F_Enumerable
 }
 class F_Number extends F_Object
 {
+	public function toPHP()
+	{
+		return $this->__NUMBER;
+	}
 	public static function __from_number($num)
 	{
 		$obj = new F_Number;
@@ -1501,6 +1535,10 @@ class F_Number extends F_Object
 
 class F_TrueClass extends F_Object
 {
+	public function toPHP()
+	{
+		return TRUE;
+	}
 	public static function __from_bool($bool)
 	{
 		if($bool)
@@ -1537,6 +1575,10 @@ class F_TrueClass extends F_Object
 
 class F_FalseClass extends F_Object
 {
+	public function toPHP()
+	{
+		return FALSE;
+	}
 	public function __operator_bitwiseand($block,$operand)
 	{
 		return $this;
@@ -1565,6 +1607,10 @@ class F_FalseClass extends F_Object
 
 class F_NilClass extends F_Object
 {
+	public function toPHP()
+	{
+		return NULL;
+	}
 	public function __operator_bitwiseand($block,$operand)
 	{
 		return new F_FalseClass;
@@ -1601,6 +1647,10 @@ class F_NilClass extends F_Object
 
 class F_Symbol extends F_Object
 {
+	public function toPHP()
+	{
+		return $this->__SYMBOL;
+	}
 	public static function __from_string($sym)
 	{
 		$obj = new F_Symbol;
@@ -1663,6 +1713,10 @@ class F_Symbol extends F_Object
 
 class F_String extends F_Object
 {
+	public function toPHP()
+	{
+		return $this->__STRING;
+	}
 	public static function __from_string($str)
 	{
 		$sobj = new F_String;
