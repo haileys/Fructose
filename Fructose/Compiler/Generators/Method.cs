@@ -37,6 +37,7 @@ namespace Fructose.Compiler.Generators
             compiler.AppendLine("{");
             compiler.Indent();
             compiler.AppendLine("$_stack = array();");
+            compiler.AppendLine("if(!isset($_locals)) $_locals = new stdClass;");
             if (parent.OfType<ClassDefinition>().Count() > 0)
             {
                 compiler.AppendLine("if(!isset($_locals->self)) $_locals->self = $this;");
