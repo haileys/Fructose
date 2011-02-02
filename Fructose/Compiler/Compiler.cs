@@ -72,6 +72,7 @@ namespace Fructose.Compiler
             sb.AppendLine(@"require_once 'libfructose.php';
 $_stack = array();
 $_lambda_objs = array();
+$_locals = new stdClass;
 $_locals->self = new F_Object;
 $_gthis = $_locals->self;
 $_globals = array();
