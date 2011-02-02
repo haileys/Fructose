@@ -162,7 +162,7 @@ class F_Object
 	}
 	public static function __add_global_method($name, $fn)
 	{
-		F_Object::$_dyn_methods[$name] = $fn;
+		F_Object::$_dyn_global_methods[$name] = $fn;
 	}
 	public function __operator_notmatch($block, $operand)
 	{
