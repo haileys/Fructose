@@ -101,7 +101,10 @@ class F_Object
 	}
 	public function F_puts($block,$o)
 	{
-		echo $o->F_to_s(NULL)->__STRING . "\n";
+		$str = $o->F_to_s(NULL);
+		if(_isTruthy($str->F_tainted_QUES_))
+			throw new ErrorCarrier(F_SecurityError::SF_new(NULL, F_String::__from_string("Attempted to puts tainted data")));
+		echo $str->__STRING . "\n";
 		return new F_NilClass;
 	}
 	public function F_require($block, $str)
@@ -290,6 +293,15 @@ class F_IOError extends F_Error
 	public static function SF_new($block, $msg = NULL)
 	{
 		$err = new F_IOError;
+		$err->__MESSAGE = $msg !== NULL ? $msg->F_to_s(NULL) : new F_NilClass;
+		return $err;
+	}
+}
+class F_SecurityError extends F_Error
+{
+	public static function SF_new($block, $msg = NULL)
+	{
+		$err = new F_SecurityError;
 		$err->__MESSAGE = $msg !== NULL ? $msg->F_to_s(NULL) : new F_NilClass;
 		return $err;
 	}
@@ -1719,10 +1731,12 @@ class F_String extends F_Object
 	{
 		return $this->__STRING;
 	}
-	public static function __from_string($str)
+	public static function __from_string($str, $taintstatus = NULL)
 	{
 		$sobj = new F_String;
 		$sobj->__STRING = $str;
+		if($taintstatus !== NULL)
+			$sobj->_tainted = $taintstatus;
 		return $sobj;
 	}
 	public function F_to_s($block)
@@ -1836,9 +1850,19 @@ class F_String extends F_Object
 		$this->__string[(int)$operand->__NUMBER] = $val->__STRING;
 		return $val;
 	}
+	public function F_escape($block)
+	{
+		return F_String::__from_string(htmlspecialchars($this->__STRING));
+	}
+	public function F_escape_EXCL_($block)
+	{
+		$this->__STRING = htmlspecialchars($this->__STRING);
+		$this->F_untaint(NULL);
+		return $this;
+	}
 	public function F_capitalize($block)
 	{
-		return F_String::__from_string(ucfirst(strtolower($this->__STRING)));
+		return F_String::__from_string(ucfirst(strtolower($this->__STRING)), $this->_tainted);
 	}
 	public function F_capitalize_EXCL_($block)
 	{
@@ -1864,7 +1888,7 @@ class F_String extends F_Object
 	}
 	public function F_downcase($block)
 	{
-		return F_String::__from_string(strtolower($this->__STRING));
+		return F_String::__from_string(strtolower($this->__STRING), $this->_tainted);
 	}
 	public function F_downcase_EXCL_($block)
 	{
@@ -1901,7 +1925,7 @@ class F_String extends F_Object
 		$arr = array();
 		foreach($parts as $part)
 		{
-			$arr[] = F_String::__from_string($part);
+			$arr[] = F_String::__from_string($part, $this->_tainted);
 		}
 		return F_Array::__from_array($arr);
 	}
@@ -1909,7 +1933,7 @@ class F_String extends F_Object
 	{
 		$str = $this->__STRING;
 		$str++;
-		return F_String::__from_string($str);
+		return F_String::__from_string($str, $this->_tainted);
 	}
 	public function F_to_n($block)
 	{
@@ -1917,7 +1941,7 @@ class F_String extends F_Object
 	}
 	public function F_upcase($block)
 	{
-		return F_String::__from_string(strtoupper($this->__STRING));
+		return F_String::__from_string(strtoupper($this->__STRING), $this->_tainted);
 	}
 	public function F_upcase_EXCL_($block)
 	{
@@ -1931,6 +1955,8 @@ class F_String extends F_Object
 	public function __operator_lshift($block,$operand)
 	{
 		$this->__STRING .= $operand->F_to_s(NULL)->__STRING;
+		if(_isTruthy($operand->F_tainted_QUES_(NULL)))
+			$this->F_taint(NULL);
 		return $this;
 	}
 }
