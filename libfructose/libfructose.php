@@ -149,7 +149,7 @@ class F_Object
 		if(isset(F_Object::$_dyn_global_methods[$name]))
 			return call_user_func_array(F_Object::$_dyn_global_methods[$name], $args);
 		
-		if(get_class($this) === 'F_Object')
+		if(get_class($this) === 'F_Object' && function_exists($name))
 			return call_user_func_array($name, $args);
 		
 		echo "No such method " . substr(get_class($this), 2) . "#" . substr($name, 2) . "\n";
