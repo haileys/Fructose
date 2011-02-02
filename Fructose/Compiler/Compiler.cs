@@ -69,7 +69,8 @@ namespace Fructose.Compiler
             sb.AppendLine("<?php");
             foreach(var c in signature)
                 sb.AppendLine(c);
-            sb.AppendLine(@"require_once 'libfructose.php';
+            sb.AppendLine(@"error_reporting(E_ALL ^ E_STRICT);
+require_once 'libfructose.php';
 $_stack = array();
 $_lambda_objs = array();
 $_locals = new stdClass;
