@@ -2,11 +2,10 @@
 
 $http_reqarrs = array();
 
-foreach(array("get", "post", "request", "cookie") as $sg)
+foreach(array("get" => $_GET, "post" => $_POST, "request" => $_REQUEST, "cookie" => $_COOKIE) as $sg=>$superglobal)
 {
-	$superglobal = '$_' . strtoupper($sg);
 	$pairs = array();
-	foreach($$superglobal as $k=>$v)
+	foreach($superglobal as $k=>$v)
 	{
 		if(is_array($v))
 		{
