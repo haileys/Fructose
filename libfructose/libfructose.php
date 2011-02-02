@@ -89,6 +89,7 @@ class F_Object
 {
 	public $_instance_vars = array();
 	public $_dyn_methods = array();
+	public static $_dyn_global_methods = array();
 	public static $_class_vars = array();
 
 	public $_tainted = FALSE;
@@ -148,8 +149,11 @@ class F_Object
 	}
 	public function __call($name, $args)
 	{
-		if(isset($_dyn_methods[$name]))
-			return call_user_func_array($_dyn_methods[$name], $args);
+		if(isset($this->_dyn_methods[$name]))
+			return call_user_func_array($this->_dyn_methods[$name], $args);
+			
+		if(isset($this->_dyn_global_methods[$name]))
+			return call_user_func_array($this->_dyn_global_methods[$name], $args);
 		
 		if(get_class($this) === 'F_Object')
 			return call_user_func_array($name, $args);
@@ -160,7 +164,7 @@ class F_Object
 	}
 	public function __add_method($name, $fn)
 	{
-		$_dyn_methods[$name] = $fn;
+		$this->_dyn_methods[$name] = $fn;
 	}
 	public function __operator_notmatch($block, $operand)
 	{
