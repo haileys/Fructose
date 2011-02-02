@@ -107,20 +107,14 @@ class F_Object
 	public function F_require($block, $str)
 	{
 		$path = $str->F_to_s(NULL)->__STRING;
-		if(@file_get_contents($path) !== FALSE)
+		foreach(array('%s','%s.php','%s.fruc.php','lib/%s','lib/%s.php','lib/%s.fruc.php') as $pathfmt)
 		{
-			require_once $path;
-			return new F_TrueClass;
-		}
-		if(@file_get_contents($path . '.php') !== FALSE)
-		{
-			require_once $path . '.php';
-			return new F_TrueClass;
-		}
-		if(@file_get_contents($path . '.fruc.php') !== FALSE)
-		{
-			require_once $path . '.fruc.php';
-			return new F_TrueClass;
+			$p = sprintf($pathfmt, $path);
+			if(@file_get_contents($p) !== FALSE)
+			{
+				require_once $p;
+				return new F_TrueClass;
+			}
 		}
 		return new F_FalseClass;
 	}
