@@ -43,8 +43,15 @@ class ErrorCarrier extends Exception
 }
 function _exception_handler($ex)
 {
-	echo "<b>Unhandled Exception:</b><br />";
+	echo "<p><b>Unhandled Exception: " . htmlspecialchars(get_class($ex->val)) . "</b><br />";
 	echo htmlspecialchars($ex->val->F_to_s(NULL)->__STRING);
+	echo "</p>";
+	echo "<ul>";
+	foreach($ex->getTrace() as $frame)
+	{
+		echo '<li>from ' . htmlspecialchars($frame['function']) . ' in ' . htmlspecialchars($frame['file']) . ' on line ' . $frame['line'] . '</li>';
+	}
+	echo '</ul>';
 	die;
 }
 set_exception_handler('_exception_handler');
