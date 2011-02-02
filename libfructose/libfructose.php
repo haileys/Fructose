@@ -152,8 +152,8 @@ class F_Object
 		if(isset($this->_dyn_methods[$name]))
 			return call_user_func_array($this->_dyn_methods[$name], $args);
 			
-		if(isset($this->_dyn_global_methods[$name]))
-			return call_user_func_array($this->_dyn_global_methods[$name], $args);
+		if(isset(F_Object::$_dyn_global_methods[$name]))
+			return call_user_func_array(F_Object::$_dyn_global_methods[$name], $args);
 		
 		if(get_class($this) === 'F_Object')
 			return call_user_func_array($name, $args);
@@ -165,6 +165,10 @@ class F_Object
 	public function __add_method($name, $fn)
 	{
 		$this->_dyn_methods[$name] = $fn;
+	}
+	public static function __add_global_method($name, $fn)
+	{
+		F_Object::$_dyn_methods[$name] = $fn;
 	}
 	public function __operator_notmatch($block, $operand)
 	{
