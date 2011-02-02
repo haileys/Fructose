@@ -102,7 +102,7 @@ class F_Object
 	public function F_puts($block,$o)
 	{
 		$str = $o->F_to_s(NULL);
-		if(_isTruthy($str->F_tainted_QUES_))
+		if(_isTruthy($str->F_tainted_QUES_(NULL)))
 			throw new ErrorCarrier(F_SecurityError::SF_new(NULL, F_String::__from_string("Attempted to puts tainted data")));
 		echo $str->__STRING . "\n";
 		return new F_NilClass;
