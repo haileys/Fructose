@@ -41,6 +41,13 @@ class ErrorCarrier extends Exception
 		$this->val = $val;
 	}
 }
+function _exception_handler($ex)
+{
+	echo "<b>Unhandled Exception:</b><br />";
+	echo htmlspecialchars($ex->val->F_to_s(NULL)->__STRING);
+	die;
+}
+set_exception_handler('_exception_handler');
 
 $_operator_lookup["!"] = "__operator_not";
 $_operator_lookup["~"] = "__operator_bitwisenot";
