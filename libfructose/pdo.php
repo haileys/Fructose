@@ -103,7 +103,7 @@ class F_PDO
 	}
 	public function F_query($block, $query)
 	{
-		$params = array_map(array_slice(func_get_args(), 2), create_function('$x', 'return $x->F_to_s(NULL)->__STRING;'));
+		$params = array_map(create_function('$x', 'return $x->F_to_s(NULL)->__STRING;'), array_slice(func_get_args(), 2));
 		
 		if(count($params) === 1 && is_a($params[0], 'F_Array'))
 			$params = $params->__ARRAY;
