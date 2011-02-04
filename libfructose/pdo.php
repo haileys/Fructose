@@ -163,7 +163,7 @@ class F_PDOResultRow extends F_Enumerable
 	public function F_each($block)
 	{
 		foreach($this->__ROW as $k=>$v)
-			if(is_string($k)
+			if(is_string($k))
 				$block(NULL, F_String::__from_string($k), marshal2fruc($v));
 		return new F_NilClass;
 	}
