@@ -21,3 +21,11 @@ function F_tag($block, $tag, $attrs = NULL)
 	$block(NULL);
 	echo "</" . $tag->__SYMBOL . ">";
 }
+function F_text($block, $text)
+{
+	echo htmlspecialchars($text->F_to_s(NULL)->__STRING);
+}
+function F_html($block, $html)
+{
+	echo $html->F_to_s(NULL)->__STRING;
+}
