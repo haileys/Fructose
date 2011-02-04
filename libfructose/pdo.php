@@ -20,10 +20,10 @@ class F_PDO
 {
 	public static function SF_mysql($block, $hash)
 	{
-		$host = $hash->__operator_get(NULL, F_Symbol::__from_string('host'))->F_to_s(NULL)->__STRING;
-		$name = $hash->__operator_get(NULL, F_Symbol::__from_string('name'))->F_to_s(NULL)->__STRING;
-		$user = $hash->__operator_get(NULL, F_Symbol::__from_string('user'))->F_to_s(NULL);
-		$pass = $hash->__operator_get(NULL, F_Symbol::__from_string('pass'))->F_to_s(NULL);
+		$host = $hash->__operator_arrayget(NULL, F_Symbol::__from_string('host'))->F_to_s(NULL)->__STRING;
+		$name = $hash->__operator_arrayget(NULL, F_Symbol::__from_string('name'))->F_to_s(NULL)->__STRING;
+		$user = $hash->__operator_arrayget(NULL, F_Symbol::__from_string('user'))->F_to_s(NULL);
+		$pass = $hash->__operator_arrayget(NULL, F_Symbol::__from_string('pass'))->F_to_s(NULL);
 		
 
 		return F_PDO::SF_new(NULL, F_String::__from_string('mysql:host=' 
@@ -95,9 +95,9 @@ class F_PDO
 		$hash = F_Hash::SF_new(NULL);
 		$hash->__operator_set(NULL, F_Symbol::__from_string('state'), F_String::__from_string($info[0]));
 		if($info[1] !== NULL)
-			$hash->__operator_set(NULL, F_Symbol::__from_string('code'), F_String::__from_string($info[1]));
+			$hash->__operator_arrayset(NULL, F_Symbol::__from_string('code'), F_String::__from_string($info[1]));
 		if($info[2] !== NULL)
-			$hash->__operator_set(NULL, F_Symbol::__from_string('msg'), F_String::__from_string($info[2]));
+			$hash->__operator_arrayset(NULL, F_Symbol::__from_string('msg'), F_String::__from_string($info[2]));
 		return $hash;
 	}
 	public function F_query($block, $query)
