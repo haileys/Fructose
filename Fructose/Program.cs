@@ -64,7 +64,7 @@ Usage: fructose [( -o output-file | --stdout )] ( - | input-file )
                         if (++i == args.Length)
                             Fatal("Expected filename after -o");
 
-                        output = File.OpenWrite(args[i]);
+                        output = File.Open(args[i], FileMode.Create);
                         break;
                     case "--stdout":
                         output = Console.OpenStandardOutput();
@@ -77,7 +77,7 @@ Usage: fructose [( -o output-file | --stdout )] ( - | input-file )
                             Fatal("Unknown option {0}", args[i]);
                         if (input != null)
                             Fatal("Multiple input files are not supported");
-                        input = File.Open(args[i], FileMode.Create);
+                        input = File.Open(args[i], FileMode.Open);
                         default_out_name = Path.ChangeExtension(args[i], "php");
                         break;
                 }
