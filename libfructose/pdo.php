@@ -63,15 +63,15 @@ class F_PDO
 	}
 	public function F_begin_transaction($block)
 	{
-		return new F_TrueClass::__from_bool($this->__PDO->beginTransaction());
+		return F_TrueClass::__from_bool($this->__PDO->beginTransaction());
 	}
 	public function F_commit($block)
 	{
-		return new F_TrueClass::__from_bool($this->__PDO->commit());
+		return F_TrueClass::__from_bool($this->__PDO->commit());
 	}
 	public function F_rollback($block)
 	{
-		return new F_TrueClass::__from_bool($this->__PDO->rollBack());
+		return F_TrueClass::__from_bool($this->__PDO->rollBack());
 	}
 	public function F_transaction($block)
 	{
