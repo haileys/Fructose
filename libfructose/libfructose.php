@@ -1866,7 +1866,9 @@ class F_String extends F_Object
 	}
 	public function F_escape($block)
 	{
-		return F_String::__from_string(htmlspecialchars($this->__STRING));
+		$str = F_String::__from_string(htmlspecialchars($this->__STRING));
+		$str->F_trust(NULL);
+		return $str;
 	}
 	public function F_escape_EXCL_($block)
 	{
