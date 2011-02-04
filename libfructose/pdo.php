@@ -25,7 +25,6 @@ class F_PDO
 		$user = $hash->__operator_arrayget(NULL, F_Symbol::__from_string('user'))->F_to_s(NULL);
 		$pass = $hash->__operator_arrayget(NULL, F_Symbol::__from_string('pass'))->F_to_s(NULL);
 		
-
 		return F_PDO::SF_new(NULL, F_String::__from_string('mysql:host=' 
 			. (empty($host) ? 'localhost' : $host) 
 			. (empty($name) ? '' : ';dbname=' . $name))
@@ -42,24 +41,26 @@ class F_PDO
 		if($opts !== NULL)
 			foreach($opts->__PAIRS as $p)
 				$_opts[$p->__ARRAY[0]->F_to_s(NULL)->__STRING] = $p->__ARRAY[1]->F_to_s(NULL)->__STRING;
-				
+		
+		$pdo = new F_PDO;
+		
 		try
 		{
 			if($_user === NULL)
-				$this->__PDO = new PDO($_dsn);
+				$pdo->__PDO = new PDO($_dsn);
 			elseif($_user !== NULL)
-				$this->__PDO = new PDO($_dsn, $_user);
+				$pdo->__PDO = new PDO($_dsn, $_user);
 			elseif($_pass !== NULL)
-				$this->__PDO = new PDO($_dsn, $_user, $_pass);
+				$pdo->__PDO = new PDO($_dsn, $_user, $_pass);
 			elseif($_opts !== NULL)
-				$this->__PDO = new PDO($_dsn, $_user, $_pass, $_opts);
+				$pdo->__PDO = new PDO($_dsn, $_user, $_pass, $_opts);
 		}
 		catch(PDOException $e)
 		{
 			throw new ErrorCarrier(F_PDOError::SF_new(NULL, F_String::__from_string($e->getMessage())));
 		}
 		
-		return $this;
+		return $pdo;
 	}
 	public function F_begin_transaction($block)
 	{
