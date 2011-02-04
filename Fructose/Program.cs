@@ -77,7 +77,7 @@ Usage: fructose [( -o output-file | --stdout )] ( - | input-file )
                             Fatal("Unknown option {0}", args[i]);
                         if (input != null)
                             Fatal("Multiple input files are not supported");
-                        input = File.OpenRead(args[i]);
+                        input = File.Open(args[i], FileMode.Create);
                         default_out_name = Path.ChangeExtension(args[i], "php");
                         break;
                 }
