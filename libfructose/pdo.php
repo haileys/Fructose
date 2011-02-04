@@ -143,7 +143,7 @@ class F_PDOResults extends F_Enumerable
 	public function F_single($block)
 	{
 		$row = $this->__STMT->fetch(PDO::FETCH_NUM);
-		return marshal2fruc($row[0]);
+		return __marshal2fruc($row[0]);
 	}
 }
 class F_PDOResultRow extends F_Enumerable
@@ -157,15 +157,15 @@ class F_PDOResultRow extends F_Enumerable
 	public function __operator_arrayget($block, $idx)
 	{
 		if(is_a($idx, 'F_Number'))
-			return marshal2fruc($this->__ROW[$idx->__NUMBER]);
+			return __marshal2fruc($this->__ROW[$idx->__NUMBER]);
 			
-		return marshal2fruc($this->__ROW[$idx->F_to_s(NULL)->__STRING]);
+		return __marshal2fruc($this->__ROW[$idx->F_to_s(NULL)->__STRING]);
 	}
 	public function F_each($block)
 	{
 		foreach($this->__ROW as $k=>$v)
 			if(is_string($k))
-				$block(NULL, F_String::__from_string($k), marshal2fruc($v));
+				$block(NULL, F_String::__from_string($k), __marshal2fruc($v));
 		return new F_NilClass;
 	}
 }
