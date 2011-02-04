@@ -103,6 +103,10 @@ class F_PDO
 	public function F_query($block, $query)
 	{
 		$params = array_map(array_slice(func_get_args(), 2), create_function('$x', 'return $x->F_to_s(NULL)->__STRING;'));
+		
+		if(count($params) === 1 && is_a($params[0], 'F_Array'))
+			$params = $params->__ARRAY;
+			
 		$stmt = $this->__PDO->prepare($query->F_to_s(NULL)->__STRING);
 		if(!$stmt->execute($params))
 		{
@@ -111,10 +115,37 @@ class F_PDO
 			throw new ErrorCarrier($err);
 		}
 		
-		
+		if($block !== NULL)
+			return $block(NULL, F_PDOResults::__from_stmt($stmt));
+			
+		return F_PDOResults::__from_stmt($stmt);
 	}
 }
-class F_PDOResultRow
+class F_PDOResults extends F_Enumerable
+{
+    public static function __from_stmt($stmt)
+	{
+		$r = new F_PDOResults;
+		$r->__STMT = $stmt;
+		return $r;
+	}
+	public function F_each($block)
+	{
+		while($row = $this->__STMT->fetch(PDO::FETCH_BOTH))
+			$block(NULL, F_PDOResultRow::__from_row($row));
+		return new F_NilClass;
+	}
+	public function F_size($block)
+	{
+		return F_Number::__from_number($this->__STMT->rowCount());
+	}
+	public function F_single($block)
+	{
+		$row = $this->__STMT->fetch(PDO::FETCH_NUM);
+		return marshal2fruc($row[0]);
+	}
+}
+class F_PDOResultRow extends F_Enumerable
 {
 	public static function __from_row($row)
 	{
@@ -128,5 +159,12 @@ class F_PDOResultRow
 			return marshal2fruc($this->__ROW[$idx->__NUMBER]);
 			
 		return marshal2fruc($this->__ROW[$idx->F_to_s(NULL)->__STRING]);
+	}
+	public function F_each($block)
+	{
+		foreach($this->__ROW as $k=>$v)
+			if(is_string($k)
+				$block(NULL, F_String::__from_string($k), marshal2fruc($v));
+		return new F_NilClass;
 	}
 }
