@@ -48,6 +48,12 @@ namespace Fructose.Compiler.Generators
                 compiler.AppendLine("if(!isset($_locals->self)) $_locals->self = $_gthis;");
             }
             compiler.AppendLine("if(!isset($_locals->block)) $_locals->block = $block;");
+            compiler.AppendLine("foreach(array(" + string.Join(", ", ((MethodDefinition)node).Parameters.Mandatory
+                .Select(arg => "\"" + Mangling.RubyIdentifierToPHP(arg.ToString()) + "\"")
+                .ToArray()) + ") as $parm)");
+            compiler.Indent();
+            compiler.AppendLine("$_locals->$parm = $$parm;");
+            compiler.Dedent();
             compiler.AppendLine("global $_lambda_objs;");
             compiler.AppendLine("global $_globals;");
 

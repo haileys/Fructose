@@ -2,6 +2,7 @@
 #foobar
 #42
 #hello world
+#test
 
 class A
   def bar
@@ -42,3 +43,13 @@ class C
 end
 
 C.new.d
+
+def yielder(x)
+  yield x
+end
+
+yielder("test") do |a|
+  yielder nil do
+    puts a
+  end
+end
