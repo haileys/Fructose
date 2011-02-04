@@ -18,6 +18,21 @@ class F_PDOError extends F_Error
 
 class F_PDO
 {
+	public static function SF_mysql($block, $hash)
+	{
+		$host = $hash->__operator_get(NULL, F_Symbol::__from_symbol('host'))->F_to_s(NULL)->__STRING;
+		$name = $hash->__operator_get(NULL, F_Symbol::__from_symbol('name'))->F_to_s(NULL)->__STRING;
+		$user = $hash->__operator_get(NULL, F_Symbol::__from_symbol('user'))->F_to_s(NULL);
+		$pass = $hash->__operator_get(NULL, F_Symbol::__from_symbol('pass'))->F_to_s(NULL);
+		
+
+		return F_PDO::SF_new(NULL, F_String::__from_string('mysql:host=' 
+			. (empty($host) ? 'localhost' : $host) 
+			. (empty($name) ? '' : ';dbname=' . $name))
+			
+			, (_isTruthy($user->F_empty_QUES_(NULL)) ? NULL : $user )
+			, (_isTruthy($pass->F_empty_QUES_(NULL)) ? NULL : $pass ));
+	}
 	public static function SF_new($block, $dsn, $user = NULL, $pass = NULL, $opts = NULL)
 	{
 		$_dsn = $dsn->F_to_s(NULL)->__STRING;
