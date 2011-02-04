@@ -111,7 +111,7 @@ class F_PDO
 		$stmt = $this->__PDO->prepare($query->F_to_s(NULL)->__STRING);
 		if(!$stmt->execute($params))
 		{
-			$err = F_PDOError::SF_new(NULL, "An error occurred in PDO#query");
+			$err = F_PDOError::SF_new(NULL, F_String::__from_string("An error occurred in PDO#query");
 			$err->__INFO = $this->F_error_info(NULL);
 			throw new ErrorCarrier($err);
 		}
