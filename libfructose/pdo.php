@@ -94,7 +94,7 @@ class F_PDO
 	{
 		$info = $this->__PDO->errorInfo();
 		$hash = F_Hash::SF_new(NULL);
-		$hash->__operator_set(NULL, F_Symbol::__from_string('state'), F_String::__from_string($info[0]));
+		$hash->__operator_arrayset(NULL, F_Symbol::__from_string('state'), F_String::__from_string($info[0]));
 		if($info[1] !== NULL)
 			$hash->__operator_arrayset(NULL, F_Symbol::__from_string('code'), F_String::__from_string($info[1]));
 		if($info[2] !== NULL)
