@@ -3,6 +3,7 @@
 foreach(array("get" => $_GET, "post" => $_POST, "request" => $_REQUEST, "cookie" => $_COOKIE, "server" => $_SERVER) as $sg=>$superglobal)
 {
 	global $http_reqarrs;
+	global $_globals;
 	$pairs = array();
 	foreach($superglobal as $k=>$v)
 	{
