@@ -1,6 +1,6 @@
 <?php
 
-foreach(array("get" => $_GET, "post" => $_POST, "request" => $_REQUEST, "cookie" => $_COOKIE) as $sg=>$superglobal)
+foreach(array("get" => $_GET, "post" => $_POST, "request" => $_REQUEST, "cookie" => $_COOKIE, "server" => $_SERVER) as $sg=>$superglobal)
 {
 	global $http_reqarrs;
 	$pairs = array();
