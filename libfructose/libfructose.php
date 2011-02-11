@@ -1176,6 +1176,7 @@ class F_Hash extends F_Enumerable
 	{
 		$hash = new F_Hash;
 		$hash->__DEFAULT = new F_NilClass;
+		$hash->__PAIRS = array();
 		
 		for($i = 0; $i < count($flatpairs); $i += 2)
 			$hash->__PAIRS[] = F_Array::__from_array(array($flatpairs[$i], $flatpairs[$i+1]));
