@@ -70,7 +70,13 @@ namespace Fructose.Compiler
             foreach(var c in signature)
                 sb.AppendLine(c);
             sb.AppendLine(@"error_reporting(E_ALL | ~E_STRICT);
-require_once 'libfructose.php';");
+require_once 'libfructose.php';
+global $_stack;
+global $_lambda_objs;
+global $_locals;
+global $_gthis;
+global $_globals;
+");
 
             foreach (var stmt in tree.Statements)
                 CompileNode(stmt);

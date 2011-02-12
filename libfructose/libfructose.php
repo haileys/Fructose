@@ -25,12 +25,12 @@ freely, subject to the following restrictions:
    
 */
 
-$_stack = array();
-$_lambda_objs = array();
-$_locals = new stdClass;
-$_locals->self = new F_Object;
-$_gthis = $_locals->self;
-$_globals = array();
+$GLOBALS['_stack'] = array();
+$GLOBALS['_lambda_objs'] = array();
+$GLOBALS['_locals'] = new stdClass;
+$GLOBALS['_locals']->self = new F_Object;
+$GLOBALS['_gthis'] = $_locals->self;
+$GLOBALS['_globals'] = array();
 
 class ReturnFromBlock extends Exception
 {
@@ -1845,7 +1845,7 @@ class F_String extends F_Object
 				if($operand2->__NUMBER < 0)
 					return new F_NilClass;
 				
-				return F_String::__from_string($this->__STRING, $offset, $operand2->__NUMBER);
+				return F_String::__from_string(substr($this->__STRING, $offset, $operand2->__NUMBER));
 			}
 			else
 				return new F_NilClass;
