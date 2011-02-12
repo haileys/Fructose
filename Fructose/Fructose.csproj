@@ -84,6 +84,7 @@
     <Compile Include="Transformer\Transformer.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="Compiler\Generators\Regex.cs" />
+    <Compile Include="Compiler\Generators\Case.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />

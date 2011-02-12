@@ -195,7 +195,7 @@ class F_Object
 	}
 	public function __operator_stricteq($block, $operand)
 	{
-		return $this->__operator_eq($operand);
+		return $this->__operator_eq(NULL, $operand);
 	}
 	public function F_clone($block)
 	{
@@ -1250,16 +1250,16 @@ class F_Range extends F_Enumerable
 	}
 	public function __operator_eq($block, $operand)
 	{
-		return F_TrueClass::__from_bool(_isTruthy($this->__BEGIN->__operator_eq($operand->__BEGIN))
-										&& _isTruthy($this->__END->__operator_eq($operand->__END))
+		return F_TrueClass::__from_bool(_isTruthy($this->__BEGIN->__operator_eq(NULL, $operand->__BEGIN))
+										&& _isTruthy($this->__END->__operator_eq(NULL, $operand->__END))
 										&& $this->__EXCLUSIVE === $operand->__EXCLUSIVE);
 	}
 	public function __operator_stricteq($block, $operand)
 	{
-		if(_isTruthy($operand->F_respond_to_QUES_(F_Symbol::__from_string("<=>"))))
+		if(_isTruthy($operand->F_respond_to_QUES_(NULL, F_Symbol::__from_string("<=>"))))
 		{
-			if($operand->__operator_spaceship($this->__BEGIN)->__NUMBER >= 0
-				&& $operand->__operator_spaceship($this->__END)->__NUMBER <= 0)
+			if($operand->__operator_spaceship(NULL, $this->__BEGIN)->__NUMBER >= 0
+				&& $operand->__operator_spaceship(NULL, $this->__END)->__NUMBER <= 0)
 			{
 				return new F_TrueClass;
 			}
@@ -1271,7 +1271,7 @@ class F_Range extends F_Enumerable
 		// we're going to have to enumerate the range to see if $operand included
 		$this->enumerate_range();
 		foreach($this->__RANGE as $i)
-			if(_isTruthy($i->__operator_eq($operand)))
+			if(_isTruthy($i->__operator_eq(NULL, $operand)))
 				return new F_TrueClass;
 		return new F_FalseClass;
 	}
