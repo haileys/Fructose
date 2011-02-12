@@ -575,7 +575,7 @@ class F_Regexp extends F_Object
 	}
 	public function __operator_eq($block, $operand)
 	{
-		return F_TrueClass::__from_bool($this->__REGEXP === $operand->__REGEXP);
+		return F_TrueClass::__from_bool(is_a($operand, 'F_Regexp'), $this->__REGEXP === $operand->__REGEXP);
 	}
 	public function __operator_stricteq($block, $operand)
 	{
