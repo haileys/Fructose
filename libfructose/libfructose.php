@@ -1099,7 +1099,7 @@ class F_Array extends F_Enumerable
 		if($sep !== NULL)
 			$seper = $sep->F_to_s(NULL)->__STRING;
 			
-		return implode($seper, array_map(create_function('$el','return $el->F_to_s(NULL)->__STRING;'), $this->__ARRAY));
+		return F_String::__from_string(implode($seper, array_map(create_function('$el','return $el->F_to_s(NULL)->__STRING;'), $this->__ARRAY)));
 	}
 	public function F_compact($block)
 	{
