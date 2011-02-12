@@ -13,10 +13,8 @@ namespace Fructose.Compiler.Generators
         public override void Compile(Compiler compiler, Node node, NodeParent parent)
         {
             var regex = (RegularExpression)node;
-			if(regex.Pattern.Count != 1)
-				throw new FructoseCompileException("Multiple Patterns in a regex isn't supported. If you run into this error, *please* open a GitHub issue with the code you entered to get this exception", node);
 			
-			string rstr = "/" + ((StringLiteral)regex.Pattern[0]).Value.ToString() + "/";
+			string rstr = "";
 			if(regex.Options.HasFlag(RubyRegexOptions.IgnoreCase))
 				rstr += "i";
 			if(regex.Options.HasFlag(RubyRegexOptions.Multiline))
@@ -24,7 +22,9 @@ namespace Fructose.Compiler.Generators
 			if(regex.Options.HasFlag(RubyRegexOptions.Extended))
 				rstr += "x";
 			
-			compiler.AppendLine("$_stack[] = F_Regexp::__from_string('{0}');", rstr.Replace("'", "\\'"));
+			compiler.CompileNode(new StringConstructor(regex.Pattern, StringKind.Mutable, regex.Location));
+			
+			compiler.AppendLine("$_stack[] = F_Regexp::SF_new(NULL, array_pop($_stack), F_String::__from_string('{0}'));", rstr);
         }
     }
 }

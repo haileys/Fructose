@@ -544,6 +544,15 @@ class F_Regexp extends F_Object
 		$r->__REGEXP = $str;
 		return $r;
 	}
+	public static function SF_new($block, $regexp, $options = NULL)
+	{
+		$opts = "";
+		if($options !== NULL)
+			$opts = $options->F_to_s(NULL)->__STRING;
+		$r = new F_Regexp;
+		$r->__REGEXP = '/' . str_replace('/', '\/', $regexp->F_to_s(NULL)->__STRING) . '/' . $opts;
+		return $r;
+	}
 	public function __operator_eq($block, $operand)
 	{
 		return F_TrueClass::__from_bool($this->__REGEXP === $operand->__REGEXP);
