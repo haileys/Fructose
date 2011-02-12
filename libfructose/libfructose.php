@@ -25,6 +25,13 @@ freely, subject to the following restrictions:
    
 */
 
+$_stack = array();
+$_lambda_objs = array();
+$_locals = new stdClass;
+$_locals->self = new F_Object;
+$_gthis = $_locals->self;
+$_globals = array();
+
 class ReturnFromBlock extends Exception
 {
 	public $val;
@@ -1688,7 +1695,9 @@ class F_Symbol extends F_Object
 	}
 	public function __operator_spaceship($block,$operand)
 	{
-		return F_Number::__from_number(strcmp($this->__SYMBOL, $operand->__SYMBOL));
+		// this stupid workaround is needed because PHP on OSX doesn't always return -1, 0, or 1
+		$n = strcmp($this->__SYMBOL, $operand->__SYMBOL);
+		return F_Number::__from_number($n > 0 ? 1 : ($n < 0 ? -1 : 0));
 	}
 	public function __operator_eq($block,$operand)
 	{
