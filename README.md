@@ -17,7 +17,7 @@ It is composed of two parts - Fructose itself, which is written in C#, and libfr
 <tr><td>Object (including Kernel)</td><td><b>Done</b></td></tr>
 <tr><td>Hash</td><td><b>Done</b></td></tr>
 <tr><td>Exceptions/Errors</td><td><b>Done</b></td></tr>
-<tr><td>Regexp</td><td></td></tr>
+<tr><td>Regexp</td><td><b>Subset Done</b></td></tr>
 <tr><td>Match</td><td></td></tr>
 <tr><td>Proc</td><td><b>Done</b></td></tr>
 <tr><td>Random</td><td><b>Done</b></td></tr>

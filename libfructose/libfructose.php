@@ -536,6 +536,152 @@ class F_Random extends F_Object
 		return F_Number::__from_number((mt_rand() / mt_getrandmax())  * $m);
 	}
 }
+class F_Regexp extends F_Object
+{
+	public static function __from_string($str)
+	{
+		$r = new F_Regexp;
+		$r->__REGEXP = $str;
+		return $r;
+	}
+	public function __operator_eq($block, $operand)
+	{
+		return F_TrueClass::__from_bool($this->__REGEXP === $operand->__REGEXP);
+	}
+	public function __operator_stricteq($block, $operand)
+	{
+		return $this->__operator_match(NULL, $operand);
+	}
+	public function __operator_match($block, $operand)
+	{
+		if(preg_match($this->__REGEXP, $operand->F_to_s(NULL)->__STRING, $matches, PREG_OFFSET_CAPTURE) === 0)
+			return new F_NilClass;
+			
+		return F_Number::__from_number($matches[0][1]);
+	}
+	public function F_casefold_QUES_($block)
+	{
+		return F_TrueClass::__from_bool(preg_match('/\/[a-z]*i[a-z]*$/', $this->__REGEXP));
+	}
+	public function F_to_s($block)
+	{
+		return F_String::__from_string($this->__REGEXP);
+	}
+	public function F_source($block)
+	{
+		preg_match('/^\/(.*)\/[a-z]*$/', $this->__REGEXP, $matches);
+		return F_String::__from_string($matches[0]);
+	}
+	public function F_match($block, $str)
+	{
+		if(preg_match($this->__REGEXP, $str->F_to_s(NULL)->__STRING, $matches, PREG_OFFSET_CAPTURE) === 0)
+			return new F_NilClass;
+		return F_MatchData::__from_array($matches, $this);
+	}
+}
+class F_MatchData extends F_Object
+{
+	public static function __from_array($matches, $regexp)
+	{
+		$md = new F_MatchData;
+		$md->__MATCHES = $matches;
+		$md->__REGEXP = $regexp;
+		return $md;
+	}
+	public function __operator_arrayget($block, $idx)
+	{
+		$count = 0;
+		foreach($this->__MATCHES as $k=>$v)
+			if(is_int($k))
+				$count++;
+				
+		if(is_a($idx, 'F_Number'))
+		{
+			$index = $idx->__NUMBER;
+			if($index < 0)
+				$index += $count;
+			if($index < 0)
+				return new F_NilClass;
+			if($index >= $count)
+				return new F_NilClass;
+			return F_String::__from_string($this->__MATCHES[$index][0]);
+		}
+		$index = $idx->F_to_s(NULL)->__STRING;
+		if(!isset($this->__MATCHES[$index]))
+			return new F_NilClass;
+		return F_String::__from_string($this->__MATCHES[$index][0]);
+	}
+	public function F_begin($block, $idx)
+	{
+		$count = 0;
+		foreach($this->__MATCHES as $k=>$v)
+			if(is_int($k))
+				$count++;
+		if(is_a($idx, 'F_Number'))
+		{
+			$index = $idx->__NUMBER;
+			if($index < 0)
+				$index += $count;
+			if($index < 0)
+				return new F_NilClass;
+			if($index >= $count)
+				return new F_NilClass;
+			return F_Number::__from_number($this->__MATCHES[$index][1]);
+		}
+		$index = $idx->F_to_s(NULL)->__STRING;
+		if(!isset($this->__MATCHES[$index]))
+			return new F_NilClass;
+		return F_Number::__from_number($this->__MATCHES[$index][1]);
+	}
+	public function F_captures($block)
+	{
+		$caps = array_map(create_function('$a','return F_String::__from_string($a[0]);'), $this->__MATCHES);
+		array_shift($caps);
+		return F_Array::__from_array($caps);
+	}
+	public function F_end($block, $idx)
+	{
+		$count = 0;
+		foreach($this->__MATCHES as $k=>$v)
+			if(is_int($k))
+				$count++;
+		if(is_a($idx, 'F_Number'))
+		{
+			$index = $idx->__NUMBER;
+			if($index < 0)
+				$index += $count;
+			if($index < 0)
+				return new F_NilClass;
+			if($index >= $count)
+				return new F_NilClass;
+			return F_Number::__from_number($this->__MATCHES[$index][1] + strlen($this->__MATCHES[$index][0]));
+		}
+		$index = $idx->F_to_s(NULL)->__STRING;
+		if(!isset($this->__MATCHES[$index]))
+			return new F_NilClass;
+		return F_Number::__from_number($this->__MATCHES[$index][1] + strlen($this->__MATCHES[$index][0]));
+	}
+	public function F_size($block)
+	{
+		$count = 0;
+		foreach($this->__MATCHES as $k=>$v)
+			if(is_int($k))
+				$count++;
+		return F_Number::__from_number($count);
+	}
+	public function F_regexp($block)
+	{
+		return $this->__REGEXP;
+	}
+	public function F_to_a($block)
+	{
+		return $this->F_captures(NULL);
+	}
+	public function F_to_s($block)
+	{
+		return F_String::__from_string($this->__MATCHES[0][0]);
+	}
+}
 class F_Enumerable extends F_Object
 {
 	public static $_states = array();

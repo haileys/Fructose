@@ -44,6 +44,7 @@ namespace Fructose
 
 Usage: fructose [( -o output-file | --stdout )] ( - | input-file )
 ");
+			Environment.Exit(1);
         }
 
         static void Fatal(string message, params object[] args)
