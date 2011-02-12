@@ -1999,7 +1999,7 @@ class F_String extends F_Object
 	{
 		return $operand->__operator_match(NULL, $this);
 	}
-	public function __operator_arrayget($block,$operand, $operand2 = NULL)
+	public function __operator_arrayget($block, $operand, $operand2 = NULL)
 	{
 		if(get_class($operand) === 'F_Number' || is_subclass_of($operand, 'F_Number'))
 		{
@@ -2024,16 +2024,12 @@ class F_String extends F_Object
 			else
 				return new F_NilClass;
 		}
-		else if(get_class($operand) === 'F_Regexp' || is_subclass_of($operand, 'F_Regexp'))
+		else if(get_class($operand) === 'F_Range' || is_subclass_of($operand, 'F_Range'))
 		{
-			$matches = array();
-			if(!preg_match($operand->__REGEX, $this->__STRING))
-				return new F_NilClass;
-			$index = $operand2 !== NULL ? (int)$operand2->__NUMBER : 0;
-			if(count($matches) > $index)
-				return new F_NilClass;
-			
-			return F_String::__from_string($matches[$index]);
+			if(is_a($operand->__BEGIN, 'F_Number'))
+			{
+				return $this->__operator_arrayget(NULL, $operand->__BEGIN, $operand->__END);
+			}
 		}
 		else if(get_class($operand) === 'F_String' || is_subclass_of($operand, 'F_String'))
 		{
