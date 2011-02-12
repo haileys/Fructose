@@ -15,6 +15,9 @@
 #ello
 #1
 #6
+#1bc
+#111
+#123
 
 regex = /[a-z]{3}/
 
@@ -39,3 +42,12 @@ puts md[1]
 puts md[3]
 puts md.begin(3)
 puts md.end(:punc)
+
+puts "abc".sub(/./, 1)
+puts "abc".gsub(/./, 1)
+
+i = 0
+n = "abc".gsub /./ do |m|
+  i += 1
+end
+puts n

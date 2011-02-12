@@ -1960,15 +1960,6 @@ class F_String extends F_Object
 	}
 	public function __operator_match($block,$operand)
 	{
-		if(get_class($operand) === 'F_Regexp' || is_subclass_of($operand, 'F_Regexp'))
-		{
-			$matches = array();
-			if(!preg_match($operand->__REGEX, $this->__STRING))
-				return new F_NilClass;
-			
-			return F_Number::__from_number(strpos($this->__STRING, $matches[0]));
-		}
-		
 		return $operand->__operator_match($this);
 	}
 	public function __operator_arrayget($block,$operand, $operand2 = NULL)
@@ -2080,6 +2071,50 @@ class F_String extends F_Object
 	public function F_eql_QUES_($block,$operand)
 	{
 		return F_TrueClass::__from_bool($this->__STRING === $operand->F_to_s(NULL)->__STRING);
+	}
+	public function F_gsub($block, $pattern, $replacement = NULL)
+	{
+		if($replacement !== NULL)
+		{
+			$str = preg_replace($pattern->__REGEXP, $replacement->F_to_s(NULL)->__STRING, $this->__STRING);
+			return F_String::__from_string($str);
+		}
+		else
+		{
+			$str = preg_replace_callback($pattern->__REGEXP, 
+				create_function('$matches', sprintf('$f = "%s"; return $f(NULL, F_String::__from_string($matches[0]))->F_to_s(NULL)->__STRING;', $block))
+				, $this->__STRING);
+			return F_String::__from_string($str);
+		}
+	}
+	public function F_gsub_EXCL_($block, $pattern, $replacement = NULL)
+	{
+		$new = $this->F_gsub($block, $pattern, $replacement);
+		if($this->__STRING === $new->__STRING)
+			return new F_NilClass;
+		$this->__STRING = $new->__STRING;
+	}
+	public function F_sub($block, $pattern, $replacement = NULL)
+	{
+		if($replacement !== NULL)
+		{
+			$str = preg_replace($pattern->__REGEXP, $replacement->F_to_s(NULL)->__STRING, $this->__STRING, 1);
+			return F_String::__from_string($str);
+		}
+		else
+		{
+			$str = preg_replace_callback($pattern->__REGEXP, 
+				create_function('$matches', sprintf('$f = "%s"; return $f(NULL, F_String::__from_string($matches[0]))->F_to_s(NULL)->__STRING;', $block))
+				, $this->__STRING, 1);
+			return F_String::__from_string($str);
+		}
+	}
+	public function F_sub_EXCL_($block, $pattern, $replacement = NULL)
+	{
+		$new = $this->F_sub($block, $pattern, $replacement);
+		if($this->__STRING === $new->__STRING)
+			return new F_NilClass;
+		$this->__STRING = $new->__STRING;
 	}
 	public function F_hash($block)
 	{
