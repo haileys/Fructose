@@ -27,4 +27,14 @@ namespace Fructose.Compiler.Generators
 			compiler.AppendLine("$_stack[] = F_Regexp::SF_new(NULL, array_pop($_stack), F_String::__from_string('{0}'));", rstr);
         }
     }
+	
+    [Generator(NodeTypes.RegexMatchReference)]
+    public class RegexMatch : AstNodeGenerator
+    {
+        public override void Compile(Compiler compiler, Node node, NodeParent parent)
+        {
+			var m = (RegexMatchReference)node;
+			compiler.AppendLine("$_stack[] = F_Regexp::_get_match({0});", m.VariableName);
+		}
+	}
 }

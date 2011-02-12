@@ -538,6 +538,26 @@ class F_Random extends F_Object
 }
 class F_Regexp extends F_Object
 {
+	public static $_matches = array();
+	public static function _get_match($n)
+	{
+		$count = 0;
+		foreach(F_Regexp::$_matches as $k=>$v)
+			if(is_int($k))
+				$count++;
+		if($n < 0)
+			$n += $count;
+		if($n < 0)
+			return new F_NilClass;
+		if($n >= $count)
+			return new F_NilClass;
+		
+		$val = F_Regexp::$_matches[$n];
+		if(is_array($val))
+			$val = $val[0];
+		return F_String::__from_string($val);
+	}
+	
 	public static function __from_string($str)
 	{
 		$r = new F_Regexp;
@@ -563,14 +583,14 @@ class F_Regexp extends F_Object
 	}
 	public function __operator_match($block, $operand)
 	{
-		if(preg_match($this->__REGEXP, $operand->F_to_s(NULL)->__STRING, $matches, PREG_OFFSET_CAPTURE) === 0)
+		if(preg_match($this->__REGEXP, $operand->F_to_s(NULL)->__STRING, F_Regexp::$_matches, PREG_OFFSET_CAPTURE) === 0)
 			return new F_NilClass;
 			
-		return F_Number::__from_number($matches[0][1]);
+		return F_Number::__from_number(F_Regexp::$_matches[0][1]);
 	}
 	public function F_casefold_QUES_($block)
 	{
-		return F_TrueClass::__from_bool(preg_match('/\/[a-z]*i[a-z]*$/', $this->__REGEXP));
+		return F_TrueClass::__from_bool(preg_match('/\/[a-z]*i[a-z]*$/', $this->__REGEXP, F_Regexp::$_matches));
 	}
 	public function F_to_s($block)
 	{
@@ -578,14 +598,14 @@ class F_Regexp extends F_Object
 	}
 	public function F_source($block)
 	{
-		preg_match('/^\/(.*)\/[a-z]*$/', $this->__REGEXP, $matches);
-		return F_String::__from_string($matches[0]);
+		preg_match('/^\/(.*)\/[a-z]*$/', $this->__REGEXP, F_Regexp::$_matches);
+		return F_String::__from_string(F_Regexp::$_matches[0]);
 	}
 	public function F_match($block, $str)
 	{
-		if(preg_match($this->__REGEXP, $str->F_to_s(NULL)->__STRING, $matches, PREG_OFFSET_CAPTURE) === 0)
+		if(preg_match($this->__REGEXP, $str->F_to_s(NULL)->__STRING, F_Regexp::$_matches, PREG_OFFSET_CAPTURE) === 0)
 			return new F_NilClass;
-		return F_MatchData::__from_array($matches, $this);
+		return F_MatchData::__from_array(F_Regexp::$_matches, $this);
 	}
 }
 class F_MatchData extends F_Object
@@ -1969,7 +1989,7 @@ class F_String extends F_Object
 	}
 	public function __operator_match($block,$operand)
 	{
-		return $operand->__operator_match($this);
+		return $operand->__operator_match(NULL, $this);
 	}
 	public function __operator_arrayget($block,$operand, $operand2 = NULL)
 	{
