@@ -26,6 +26,7 @@ namespace Fructose.Transformer
         ClassDefinition currentClass;
         Transformations transformations = new Transformations();
         int blockUniqueId = 0;
+        static string blockPrefix = Guid.NewGuid().ToString().Split('-').First();
 
         public Transformer(SourceUnitTree AST)
         {
@@ -56,7 +57,7 @@ namespace Fructose.Transformer
         protected override void Walk(BlockDefinition node)
         {
             var statements = currentClass == null ? AST.Statements : currentClass.Body.Statements;
-            var methodname = "__lambda_" + ++blockUniqueId;
+            var methodname = "__lambda_" + blockPrefix + "_" + ++blockUniqueId;
 
             LexicalScope scope = currentClass != null ? currentClass.DefinedScope
                 : /* HACK HACK HACK */
