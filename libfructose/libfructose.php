@@ -1205,7 +1205,10 @@ class F_Array extends F_Enumerable
 				return new F_TrueClass;
 		return new F_FalseClass;
 	}
-	
+	public function F_to_s($block)
+	{
+		return F_String::__from_string('[ ' . implode(', ', array_map(create_function('$o','return $o->F_inspect(NULL)->__STRING;'), $this->__ARRAY)) . ' ]');
+	}
 	public function F_index($block, $val)
 	{
 		for($i = 0; $i < count($this->__ARRAY); $i++)
