@@ -866,6 +866,9 @@ class F_Enumerable extends F_Object
 			// @TODO
 			// throw some exception
 		}
+		if($sym !== NULL)
+			F_Enumerable::$_states[$state] = $sym;
+			
 		$this->F_each(create_function('',sprintf('$a = func_get_args(); $state = %d; $f = "%s";
 		if(F_Enumerable::$_states[$state] === NULL)
 		{
