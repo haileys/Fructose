@@ -180,6 +180,10 @@ class F_Object
 		debug_print_backtrace();
 		die;
 	}
+	public function F_define_method($block, $sym)
+	{
+		$this->_dyn_methods[$sym->F_to_s(NULL)->__STRING] = $block;
+	}
 	public function __add_method($name, $fn)
 	{
 		$this->_dyn_methods[$name] = $fn;
