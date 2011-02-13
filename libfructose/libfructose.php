@@ -1997,7 +1997,7 @@ class F_String extends F_Object
 	}
 	public function __operator_stricteq($block,$operand)
 	{
-		return $this->__operator_eq($operand);
+		return $this->__operator_eq(NULL, $operand);
 	}
 	public function __operator_match($block,$operand)
 	{
@@ -2110,7 +2110,8 @@ class F_String extends F_Object
 		return F_TrueClass::__from_bool($this->__STRING === $operand->F_to_s(NULL)->__STRING);
 	}
 	public function F_gsub($block, $pattern, $replacement = NULL)
-	{
+	{	
+		preg_match($pattern->__REGEXP, $this->__STRING, F_Regexp::$_matches);
 		if($replacement !== NULL)
 		{
 			$str = preg_replace($pattern->__REGEXP, $replacement->F_to_s(NULL)->__STRING, $this->__STRING);
@@ -2132,7 +2133,8 @@ class F_String extends F_Object
 		$this->__STRING = $new->__STRING;
 	}
 	public function F_sub($block, $pattern, $replacement = NULL)
-	{
+	{	
+		preg_match($pattern->__REGEXP, $this->__STRING, F_Regexp::$_matches);
 		if($replacement !== NULL)
 		{
 			$str = preg_replace($pattern->__REGEXP, $replacement->F_to_s(NULL)->__STRING, $this->__STRING, 1);
