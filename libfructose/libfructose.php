@@ -188,6 +188,10 @@ class F_Object
 	{
 		$this->_dyn_methods[$name] = $fn;
 	}
+	public function F_define_global_method($block, $sym)
+	{
+		F_Object::$_dyn_global_methods[$sym->F_to_s(NULL)->__STRING] = $block;
+	}
 	public static function __add_global_method($name, $fn)
 	{
 		F_Object::$_dyn_global_methods[$name] = $fn;
