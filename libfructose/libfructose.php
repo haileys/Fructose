@@ -118,7 +118,7 @@ class F_Object
 	
 	public function F_to_s($block)
 	{
-		return F_String::__from_string("Object");
+		return $this->F_class(NULL);
 	}
 	public function F_puts($block,$o)
 	{
