@@ -118,7 +118,7 @@ class F_Object
 	
 	public function F_to_s($block)
 	{
-		return $this->F_class(NULL);
+		return $this->F_class(NULL)->F_to_s(NULL);
 	}
 	public function F_puts($block,$o)
 	{
