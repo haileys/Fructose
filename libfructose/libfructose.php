@@ -191,10 +191,12 @@ class F_Object
 	public function F_define_global_method($block, $sym)
 	{
 		F_Object::$_dyn_global_methods[_rmethod_to_php($sym->F_to_s(NULL)->__STRING)] = $block;
+		return $this;
 	}
 	public static function __add_global_method($name, $fn)
 	{
 		F_Object::$_dyn_global_methods[$name] = $fn;
+		return $this;
 	}
 	public function __operator_notmatch($block, $operand)
 	{
@@ -246,10 +248,12 @@ class F_Object
 	public function F_taint($block)
 	{
 		$this->_tainted = TRUE;
+		return $this;
 	}
 	public function F_untaint($block)
 	{
 		$this->_tainted = FALSE;
+		return $this;
 	}
 	public function F_tainted_QUES_($block)
 	{
@@ -263,10 +267,12 @@ class F_Object
 	public function F_trust($block)
 	{
 		$this->_untrusted = FALSE;
+		return $this;
 	}
 	public function F_untrust($block)
 	{
 		$this->_untrusted = TRUE;
+		return $this;
 	}
 	public function F_untrusted_QUES_($block)
 	{
