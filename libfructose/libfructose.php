@@ -2180,6 +2180,10 @@ class F_String extends F_Object
 	{
 		return F_TrueClass::__from_bool(strpos($this->__STRING, $operand->F_to_s(NULL)->__STRING) !== FALSE);
 	}
+	public function F_size($block)
+	{
+		return F_Number::__from_number(strlen($this->__STRING));
+	}
 	public function F_length($block)
 	{
 		return F_Number::__from_number(strlen($this->__STRING));
