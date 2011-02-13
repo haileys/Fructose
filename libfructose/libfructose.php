@@ -2049,7 +2049,7 @@ class F_String extends F_Object
 		{
 			if(is_a($operand->__BEGIN, 'F_Number'))
 			{
-				return $this->__operator_arrayget(NULL, $operand->__BEGIN, $operand->__END);
+				return $this->__operator_arrayget(NULL, $operand->__BEGIN, $operand->__END->__operator_add(NULL, $this->F_size(NULL)));
 			}
 		}
 		else if(get_class($operand) === 'F_String' || is_subclass_of($operand, 'F_String'))
