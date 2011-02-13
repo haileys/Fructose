@@ -1545,7 +1545,7 @@ class F_Hash extends F_Enumerable
 			if(!$first)
 				$str .= ", ";
 			$first = FALSE;
-			$str .= $pairs->__ARRAY[0]->F_to_s(NULL) . " => " . $pairs->__ARRAY[1]->F_to_s(NULL);
+			$str .= $pairs->__ARRAY[0]->F_to_s(NULL)->__STRING . " => " . $pairs->__ARRAY[1]->F_to_s(NULL)->__STRING;
 		}
 		$str .= " }";
 		return F_String::__from_string($str);
