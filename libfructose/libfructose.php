@@ -1056,6 +1056,10 @@ class F_Array extends F_Enumerable
 				
 		return new F_TrueClass;
 	}
+	public function __operator_stricteq($block, $operand)
+	{
+		return $this->F_include_QUES_(NULL, $operand);
+	}
 	public function __operator_arrayget($block, $index)
 	{
 		$idx = (int)$index->__NUMBER;
