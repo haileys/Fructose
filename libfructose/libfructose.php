@@ -989,6 +989,27 @@ class F_Enumerable extends F_Object
 		{ }
 		return F_Array::__from_array(F_Enumerable::$_states[$state]);
 	}
+	public function F_zip($block)
+	{
+		$args = func_get_args();
+		array_shift($args);
+		$state = count(F_Enumerable::$_states);
+		F_Enumerable::$_states[$state] = array('idx' => F_Number::__from_number(0), 'arr' => array(), 'collections' => $args);
+		
+		$this->F_each(create_function('$b,$item', sprintf('
+		$state = %d;
+		$arr = array($item);
+		for($i = 0; $i < count(F_Enumerable::$_states[$state]["collections"]); $i++)
+		{
+			$arr[] = F_Enumerable::$_states[$state]["collections"][$i]->__operator_arrayget(NULL, F_Enumerable::$_states[$state]["idx"]);
+		}
+		F_Enumerable::$_states[$state]["idx"] = F_Enumerable::$_states[$state]["idx"]->F_succ(NULL);
+		F_Enumerable::$_states[$state]["arr"][] = F_Array::__from_array($arr);
+		return new F_NilClass;
+		', $state)));
+		
+		return F_Array::__from_array(F_Enumerable::$_states[$state]['arr']);
+	}
 }
 class F_Array extends F_Enumerable
 {
@@ -1403,6 +1424,10 @@ class F_Hash extends F_Enumerable
 			$hash->__PAIRS[] = F_Array::__from_array(array(F_Symbol::__from_string($k), F_String::__from_string($v)));
 			
 		return $hash;
+	}
+	public static function F_insert($block, $arr)
+	{
+		return $this->__operator_arrayset(NULL, $arr->__operator_arrayget(NULL, F_Number::__from_number(0)), $arr->__operator_arrayget(NULL, F_Number::__from_number(1)));
 	}
 	public static function SF_new($block, $obj = NULL)
 	{

@@ -21,6 +21,8 @@
 #1
 #6
 #3
+#9
+#12
 
 arr = [1, 2, 3]
 puts arr.all? { |o| o > 0 }
@@ -76,3 +78,9 @@ puts arr.max
 puts arr.min
 puts arr.sort { |a,b| -(a <=> b) }.first
 puts arr.take(3).max
+
+zipped = [1,2].zip([3,4],[5,6])
+
+zipped.each do |z|
+  puts z.reduce :+
+end
