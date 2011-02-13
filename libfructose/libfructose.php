@@ -182,7 +182,7 @@ class F_Object
 	}
 	public function F_define_method($block, $sym)
 	{
-		$this->_dyn_methods[$sym->F_to_s(NULL)->__STRING] = $block;
+		$this->_dyn_methods[_rmethod_to_php($sym->F_to_s(NULL)->__STRING)] = $block;
 	}
 	public function __add_method($name, $fn)
 	{
@@ -190,7 +190,7 @@ class F_Object
 	}
 	public function F_define_global_method($block, $sym)
 	{
-		F_Object::$_dyn_global_methods[$sym->F_to_s(NULL)->__STRING] = $block;
+		F_Object::$_dyn_global_methods[_rmethod_to_php($sym->F_to_s(NULL)->__STRING)] = $block;
 	}
 	public static function __add_global_method($name, $fn)
 	{
