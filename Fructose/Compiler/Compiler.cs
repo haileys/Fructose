@@ -70,7 +70,8 @@ namespace Fructose.Compiler
             foreach(var c in signature)
                 sb.AppendLine(c);
             sb.AppendLine(@"error_reporting(E_ALL | ~E_STRICT);
-require_once 'libfructose.php';
+if(!class_exists('F_Object'))
+	require_once 'libfructose.php';
 if(!isset($_stack))
 	global $_stack;
 global $_lambda_objs;
