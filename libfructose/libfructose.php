@@ -2168,7 +2168,7 @@ class F_String extends F_Object
 		else
 		{
 			$str = preg_replace_callback($pattern->__REGEXP, 
-				create_function('$matches', sprintf('$f = "%s"; return $f(NULL, F_String::__from_string($matches[0]))->F_to_s(NULL)->__STRING;', $block))
+				create_function('$matches', sprintf('$f = "%s"; F_Regexp::$_matches = $matches; return $f(NULL, F_String::__from_string($matches[0]))->F_to_s(NULL)->__STRING;', $block))
 				, $this->__STRING);
 			return F_String::__from_string($str);
 		}
@@ -2191,7 +2191,7 @@ class F_String extends F_Object
 		else
 		{
 			$str = preg_replace_callback($pattern->__REGEXP, 
-				create_function('$matches', sprintf('$f = "%s"; return $f(NULL, F_String::__from_string($matches[0]))->F_to_s(NULL)->__STRING;', $block))
+				create_function('$matches', sprintf('$f = "%s"; F_Regexp::$_matches = $matches; return $f(NULL, F_String::__from_string($matches[0]))->F_to_s(NULL)->__STRING;', $block))
 				, $this->__STRING, 1);
 			return F_String::__from_string($str);
 		}
