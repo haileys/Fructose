@@ -2098,6 +2098,15 @@ class F_String extends F_Object
 		$this->__string[(int)$operand->__NUMBER] = $val->__STRING;
 		return $val;
 	}
+	public function F_concat($block, $str)
+	{
+		return $this->__operator_lshift(NULL, $str);
+	}
+	public function F_force_encoding($block, $enc)
+	{
+		// nop method to keep ERB happy
+		return new F_NilClass;
+	}
 	public function F_escape($block)
 	{
 		$str = F_String::__from_string(htmlspecialchars($this->__STRING));
