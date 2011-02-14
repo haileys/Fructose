@@ -2252,6 +2252,14 @@ class F_String extends F_Object
 	{
 		return F_String::__from_string(strtoupper($this->__STRING), $this->_tainted);
 	}
+	public function F_url_encode($block)
+	{
+		return F_String::__from_string(urlencode($this->__STRING));
+	}
+	public function F_url_decode($block)
+	{
+		return F_String::__from_string(urldecode($this->__STRING));
+	}
 	public function F_upcase_EXCL_($block)
 	{
 		$new = strtoupper($this->__STRING);
