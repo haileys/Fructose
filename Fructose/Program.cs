@@ -68,9 +68,9 @@ Usage: fructose [( -o output-file | --stdout )] ( - | input-file )
 
                         output = File.Open(args[i], FileMode.Create);
                         break;
-					case "-p":
-                        if (++i == args.Length)
-                            Fatal("Expected preprocessor after -p");
+					//case "-p":
+                    //    if (++i == args.Length)
+                    //        Fatal("Expected preprocessor after -p");
 						
 						
                     case "--stdout":
