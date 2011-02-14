@@ -71,9 +71,11 @@ namespace Fructose.Compiler
                 sb.AppendLine(c);
             sb.AppendLine(@"error_reporting(E_ALL | ~E_STRICT);
 require_once 'libfructose.php';
-global $_stack;
+if(!isset($_stack))
+	global $_stack;
 global $_lambda_objs;
-global $_locals;
+if(!isset($_locals))
+	global $_locals;
 global $_gthis;
 global $_globals;
 ");
