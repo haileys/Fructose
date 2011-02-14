@@ -14,7 +14,15 @@ namespace Fructose.Compiler.Generators
             if (((MethodCall)node).Arguments != null)
                 foreach (var arg in ((MethodCall)node).Arguments.Expressions.Reverse())
                     compiler.CompileNode(arg, parent.CreateChild(node));
-
+			
+			if(((MethodCall)node).MethodName == "_php_include")
+			{
+				if(((MethodCall)node).Arguments == null || ((MethodCall)node).Arguments.Expressions.Length != 1)
+					throw new FructoseCompileException("Built in function _php_include takes one argument", node);
+				compiler.AppendLine("include array_pop($_stack)->F_to_s(NULL)->__STRING;");
+				return;
+			}
+			
             string mname = Mangling.RubyMethodToPHP(((MethodCall)node).MethodName);
 
             bool callStatic = false;
