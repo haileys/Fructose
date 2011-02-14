@@ -86,9 +86,11 @@
     <Compile Include="Compiler\Generators\Regex.cs" />
     <Compile Include="Compiler\Generators\Case.cs" />
     <Compile Include="Compiler\Generators\Encoding.cs" />
+    <Compile Include="Preprocessor\Preprocessor.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
+    <Folder Include="Preprocessor\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

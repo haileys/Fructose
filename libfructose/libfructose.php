@@ -357,6 +357,17 @@ class F_File extends F_Enumerable
 		if(!$file->__CLOSED)
 			$file->F_close(NULL);
 	}
+	public static function SF_absolute_path($block, $filename)
+	{
+		$p = realpath($filename->F_to_s(NULL)->__STRING);
+		if($p === FALSE || $p === NULL)
+			return new F_NilClass;
+		return F_String::__from_string($p);
+	}
+	public static function SF_exist_QUES_($block, $filename)
+	{
+		return F_TrueClass::__from_bool(file_exists($filename->F_to_s(NULL)->__STRING));
+	}
 	public function F_close($block)
 	{
 		if($this->__CLOSED)
