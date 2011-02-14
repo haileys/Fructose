@@ -10,6 +10,7 @@ namespace Fructose
     {
         static Stream input = null;
         static Stream output = null;
+		static List<Preprocessor> preprocessors = new List<Preprocessor>();
 
         static void Main(string[] args)
         {
@@ -67,6 +68,11 @@ Usage: fructose [( -o output-file | --stdout )] ( - | input-file )
 
                         output = File.Open(args[i], FileMode.Create);
                         break;
+					case "-p":
+                        if (++i == args.Length)
+                            Fatal("Expected preprocessor after -p");
+						
+						
                     case "--stdout":
                         output = Console.OpenStandardOutput();
                         break;
