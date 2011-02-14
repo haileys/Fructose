@@ -85,6 +85,7 @@
     <Compile Include="Util.cs" />
     <Compile Include="Compiler\Generators\Regex.cs" />
     <Compile Include="Compiler\Generators\Case.cs" />
+    <Compile Include="Compiler\Generators\Encoding.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
