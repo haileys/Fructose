@@ -863,13 +863,12 @@ class F_Enumerable extends F_Object
 		
 		if($block === NULL && $sym !== NULL)
 			$block = create_function('',sprintf('$a = func_get_args(); return call_user_func(array($a[1],"%s"), NULL, $a[2]);', _rmethod_to_php($sym->__SYMBOL)));
-			
-		if($block === NULL)
+		elseif($block === NULL)
 		{
 			// @TODO
 			// throw some exception
 		}
-		if($sym !== NULL)
+		elseif($sym !== NULL)
 			F_Enumerable::$_states[$state] = $sym;
 			
 		$this->F_each(create_function('',sprintf('$a = func_get_args(); $state = %d; $f = "%s";
