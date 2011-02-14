@@ -571,7 +571,10 @@ class F_Regexp extends F_Object
 			$val = $val[0];
 		return F_String::__from_string($val);
 	}
-	
+	public static function SF_escape($block, $str)
+	{
+		return F_String::__from_string(preg_quote($str->F_to_s(NULL)->__STRING));
+	}
 	public static function __from_string($str)
 	{
 		$r = new F_Regexp;
