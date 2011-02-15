@@ -66,4 +66,4 @@ class F_HttpSession
 	}
 }
 
-$_globals['F_session'] = new F_HttpSession;
+$GLOBALS['_globals']['F_session'] = new F_HttpSession;
