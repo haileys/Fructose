@@ -32,7 +32,7 @@ function set_sgs($arr)
 	}
 }
 
-class F_HttpSession
+class F_HttpSession extends F_Object
 {
 	public function __operator_arrayget($block, $key)
 	{
