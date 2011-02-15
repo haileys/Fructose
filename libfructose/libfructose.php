@@ -207,6 +207,10 @@ class F_Object
 	{
 		return $this->__operator_eq(NULL, $operand);
 	}
+	public function __operator_neq($block, $operand)
+	{
+		return F_TrueClass::__from_bool(! _isTruthy($this->__operator_eq(NULL, $operand)));
+	}
 	public function F_clone($block)
 	{
 		$new = clone $this;
