@@ -31,3 +31,27 @@ function set_sgs($arr)
 		$_globals['F_' . $sg] = F_Hash::__from_pairs($pairs);
 	}
 }
+
+function F_create_session($block)
+{
+	if (session_id() == '')
+	{
+		session_start();
+	}
+	
+	set_sgs(array("session" => $_SESSION));
+}
+
+function F_destroy_session($block)
+{
+	if (session_id() != '')
+	{
+		session_unset();
+		session_destroy();
+	}
+}
+
+function F_set_session_var($block, $k, $v)
+{
+	$_SESSION[$k->toPHP()] = $v->toPHP();
+}
