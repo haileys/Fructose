@@ -11,7 +11,7 @@ namespace Fructose.Compiler.Generators
     {
         public override void Compile(Compiler compiler, Node node, NodeParent parent)
         {
-            compiler.AppendLine("$_stack[] = {0};", ((Variable)node).ToPHPVariable());
+            compiler.AppendLine("$_stack[] = isset({0}) ? ({0}) : (new F_NilClass);", ((Variable)node).ToPHPVariable());
         }
     }
 
@@ -20,7 +20,7 @@ namespace Fructose.Compiler.Generators
     {
         public override void Compile(Compiler compiler, Node node, NodeParent parent)
         {
-            compiler.AppendLine("$_stack[] = {0};", ((Variable)node).ToPHPVariable());
+            compiler.AppendLine("$_stack[] = isset({0}) ? ({0}) : (new F_NilClass);", ((Variable)node).ToPHPVariable());
         }
     }
 
@@ -29,7 +29,7 @@ namespace Fructose.Compiler.Generators
     {
         public override void Compile(Compiler compiler, Node node, NodeParent parent)
         {
-            compiler.AppendLine("$_stack[] = {0};", ((Variable)node).ToPHPVariable());
+            compiler.AppendLine("$_stack[] = isset({0}) ? ({0}) : (new F_NilClass);", ((Variable)node).ToPHPVariable());
         }
     }
 
@@ -38,7 +38,7 @@ namespace Fructose.Compiler.Generators
     {
         public override void Compile(Compiler compiler, Node node, NodeParent parent)
         {
-            compiler.AppendLine("$_stack[] = {0};", ((Variable)node).ToPHPVariable());
+            compiler.AppendLine("$_stack[] = isset({0}) ? ({0}) : (new F_NilClass);", ((Variable)node).ToPHPVariable());
         }
     }
 
@@ -51,15 +51,15 @@ namespace Fructose.Compiler.Generators
             if (method.Length > 0 && method[0].Parameters != null
                 && method[0].Parameters.Mandatory.Where(p => p.ToString() == ((LocalVariable)node).Name).Count() > 0)
             {
-                compiler.AppendLine("$_stack[] = ${0};", Mangling.RubyIdentifierToPHP(((Variable)node).Name));
+                compiler.AppendLine("$_stack[] = isset(${0}) ? (${0}) : (new F_NilClass);", Mangling.RubyIdentifierToPHP(((Variable)node).Name));
                 return;
             }
             if (parent.OfType<ClassDefinition>().Count() == 0)
             {
-                compiler.AppendLine("$_stack[] = $_locals->{0};", Mangling.RubyIdentifierToPHP(((Variable)node).Name));
+                compiler.AppendLine("$_stack[] = isset($_locals->{0}) ? ($_locals->{0}) : (new F_NilClass);", Mangling.RubyIdentifierToPHP(((Variable)node).Name));
                 return;
             }
-            compiler.AppendLine("$_stack[] = {0};", ((Variable)node).ToPHPVariable());
+            compiler.AppendLine("$_stack[] = isset({0}) ? ({0}) : (new F_NilClass);", ((Variable)node).ToPHPVariable());
         }
     }
 }
