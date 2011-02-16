@@ -771,6 +771,13 @@ class F_Enumerable extends F_Object
 		$this->F_each(create_function('',sprintf('$a = func_get_args(); $f = "%s"; F_Enumerable::$_states[%d][] = $f(NULL, $a[1]);', $block, $state)));
 		return F_Array::__from_array(F_Enumerable::$_states[$state]);
 	}
+	public function F_each_with_index($block)
+	{
+		$state = count(F_Enumerable::$_states);
+		F_Enumerable::$_states[$state] = F_Number::__from_number(0);
+		$this->F_each(create_function('',sprintf('$a = func_get_args(); $f = "%s"; $f(NULL, $a[1], F_Enumerable::$_states[%d]);', $block, $state)));
+		return new F_NilClass;
+	}
 	public function F_count($block, $item = NULL)
 	{
 		if($block === NULL && $item === NULL)
