@@ -48,11 +48,6 @@ class F_HttpSession extends F_Object
 		$_SESSION[$key->F_to_s(NULL)->__STRING] = $val;
 		return $val;
 	}
-	public function F_delete($block, $key)
-	{
-		unset($_SESSION[$key->F_to_s(NULL)->__STRING]);
-		return new F_NilClass;
-	}
 	public function F_regenerate_id($block)
 	{
 		return F_TrueClass::__from_bool(session_regenerate_id());
