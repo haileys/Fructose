@@ -36,7 +36,7 @@ class F_HttpSession extends F_Object
 {
 	public function __operator_arrayget($block, $key)
 	{
-		session_start();
+		@session_start();
 		$k = $key->F_to_s(NULL)->__STRING;
 		if(!isset($_SESSION[$k]))
 			return new F_NilClass;
@@ -44,7 +44,7 @@ class F_HttpSession extends F_Object
 	}
 	public function __operator_arrayset($block, $key, $val)
 	{
-		session_start();
+		@session_start();
 		$_SESSION[$key->F_to_s(NULL)->__STRING] = $val;
 		return $val;
 	}
