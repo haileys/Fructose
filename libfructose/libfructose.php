@@ -2188,19 +2188,27 @@ class F_String extends F_Object
 		return F_TrueClass::__from_bool($this->__STRING === $operand->F_to_s(NULL)->__STRING);
 	}
 	public function F_gsub($block, $pattern, $replacement = NULL)
-	{	
-		preg_match($pattern->__REGEXP, $this->__STRING, F_Regexp::$_matches);
-		if($replacement !== NULL)
+	{
+		if(get_class($pattern) == 'F_String')
 		{
-			$str = preg_replace($pattern->__REGEXP, $replacement->F_to_s(NULL)->__STRING, $this->__STRING);
+			$str = str_replace($pattern->F_to_s(NULL)->__STRING, $replacement->F_to_s(NULL)->__STRING, $this->__STRING);
 			return F_String::__from_string($str);
 		}
 		else
 		{
-			$str = preg_replace_callback($pattern->__REGEXP, 
-				create_function('$matches', sprintf('$f = "%s"; F_Regexp::$_matches = $matches; return $f(NULL, F_String::__from_string($matches[0]))->F_to_s(NULL)->__STRING;', $block))
-				, $this->__STRING);
-			return F_String::__from_string($str);
+			preg_match($pattern->__REGEXP, $this->__STRING, F_Regexp::$_matches);
+			if($replacement !== NULL)
+			{
+				$str = preg_replace($pattern->__REGEXP, $replacement->F_to_s(NULL)->__STRING, $this->__STRING);
+				return F_String::__from_string($str);
+			}
+			else
+			{
+				$str = preg_replace_callback($pattern->__REGEXP, 
+					create_function('$matches', sprintf('$f = "%s"; F_Regexp::$_matches = $matches; return $f(NULL, F_String::__from_string($matches[0]))->F_to_s(NULL)->__STRING;', $block))
+					, $this->__STRING);
+				return F_String::__from_string($str);
+			}
 		}
 	}
 	public function F_gsub_EXCL_($block, $pattern, $replacement = NULL)
@@ -2211,19 +2219,28 @@ class F_String extends F_Object
 		$this->__STRING = $new->__STRING;
 	}
 	public function F_sub($block, $pattern, $replacement = NULL)
-	{	
-		preg_match($pattern->__REGEXP, $this->__STRING, F_Regexp::$_matches);
-		if($replacement !== NULL)
+	{
+		if(get_class($pattern) == 'F_String')
 		{
-			$str = preg_replace($pattern->__REGEXP, $replacement->F_to_s(NULL)->__STRING, $this->__STRING, 1);
+			$escaped_pattern = preg_quote($pattern->F_to_s(NULL)->__STRING);
+			$str = preg_replace("/$escaped_pattern/", $replacement->F_to_s(NULL)->__STRING, $this->__STRING, 1);
 			return F_String::__from_string($str);
 		}
 		else
 		{
-			$str = preg_replace_callback($pattern->__REGEXP, 
-				create_function('$matches', sprintf('$f = "%s"; F_Regexp::$_matches = $matches; return $f(NULL, F_String::__from_string($matches[0]))->F_to_s(NULL)->__STRING;', $block))
-				, $this->__STRING, 1);
-			return F_String::__from_string($str);
+			preg_match($pattern->__REGEXP, $this->__STRING, F_Regexp::$_matches);
+			if($replacement !== NULL)
+			{
+				$str = preg_replace($pattern->__REGEXP, $replacement->F_to_s(NULL)->__STRING, $this->__STRING, 1);
+				return F_String::__from_string($str);
+			}
+			else
+			{
+				$str = preg_replace_callback($pattern->__REGEXP, 
+					create_function('$matches', sprintf('$f = "%s"; F_Regexp::$_matches = $matches; return $f(NULL, F_String::__from_string($matches[0]))->F_to_s(NULL)->__STRING;', $block))
+					, $this->__STRING, 1);
+				return F_String::__from_string($str);
+			}
 		}
 	}
 	public function F_sub_EXCL_($block, $pattern, $replacement = NULL)
