@@ -14,6 +14,8 @@
 #ABC
 #abcd
 #foobar
+#aaBbcc
+#aaBBcc
 
 puts "a" + "b"
 puts "a%sc" % "b"
@@ -35,3 +37,6 @@ puts x
 
 x = "oba"
 puts "fo#{x}r"
+
+puts "aabbcc".sub('b', 'B')
+puts "aabbcc".gsub('b', 'B')
