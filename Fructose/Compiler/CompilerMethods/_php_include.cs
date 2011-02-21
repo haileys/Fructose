@@ -6,7 +6,7 @@ using IronRuby.Compiler.Ast;
 
 namespace Fructose.Compiler.CompilerMethods
 {
-    class _php_include : CompilerMethodBase
+    class F__php_include : CompilerMethodBase
     {
         public override void Compile(Compiler compiler, MethodCall node, NodeParent parent)
         {
