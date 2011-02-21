@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using IronRuby.Compiler.Ast;
 
@@ -9,22 +10,31 @@ namespace Fructose.Compiler.Generators
     [Generator(NodeTypes.MethodCall)]
     public class MethodCallGenerator : AstNodeGenerator
     {
+        static Dictionary<string, CompilerMethods.CompilerMethodBase> compilerMethods = new Dictionary<string, CompilerMethods.CompilerMethodBase>();
+
+        static MethodCallGenerator()
+        {
+            foreach(var t in Assembly.GetExecutingAssembly().GetTypes()
+                .Where(t => t.IsSubclassOf(typeof(CompilerMethods.CompilerMethodBase))))
+            {
+                compilerMethods.Add(t.Name, (CompilerMethods.CompilerMethodBase)Activator.CreateInstance(t));
+            }
+        }
+
         public override void Compile(Compiler compiler, IronRuby.Compiler.Ast.Node node, NodeParent parent)
         {
+            string mname = Mangling.RubyMethodToPHP(((MethodCall)node).MethodName);
+
+            if (compilerMethods.ContainsKey(mname))
+            {
+                compilerMethods[mname].Compile(compiler, (MethodCall)node, parent);
+                return;
+            }
+
             if (((MethodCall)node).Arguments != null)
                 foreach (var arg in ((MethodCall)node).Arguments.Expressions.Reverse())
                     compiler.CompileNode(arg, parent.CreateChild(node));
 			
-			if(((MethodCall)node).MethodName == "_php_include")
-			{
-				if(((MethodCall)node).Arguments == null || ((MethodCall)node).Arguments.Expressions.Length != 1)
-					throw new FructoseCompileException("Built in function _php_include takes one argument", node);
-				compiler.AppendLine("include array_pop($_stack)->F_to_s(NULL)->__STRING;");
-				return;
-			}
-			
-            string mname = Mangling.RubyMethodToPHP(((MethodCall)node).MethodName);
-
             bool callStatic = false;
 
             if (((MethodCall)node).Target == null)

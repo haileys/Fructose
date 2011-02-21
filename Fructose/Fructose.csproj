@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -58,7 +58,10 @@
   <ItemGroup>
     <Compile Include="Compiler\AstNodeGenerator.cs" />
     <Compile Include="Compiler\Compiler.cs" />
+    <Compile Include="Compiler\CompilerMethods\CompilerMethodBase.cs" />
+    <Compile Include="Compiler\CompilerMethods\_php_include.cs" />
     <Compile Include="Compiler\Generators\Array.cs" />
+    <Compile Include="Compiler\Generators\DescriptionExpression.cs" />
     <Compile Include="Compiler\Generators\For.cs" />
     <Compile Include="Compiler\Generators\Hash.cs" />
     <Compile Include="Compiler\Generators\Range.cs" />
@@ -86,11 +89,9 @@
     <Compile Include="Compiler\Generators\Regex.cs" />
     <Compile Include="Compiler\Generators\Case.cs" />
     <Compile Include="Compiler\Generators\Encoding.cs" />
-    <Compile Include="Preprocessor\Preprocessor.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
-    <Folder Include="Preprocessor\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
