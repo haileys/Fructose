@@ -95,6 +95,9 @@
     <None Include="Tests\ParallelAssignment.rb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Tests\Params.rb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Tests\PHPCall.rb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
