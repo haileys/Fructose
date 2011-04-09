@@ -109,7 +109,7 @@ class F_PDO
 		}
 		else if(is_a($paramarray, 'F_Array'))
 		{
-				$params = $paramarray->__ARRAY;
+				$params = array_map(' __marshal2php', $paramarray->__ARRAY);
 		}
 		else
 		{
