@@ -3,6 +3,8 @@
 #42
 #hello world
 #test
+#tester
+#testing
 
 class A
   def bar
@@ -48,8 +50,20 @@ def yielder(x)
   yield x
 end
 
-yielder("test") do |a|
+yielder "test" do |a|
   yielder nil do
     puts a
   end
+end
+
+def yielder_opt(x, y="er")
+  yield x + y
+end
+
+yielder_opt "test" do |a|
+  puts a
+end
+
+yielder_opt "test", "ing" do |a|
+  puts a
 end
