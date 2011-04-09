@@ -17,9 +17,6 @@ namespace Fructose.Compiler.Generators
             if (((MethodDefinition)node).Parameters.Unsplat != null)
                 throw new FructoseCompileException("Unsplats not currently supported.", node);
 
-            if (((MethodDefinition)node).Parameters.Optional.Length > 0)
-                throw new FructoseCompileException("Optional parameters not currently supported.", node);
-
             string visibility = parent.OfType<ClassDefinition>().Count() > 0 ?
                 "public " : "";
 
@@ -31,11 +28,16 @@ namespace Fructose.Compiler.Generators
             {
                 signature += ", $" + Mangling.RubyIdentifierToPHP(arg.ToString());
             }
+            foreach (var arg in ((MethodDefinition)node).Parameters.Optional)
+            {
+                signature += ", $" + Mangling.RubyIdentifierToPHP(arg.Left.ToString()) + "=NULL";
+            }
             signature += ")";
 
             compiler.AppendLine(signature);
             compiler.AppendLine("{");
             compiler.Indent();
+
             compiler.AppendLine("$_stack = array();");
             compiler.AppendLine("if(!isset($_locals)) $_locals = new stdClass;");
             if (parent.OfType<ClassDefinition>().Count() > 0)
@@ -48,12 +50,29 @@ namespace Fructose.Compiler.Generators
                 compiler.AppendLine("if(!isset($_locals->self)) $_locals->self = $_gthis;");
             }
             compiler.AppendLine("if(!isset($_locals->block)) $_locals->block = $block;");
+
             compiler.AppendLine("foreach(array(" + string.Join(", ", ((MethodDefinition)node).Parameters.Mandatory
                 .Select(arg => "\"" + Mangling.RubyIdentifierToPHP(arg.ToString()) + "\"")
                 .ToArray()) + ") as $parm)");
             compiler.Indent();
             compiler.AppendLine("$_locals->$parm = $$parm;");
             compiler.Dedent();
+
+            foreach (var arg in ((MethodDefinition)node).Parameters.Optional)
+            {
+                string parm = Mangling.RubyIdentifierToPHP(arg.Left.ToString());
+                compiler.AppendLine("if($" + parm + " === NULL) {");
+                compiler.Indent();
+                compiler.CompileNode(arg.Right, parent.CreateChild(node));
+                compiler.AppendLine("$_locals->" + parm + " = array_pop($_stack);");
+                compiler.Dedent();
+                compiler.AppendLine("} else {");
+                compiler.Indent();
+                compiler.AppendLine("$_locals->" + parm + " = $" + parm + ";");
+                compiler.Dedent();
+                compiler.AppendLine("}");
+            }
+
             compiler.AppendLine("global $_lambda_objs;");
             compiler.AppendLine("global $_globals;");
 
