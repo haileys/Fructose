@@ -14,24 +14,24 @@ namespace Fructose.Compiler.Generators
             if (parent.OfType<MethodDefinition>().Count() > 0)
                 throw new FructoseCompileException("Nested methods are not supported.", node);
 
-            if (((MethodDefinition)node).Parameters.Unsplat != null)
-                throw new FructoseCompileException("Unsplats not currently supported.", node);
+            if (((MethodDefinition)node).Parameters.Mandatory.Length > ((MethodDefinition)node).Parameters.LeadingMandatoryCount)
+                throw new FructoseCompileException("Additional arguments after splats in methods are currently unsupported.", node);
 
             string visibility = parent.OfType<ClassDefinition>().Count() > 0 ?
                 "public " : "";
 
             string signature = visibility + "function " + Mangling.RubyMethodToPHP(((MethodDefinition)node).Name) + "(";
+
+            List<string> compiledParams = new List<string>();
             if (((MethodDefinition)node).Name.Contains("__lambda_"))
-                signature += "$_locals, ";
-            signature += "$block";
+                compiledParams.Add("$_locals");
+            compiledParams.Add("$block");
             foreach (var arg in ((MethodDefinition)node).Parameters.Mandatory)
-            {
-                signature += ", $" + Mangling.RubyIdentifierToPHP(arg.ToString());
-            }
+                compiledParams.Add("$" + Mangling.RubyIdentifierToPHP(arg.ToString()));
             foreach (var arg in ((MethodDefinition)node).Parameters.Optional)
-            {
-                signature += ", $" + Mangling.RubyIdentifierToPHP(arg.Left.ToString()) + "=NULL";
-            }
+                compiledParams.Add("$" + Mangling.RubyIdentifierToPHP(arg.Left.ToString()) + "=NULL");
+            signature += String.Join(", ", compiledParams);
+
             signature += ")";
 
             compiler.AppendLine(signature);
@@ -72,6 +72,10 @@ namespace Fructose.Compiler.Generators
                 compiler.Dedent();
                 compiler.AppendLine("}");
             }
+
+            if (((MethodDefinition)node).Parameters.Unsplat != null)
+                compiler.AppendLine("$_locals->" + Mangling.RubyIdentifierToPHP(((MethodDefinition)node).Parameters.Unsplat.ToString()) + " = "
+                    + "F_Array::__from_array(array_slice(func_get_args(), " + compiledParams.Count + "));");
 
             compiler.AppendLine("global $_lambda_objs;");
             compiler.AppendLine("global $_globals;");
