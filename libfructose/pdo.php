@@ -113,7 +113,7 @@ class F_PDO
 		}
 		else
 		{
-				$params = array_map(' __marshal2php'), array_slice(func_get_args(), 2));
+				$params = array_map(' __marshal2php', array_slice(func_get_args(), 2));
 		}
 			
 		$stmt = $this->__PDO->prepare($query->F_to_s(NULL)->__STRING);
