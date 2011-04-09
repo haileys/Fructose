@@ -21,17 +21,17 @@ namespace Fructose.Compiler.Generators
                 "public " : "";
 
             string signature = visibility + "function " + Mangling.RubyMethodToPHP(((MethodDefinition)node).Name) + "(";
+
+            List<string> compiledParams = new List<string>();
             if (((MethodDefinition)node).Name.Contains("__lambda_"))
-                signature += "$_locals, ";
-            signature += "$block";
+                compiledParams.Add("$_locals");
+            compiledParams.Add("$block");
             foreach (var arg in ((MethodDefinition)node).Parameters.Mandatory)
-            {
-                signature += ", $" + Mangling.RubyIdentifierToPHP(arg.ToString());
-            }
+                compiledParams.Add("$" + Mangling.RubyIdentifierToPHP(arg.ToString()));
             foreach (var arg in ((MethodDefinition)node).Parameters.Optional)
-            {
-                signature += ", $" + Mangling.RubyIdentifierToPHP(arg.Left.ToString()) + "=NULL";
-            }
+                compiledParams.Add("$" + Mangling.RubyIdentifierToPHP(arg.Left.ToString()) + "=NULL");
+            signature += String.Join(", ", compiledParams);
+
             signature += ")";
 
             compiler.AppendLine(signature);
