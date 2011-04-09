@@ -1964,7 +1964,7 @@ class F_Symbol extends F_Object
 	}
 	public function __operator_stricteq($block,$operand)
 	{
-		return $this->__operator_eq($operand);
+		return $this->__operator_eq(NULL, $operand);
 	}
 	public function F_to_s($block)
 	{
