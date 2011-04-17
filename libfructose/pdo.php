@@ -109,11 +109,11 @@ class F_PDO
 		}
 		else if(is_a($paramarray, 'F_Array'))
 		{
-				$params = array_map(' __marshal2php', $paramarray->__ARRAY);
+				$params = array_map('__marshal2php', $paramarray->__ARRAY);
 		}
 		else
 		{
-				$params = array_map(' __marshal2php', array_slice(func_get_args(), 2));
+				$params = array_map('__marshal2php', array_slice(func_get_args(), 2));
 		}
 			
 		$stmt = $this->__PDO->prepare($query->F_to_s(NULL)->__STRING);
