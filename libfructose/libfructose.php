@@ -743,6 +743,37 @@ class F_MatchData extends F_Object
 		return F_String::__from_string($this->__MATCHES[0][0]);
 	}
 }
+class F_Time extends F_Object
+{
+	public static function SF_new($block)
+	{
+		$t = new F_Time;
+		$t->__TIME = time();
+		return $t;
+	}
+	public static function SF_now($block)
+	{
+		return SF_new(NULL);
+	}
+	public static function SF_strtotime($block, $string)
+	{
+		$t = new F_Time;
+		$t->__TIME = strtotime($string->F_to_s(NULL)->__STRING);
+		return $t;
+	}
+	public function F_inspect($block)
+	{
+		return F_String::__from_string(strftime('%Y-%m-%d %H:%M:%S %z', $this->__TIME));
+	}
+	public function F_strftime($block, $string)
+	{
+		return F_String::__from_string(strftime($string->F_to_s(NULL)->__STRING, $this->__TIME));
+	}
+	public function F_to_s($block)
+	{
+		return $this->F_inspect(NULL);
+	}
+}
 class F_Enumerable extends F_Object
 {
 	public static $_states = array();
