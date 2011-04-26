@@ -109,11 +109,11 @@ class F_PDO
 		}
 		else if(is_a($paramarray, 'F_Array'))
 		{
-				$params = array_map(' __marshal2php', $paramarray->__ARRAY);
+				$params = array_map('__marshal2php', $paramarray->__ARRAY);
 		}
 		else
 		{
-				$params = array_map(' __marshal2php', array_slice(func_get_args(), 2));
+				$params = array_map('__marshal2php', array_slice(func_get_args(), 2));
 		}
 			
 		$stmt = $this->__PDO->prepare($query->F_to_s(NULL)->__STRING);
@@ -137,6 +137,10 @@ class F_PDOResults extends F_Enumerable
 		$r = new F_PDOResults;
 		$r->__STMT = $stmt;
 		return $r;
+	}
+	public function F_to_a($block)
+	{
+		return F_Array::__from_array($this->__STMT->fetchAll(PDO::FETCH_BOTH));
 	}
 	public function F_each($block)
 	{
