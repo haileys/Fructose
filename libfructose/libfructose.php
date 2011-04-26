@@ -753,7 +753,7 @@ class F_Time extends F_Object
 	}
 	public static function SF_now($block)
 	{
-		return SF_new(NULL);
+		return F_Time::SF_new(NULL);
 	}
 	public static function SF_strtotime($block, $string)
 	{
@@ -1295,7 +1295,11 @@ class F_Array extends F_Enumerable
 				return F_Number::__from_number($i);
 		return new F_NilClass;
 	}
-	
+	public function F_push($block, $val)
+	{
+		$this->__ARRAY[] = $val;
+		return $this;
+	}
 	public function F_replace($block, $ary)
 	{
 		$this->__ARRAY = $ary->__ARRAY;
@@ -1720,6 +1724,13 @@ class F_Hash extends F_Enumerable
 	public function F_to_hash($block)
 	{
 		return $this;
+	}
+	public function F_values($block)
+	{
+		$arr = array();
+		foreach($this->__PAIRS as $pair)
+			$arr[] = $pair->__ARRAY[1];
+		return F_Array::__from_array($arr);
 	}
 }
 class F_Number extends F_Object

@@ -132,7 +132,7 @@ class F_PDO
 }
 class F_PDOResults extends F_Enumerable
 {
-    public static function __from_stmt($stmt)
+	public static function __from_stmt($stmt)
 	{
 		$r = new F_PDOResults;
 		$r->__STMT = $stmt;
@@ -140,7 +140,10 @@ class F_PDOResults extends F_Enumerable
 	}
 	public function F_to_a($block)
 	{
-		return F_Array::__from_array($this->__STMT->fetchAll(PDO::FETCH_BOTH));
+		$array = array();
+		while($row = $this->__STMT->fetch(PDO::FETCH_BOTH))
+			$array[] = F_PDOResultRow::__from_row($row);
+		return F_Array::__from_array($array);
 	}
 	public function F_each($block)
 	{
