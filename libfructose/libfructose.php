@@ -753,7 +753,7 @@ class F_Time extends F_Object
 	}
 	public static function SF_now($block)
 	{
-		return SF_new(NULL);
+		return F_Time::SF_new(NULL);
 	}
 	public static function SF_strtotime($block, $string)
 	{
