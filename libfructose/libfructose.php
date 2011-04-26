@@ -1295,7 +1295,11 @@ class F_Array extends F_Enumerable
 				return F_Number::__from_number($i);
 		return new F_NilClass;
 	}
-	
+	public function F_push($block, $val)
+	{
+		$this->__ARRAY[] = $val;
+		return $this;
+	}
 	public function F_replace($block, $ary)
 	{
 		$this->__ARRAY = $ary->__ARRAY;
