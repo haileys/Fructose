@@ -138,6 +138,10 @@ class F_PDOResults extends F_Enumerable
 		$r->__STMT = $stmt;
 		return $r;
 	}
+	public function F_to_a($block)
+	{
+		return F_Array::__from_array($this->__STMT->fetchAll(PDO::FETCH_BOTH));
+	}
 	public function F_each($block)
 	{
 		while($row = $this->__STMT->fetch(PDO::FETCH_BOTH))
