@@ -1725,6 +1725,13 @@ class F_Hash extends F_Enumerable
 	{
 		return $this;
 	}
+	public function F_values($block)
+	{
+		$arr = array();
+		foreach($this->__PAIRS as $pair)
+			$arr[] = $pair->__ARRAY[1];
+		return F_Array::__from_array($arr);
+	}
 }
 class F_Number extends F_Object
 {
