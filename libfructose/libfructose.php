@@ -76,6 +76,7 @@ function _exception_handler($ex)
 		<h1>Runtime Error in <?php echo htmlspecialchars($_SERVER['FRUCTOSE_SRC']); ?></h1>
 		<div>
 			Unhandled exception: <?php echo htmlspecialchars(get_class($ex->val)); ?><br />
+			<?php echo htmlspecialchars($ex->val->F_to_s(NULL)->__STRING); ?><br/>
 			<?php
 				foreach($ex->getTrace() as $frame)
 				{
