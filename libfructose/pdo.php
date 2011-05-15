@@ -101,12 +101,20 @@ class F_PDO
 			$hash->__operator_arrayset(NULL, F_Symbol::__from_string('msg'), F_String::__from_string($info[2]));
 		return $hash;
 	}
-	public function F_query($block, $query)
+	public function F_query($block, $query, $paramarray = NULL)
 	{
-		$params = array_map(create_function('$x', 'return $x->F_to_s(NULL)->__STRING;'), array_slice(func_get_args(), 2));
-		
-		if(count($params) === 1 && is_a($params[0], 'F_Array'))
-			$params = $params->__ARRAY;
+		if($paramarray === NULL)
+		{
+				$params = array();
+		}
+		else if(is_a($paramarray, 'F_Array'))
+		{
+				$params = array_map('__marshal2php', $paramarray->__ARRAY);
+		}
+		else
+		{
+				$params = array_map('__marshal2php', array_slice(func_get_args(), 2));
+		}
 			
 		$stmt = $this->__PDO->prepare($query->F_to_s(NULL)->__STRING);
 		if(!$stmt->execute($params))
@@ -124,11 +132,18 @@ class F_PDO
 }
 class F_PDOResults extends F_Enumerable
 {
-    public static function __from_stmt($stmt)
+	public static function __from_stmt($stmt)
 	{
 		$r = new F_PDOResults;
 		$r->__STMT = $stmt;
 		return $r;
+	}
+	public function F_to_a($block)
+	{
+		$array = array();
+		while($row = $this->__STMT->fetch(PDO::FETCH_BOTH))
+			$array[] = F_PDOResultRow::__from_row($row);
+		return F_Array::__from_array($array);
 	}
 	public function F_each($block)
 	{
