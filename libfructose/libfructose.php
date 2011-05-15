@@ -207,7 +207,7 @@ class F_Object
 		if(get_class($this) === 'F_Object' && function_exists($name))
 			return call_user_func_array($name, $args);
 		
-		throw new ErrorCarrier(F_NoMethodError::F_initialize(NULL, F_String::__from_string("No such method " . substr(get_class($this), 2) . "#" . substr($name, 2))));
+		throw new ErrorCarrier(F_NoMethodError::SF_new(NULL, F_String::__from_string("No such method " . substr(get_class($this), 2) . "#" . substr($name, 2))));
 	}
 	public function F_define_method($block, $sym)
 	{
