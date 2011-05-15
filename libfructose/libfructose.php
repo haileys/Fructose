@@ -170,7 +170,7 @@ class F_Object
 		}
 		if(function_exists("_fructose_dynamic_include"))
 		{
-			_fructose_dynamic_include(realpath($path . ".fruc"));
+			return _fructose_dynamic_include(realpath($path . ".fruc"));
 		}
 		return new F_FalseClass;
 	}
