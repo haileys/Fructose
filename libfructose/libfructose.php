@@ -49,17 +49,44 @@ class ErrorCarrier extends Exception
 	}
 }
 function _exception_handler($ex)
-{
-	echo "<p><b>Unhandled Exception: " . htmlspecialchars(get_class($ex->val)) . "</b><br />";
-	echo htmlspecialchars($ex->val->F_to_s(NULL)->__STRING);
-	echo "</p>";
-	echo "<ul>";
-	foreach($ex->getTrace() as $frame)
-	{
-		echo '<li>from ' . htmlspecialchars($frame['function']) . ' in ' . htmlspecialchars($frame['file']) . ' on line ' . $frame['line'] . '</li>';
-	}
-	echo '</ul>';
-	die;
+{	
+	header("HTTP/1.1 500 Internal Server Error");
+	?>
+	<!DOCTYPE html>
+	<html>
+	<head>
+		<title>Runtime Error</title>
+		<style>
+			body {
+				font-family:Tahoma, Verdana, Arial, Helvetica, sans-serif;
+			}
+			h1 {
+				padding:16px;
+				background-color:#ff8e55;
+				color:#441700;
+			}
+			div {
+				font-family:Consolas, Monaco, monospace;
+				font-size:12px;
+				line-height:18px;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Runtime Error in <?php echo htmlspecialchars($_SERVER['FRUCTOSE_SRC']); ?></h1>
+		<div>
+			Unhandled exception: <?php echo htmlspecialchars(get_class($ex->val)); ?><br />
+			<?php
+				foreach($ex->getTrace() as $frame)
+				{
+					echo "at " . htmlspecialchars($frame['function']) . ' in ' . htmlspecialchars($frame['file']) . ' on line ' . $frame['line'] . "<br />";
+				}
+			?>
+		</div>
+	</body>
+	</html>	
+	<?php
+	exit;
 }
 set_exception_handler('_exception_handler');
 
@@ -139,6 +166,10 @@ class F_Object
 				require_once $p;
 				return new F_TrueClass;
 			}
+		}
+		if(function_exists("_fructose_dynamic_include"))
+		{
+			_fructose_dynamic_include(realpath($path . ".fruc"));
 		}
 		return new F_FalseClass;
 	}
