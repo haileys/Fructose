@@ -207,9 +207,7 @@ class F_Object
 		if(get_class($this) === 'F_Object' && function_exists($name))
 			return call_user_func_array($name, $args);
 		
-		echo "No such method " . substr(get_class($this), 2) . "#" . substr($name, 2) . "\n";
-		debug_print_backtrace();
-		die;
+		throw new ErrorCarrier(F_NoMethodError::new(F_String::__from_string("No such method " . substr(get_class($this), 2) . "#" . substr($name, 2))));
 	}
 	public function F_define_method($block, $sym)
 	{
@@ -347,6 +345,15 @@ class F_Error extends F_Object
 		$ex->__operator_lshift(NULL, F_String::__from_string(": "));
 		$ex->__operator_lshift(NULL, $this->__MESSAGE);
 		return $ex;
+	}
+}
+class F_NoMethodError extends F_Error
+{
+	public static function SF_new($block, $msg = NULL)
+	{
+		$err = new F_NoMethodError;
+		$err->__MESSAGE = $msg !== NULL ? $msg->F_to_s(NULL) : new F_NilClass;
+		return $err;
 	}
 }
 class F_StopIteration extends F_Error
