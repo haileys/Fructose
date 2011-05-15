@@ -774,6 +774,37 @@ class F_MatchData extends F_Object
 		return F_String::__from_string($this->__MATCHES[0][0]);
 	}
 }
+class F_Time extends F_Object
+{
+	public static function SF_new($block)
+	{
+		$t = new F_Time;
+		$t->__TIME = time();
+		return $t;
+	}
+	public static function SF_now($block)
+	{
+		return F_Time::SF_new(NULL);
+	}
+	public static function SF_strtotime($block, $string)
+	{
+		$t = new F_Time;
+		$t->__TIME = strtotime($string->F_to_s(NULL)->__STRING);
+		return $t;
+	}
+	public function F_inspect($block)
+	{
+		return F_String::__from_string(strftime('%Y-%m-%d %H:%M:%S %z', $this->__TIME));
+	}
+	public function F_strftime($block, $string)
+	{
+		return F_String::__from_string(strftime($string->F_to_s(NULL)->__STRING, $this->__TIME));
+	}
+	public function F_to_s($block)
+	{
+		return $this->F_inspect(NULL);
+	}
+}
 class F_Enumerable extends F_Object
 {
 	public static $_states = array();
@@ -1295,7 +1326,11 @@ class F_Array extends F_Enumerable
 				return F_Number::__from_number($i);
 		return new F_NilClass;
 	}
-	
+	public function F_push($block, $val)
+	{
+		$this->__ARRAY[] = $val;
+		return $this;
+	}
 	public function F_replace($block, $ary)
 	{
 		$this->__ARRAY = $ary->__ARRAY;
@@ -1720,6 +1755,13 @@ class F_Hash extends F_Enumerable
 	public function F_to_hash($block)
 	{
 		return $this;
+	}
+	public function F_values($block)
+	{
+		$arr = array();
+		foreach($this->__PAIRS as $pair)
+			$arr[] = $pair->__ARRAY[1];
+		return F_Array::__from_array($arr);
 	}
 }
 class F_Number extends F_Object
