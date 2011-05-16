@@ -36,6 +36,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="IronRuby, Version=1.1.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
@@ -79,6 +80,7 @@
     <Compile Include="Compiler\Generators\Variables.cs" />
     <Compile Include="Compiler\Generators\While.cs" />
     <Compile Include="Compiler\NodeParent.cs" />
+    <Compile Include="ErbParser.cs" />
     <Compile Include="Mangling.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Compiler\FructoseCompileException.cs" />
