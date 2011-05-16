@@ -11,6 +11,8 @@ namespace Fructose
         static string filetype = null;
         static Stream input = null;
         static Stream output = null;
+        static string outputPath = null;
+        static bool forceCompile = false;
 
         static void Main(string[] args)
         {
@@ -30,6 +32,16 @@ namespace Fructose
             {
                 var source = sr.ReadToEnd();
 
+                if (!forceCompile && outputPath != null && File.Exists(outputPath))
+                {
+                    using (var sr2 = new StreamReader(File.Open(outputPath, FileMode.Open)))
+                    {
+                        sr2.ReadLine();
+                        if (source.MD5() == sr2.ReadLine().Replace("// ", ""))
+                            Fatal("Skipping compile as MD5 matches");
+                    }
+                }
+
                 Parser translator = null;
                 switch (filetype)
                 {
@@ -37,8 +49,9 @@ namespace Fructose
                     case ".erb": translator = new ErbParser(source); break;
                     default: Fatal("Filetype {0} not supported", filetype); break;
                 }
-
                 translator.Parse();
+
+                output = File.Open(outputPath, FileMode.Create);
                 using (var sw = new StreamWriter(output))
                 {
                     sw.Write(translator.CompileToPHP(source));
@@ -51,7 +64,7 @@ namespace Fructose
         {
             Console.WriteLine(@"Fructose - Ruby to PHP compiler.
 
-Usage: fructose [(-f|--filetype) ( rb | erb )] [( -o output-file | --stdout )] ( - | input-file )
+Usage: fructose [--force] [(-f|--filetype) ( rb | erb )] [( -o output-file | --stdout )] ( - | input-file )
 ");
 			Environment.Exit(1);
         }
@@ -70,6 +83,10 @@ Usage: fructose [(-f|--filetype) ( rb | erb )] [( -o output-file | --stdout )] (
             {
                 switch (args[i])
                 {
+                    case "--force":
+                        forceCompile = true;
+                        break;
+
                     case "-f":
                     case "--filetype":
                         filetype = "." + args[i + 1];
@@ -79,8 +96,7 @@ Usage: fructose [(-f|--filetype) ( rb | erb )] [( -o output-file | --stdout )] (
                     case "-o":
                         if (++i == args.Length)
                             Fatal("Expected filename after -o");
-
-                        output = File.Open(args[i], FileMode.Create);
+                        outputPath = args[i];
                         break;
 						
                     case "--stdout":
@@ -104,8 +120,8 @@ Usage: fructose [(-f|--filetype) ( rb | erb )] [( -o output-file | --stdout )] (
                 }
             }
 
-            if (output == null)
-                output = File.Open(default_out_name, FileMode.Create);
+            if (outputPath == null && output == null)
+                outputPath = default_out_name;
         }
     }
 }
