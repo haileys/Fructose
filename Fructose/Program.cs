@@ -45,9 +45,8 @@ namespace Fructose
                 Parser translator = null;
                 switch (filetype)
                 {
-                    case ".rb": translator = new Parser(source); break;
                     case ".erb": translator = new ErbParser(source); break;
-                    default: Fatal("Filetype {0} not supported", filetype); break;
+                    default: translator = new Parser(source); break;
                 }
                 translator.Parse();
 
