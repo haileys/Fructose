@@ -64,7 +64,7 @@ namespace Fructose
         {
             Console.WriteLine(@"Fructose - Ruby to PHP compiler.
 
-Usage: fructose [--force] [(-f|--filetype) ( rb | erb )] [( -o output-file | --stdout )] ( - | input-file )
+Usage: fructose [-f|--force] [(-t|--filetype) ( rb | erb )] [( -o output-file | --stdout )] ( - | input-file )
 ");
 			Environment.Exit(1);
         }
@@ -83,11 +83,12 @@ Usage: fructose [--force] [(-f|--filetype) ( rb | erb )] [( -o output-file | --s
             {
                 switch (args[i])
                 {
+                    case "-f":
                     case "--force":
                         forceCompile = true;
                         break;
 
-                    case "-f":
+                    case "-t":
                     case "--filetype":
                         filetype = "." + args[i + 1];
                         i++;
