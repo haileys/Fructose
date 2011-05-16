@@ -8,6 +8,7 @@ namespace Fructose
 {
     class Program
     {
+        static string filetype = null;
         static Stream input = null;
         static Stream output = null;
 
@@ -28,7 +29,15 @@ namespace Fructose
             using (var sr = new StreamReader(input))
             {
                 var source = sr.ReadToEnd();
-                var translator = new Parser(source);
+
+                Parser translator = null;
+                switch (filetype)
+                {
+                    case ".rb": translator = new Parser(source); break;
+                    case ".erb": translator = new ErbParser(source); break;
+                    default: Fatal("Filetype {0} not supported", filetype); break;
+                }
+
                 translator.Parse();
                 using (var sw = new StreamWriter(output))
                 {
@@ -42,7 +51,7 @@ namespace Fructose
         {
             Console.WriteLine(@"Fructose - Ruby to PHP compiler.
 
-Usage: fructose [( -o output-file | --stdout )] ( - | input-file )
+Usage: fructose [(-f|--filetype) ( rb | erb )] [( -o output-file | --stdout )] ( - | input-file )
 ");
 			Environment.Exit(1);
         }
@@ -61,25 +70,35 @@ Usage: fructose [( -o output-file | --stdout )] ( - | input-file )
             {
                 switch (args[i])
                 {
+                    case "-f":
+                    case "--filetype":
+                        filetype = "." + args[i + 1];
+                        i++;
+                        break;
+
                     case "-o":
                         if (++i == args.Length)
                             Fatal("Expected filename after -o");
 
                         output = File.Open(args[i], FileMode.Create);
-                        break;					
+                        break;
 						
                     case "--stdout":
                         output = Console.OpenStandardOutput();
                         break;
+
                     case "-":
                         input = Console.OpenStandardInput();
                         break;
+
                     default:
                         if (args[i][0] == '-')
                             Fatal("Unknown option {0}", args[i]);
                         if (input != null)
                             Fatal("Multiple input files are not supported");
                         input = File.Open(args[i], FileMode.Open);
+                        if (filetype == null)
+                            filetype = Path.GetExtension(args[i]);
                         default_out_name = Path.ChangeExtension(args[i], "php");
                         break;
                 }
