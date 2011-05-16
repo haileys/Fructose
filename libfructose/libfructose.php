@@ -162,7 +162,7 @@ class F_Object
 		foreach(array('%s','%s.php','%s.fruc.php','lib/%s','lib/%s.php','lib/%s.fruc.php') as $pathfmt)
 		{
 			$p = sprintf($pathfmt, $path);
-			if(@file_get_contents($p) !== FALSE)
+			if(@file_get_contents($p, FILE_USE_INCLUDE_PATH) !== FALSE)
 			{
 				require_once $p;
 				return new F_TrueClass;
